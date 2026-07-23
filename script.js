@@ -15,18 +15,19 @@ function initApp() {
     'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
-    "Gracias por aquel abrazo cuando más lo necesitaba.",
-    "Nunca olvidaré nuestra primera salida a patinar.",
-    "Ojalá nunca dejemos de reírnos así.",
-    "Ese día en la práctica de drones, no sabía que estaba a punto de conocer a la persona más importante de mi vida.",
-    "Tu sonrisa en la gira de Resistencia, con ese rojo que te quedaba tan bien, fue mi perdición.",
-    "Aquella tarde pintando, mientras esperábamos notas, fue cuando supe que quería quedarme contigo para siempre.",
-    "Cada desayuno contigo sabe a gloria.",
-    "Eres mi lugar seguro.",
-    "Recuerdo tu mirada aquella tarde en la biblioteca.",
-    "El 24 de abril no es solo una fecha, es el día en que mi vida cambió para siempre.",
-    "Gracias por ser tú, sin filtros.",
-    "Eres la mejor parte de mi día.",
+    "Gracias por ser como eres.",
+    "Gracias por existir.",
+    "El rojo es tu color, siempre lo fue.",
+    "Gracias por toda la ayuda académica, de verdad.",
+    "Te amo mucho, mi amor.",
+    "Mi cuchurru favorita.",
+    "Mi princesa.",
+    "Me encanta comer contigo, hasta lo más simple sabe mejor a tu lado.",
+    "Dormir en el pasto contigo es de mis momentos favoritos.",
+    "Siempre quiero estar contigo, no importa el día.",
+    "Gracias por interesarte tanto en lo que hago.",
+    "El 24 de abril cambió todo, para bien.",
+    "Contigo hasta no hacer nada se siente bien.",
     "Alejandro siempre te llevará en su corazón.",
     "Liz, eres mi estrella favorita."
   ];
@@ -423,14 +424,37 @@ function initApp() {
   }, { passive: true });
 
   // =========================================
-  // 7. CONTADOR DE DÍAS (solo días)
+  // 7. CONTADOR DE TIEMPO JUNTOS (días, semanas, horas, próximo mes-versario)
   // =========================================
   function updateCounter() {
     const start = new Date('2026-04-24');
     const now = new Date();
     const diffMs = now - start;
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    document.getElementById('dayCounter').textContent = days >= 0 ? days : 0;
+    const safeDays = days >= 0 ? days : 0;
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const weeks = Math.floor(safeDays / 7);
+
+    document.getElementById('dayCounter').textContent = safeDays;
+
+    const weekEl = document.getElementById('weekCounter');
+    if (weekEl) weekEl.textContent = weeks >= 0 ? weeks : 0;
+
+    const hourEl = document.getElementById('hourCounter');
+    if (hourEl) hourEl.textContent = hours >= 0 ? hours.toLocaleString('es-EC') : 0;
+
+    // Días que faltan para el próximo "24" del mes
+    const nextEl = document.getElementById('nextAnniversaryCounter');
+    if (nextEl) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let next = new Date(today.getFullYear(), today.getMonth(), 24);
+      if (today.getDate() >= 24) {
+        next = new Date(today.getFullYear(), today.getMonth() + 1, 24);
+      }
+      const daysUntil = Math.round((next - today) / (1000 * 60 * 60 * 24));
+      nextEl.textContent = daysUntil;
+    }
   }
   updateCounter();
   setInterval(updateCounter, 60000);

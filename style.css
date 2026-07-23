@@ -488,6 +488,37 @@ body {
   line-height: 1.5;
 }
 
+/* ===== ESTADÍSTICAS ADICIONALES (TIEMPO JUNTOS) ===== */
+.time-stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+.time-stat {
+  background: var(--card);
+  border: 1px solid var(--border-glow);
+  border-radius: 16px;
+  padding: 14px 20px;
+  min-width: 110px;
+  text-align: center;
+}
+.time-stat-number {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+.time-stat-label {
+  display: block;
+  color: var(--text-sec);
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
 /* ===== CARTA ===== */
 .letter-wrapper {
   max-width: 700px;
