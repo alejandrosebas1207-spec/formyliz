@@ -15,12 +15,21 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+  width: 100%;
   min-height: 100vh;
+  position: relative;
 }
 
 /* ===== LOADER ===== */
@@ -622,6 +631,15 @@ body {
   line-height: 1.6;
   color: var(--text);
   font-family: 'Cormorant Garamond', serif;
+}
+.thought-source {
+  display: block;
+  margin-top: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  color: var(--text-sec);
+  font-style: normal;
 }
 
 /* ===== FINAL ===== */

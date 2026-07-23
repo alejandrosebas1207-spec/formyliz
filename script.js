@@ -15,21 +15,21 @@ function initApp() {
     'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
-    "Gracias por ser como eres.",
-    "Gracias por existir.",
-    "El rojo es tu color, siempre lo fue.",
-    "Gracias por toda la ayuda académica, de verdad.",
-    "Te amo mucho, mi amor.",
-    "Mi cuchurru favorita.",
-    "Mi princesa.",
-    "Me encanta comer contigo, hasta lo más simple sabe mejor a tu lado.",
-    "Dormir en el pasto contigo es de mis momentos favoritos.",
-    "Siempre quiero estar contigo, no importa el día.",
-    "Gracias por interesarte tanto en lo que hago.",
-    "El 24 de abril cambió todo, para bien.",
-    "Contigo hasta no hacer nada se siente bien.",
-    "Alejandro siempre te llevará en su corazón.",
-    "Liz, eres mi estrella favorita."
+    { phrase: "Contigo hasta los días grises se ven bonitos.", source: "Inspirado en “Razón” — Los Caligaris" },
+    { phrase: "Volví a sonreír de verdad desde que estás tú.", source: "Inspirado en “Razón” — Los Caligaris" },
+    { phrase: "Eres la razón por la que todo pesa menos.", source: "Inspirado en “Razón” — Los Caligaris" },
+    { phrase: "Contigo, hasta lo que dolía dejó de doler.", source: "Inspirado en “Razón” — Los Caligaris" },
+    { phrase: "No hay mucha explicación, solo sé que eres tú.", source: "Inspirado en “Razón” — Los Caligaris" },
+    { phrase: "No dejo de pensar en ti, ni lo intento.", source: "Inspirado en “Agua” — Jarabe de Palo" },
+    { phrase: "Cada vez que la escucho, pienso en ti.", source: "Inspirado en “Agua” — Jarabe de Palo" },
+    { phrase: "Hay canciones que ya no puedo separar de ti.", source: "Inspirado en “Agua” — Jarabe de Palo" },
+    { phrase: "Me acuerdo de ti hasta en lo más simple.", source: "Inspirado en “Agua” — Jarabe de Palo" },
+    { phrase: "Esa canción y tú ya son la misma cosa para mí.", source: "Inspirado en “Agua” — Jarabe de Palo" },
+    { phrase: "No me da miedo decirte que te quiero.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
+    { phrase: "Contigo no hace falta fingir nada.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
+    { phrase: "Te quiero tal como eres, sin condiciones.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
+    { phrase: "No necesito una razón para elegirte cada día.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
+    { phrase: "Contigo, hasta lo imperfecto se siente bien.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" }
   ];
 
   // Contexto de audio compartido (usado por el chime de estrellas y el sonido de página)
@@ -424,37 +424,26 @@ function initApp() {
   }, { passive: true });
 
   // =========================================
-  // 7. CONTADOR DE TIEMPO JUNTOS (días, semanas, horas, próximo mes-versario)
+  // 7. CONTADOR DE TIEMPO JUNTOS (días, semanas, horas — desde el 24 de abril de 2026)
   // =========================================
   function updateCounter() {
-    const start = new Date('2026-04-24');
+    const start = new Date('2026-04-24T00:00:00');
     const now = new Date();
     const diffMs = now - start;
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const safeDays = days >= 0 ? days : 0;
     const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const safeHours = hours >= 0 ? hours : 0;
     const weeks = Math.floor(safeDays / 7);
 
-    document.getElementById('dayCounter').textContent = safeDays;
+    const dayEl = document.getElementById('dayCounter');
+    if (dayEl) dayEl.textContent = safeDays;
 
     const weekEl = document.getElementById('weekCounter');
-    if (weekEl) weekEl.textContent = weeks >= 0 ? weeks : 0;
+    if (weekEl) weekEl.textContent = weeks;
 
     const hourEl = document.getElementById('hourCounter');
-    if (hourEl) hourEl.textContent = hours >= 0 ? hours.toLocaleString('es-EC') : 0;
-
-    // Días que faltan para el próximo "24" del mes
-    const nextEl = document.getElementById('nextAnniversaryCounter');
-    if (nextEl) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      let next = new Date(today.getFullYear(), today.getMonth(), 24);
-      if (today.getDate() >= 24) {
-        next = new Date(today.getFullYear(), today.getMonth() + 1, 24);
-      }
-      const daysUntil = Math.round((next - today) / (1000 * 60 * 60 * 24));
-      nextEl.textContent = daysUntil;
-    }
+    if (hourEl) hourEl.textContent = safeHours.toLocaleString('es-EC');
   }
   updateCounter();
   setInterval(updateCounter, 60000);
@@ -554,6 +543,26 @@ function initApp() {
     const thoughtText = document.getElementById('thought-text');
     const closeModal = document.querySelector('.close-modal');
 
+    // Muestra la frase y, debajo, la canción que la inspiró
+    function showThought(jsonStr) {
+      let data;
+      try {
+        data = JSON.parse(jsonStr);
+      } catch (e) {
+        data = { phrase: jsonStr, source: '' };
+      }
+      thoughtText.innerHTML = data.source
+        ? `${data.phrase}<span class="thought-source">${data.source}</span>`
+        : data.phrase;
+      modal.classList.add('show');
+      gsap.from('.modal-content', {
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'back.out(1.7)'
+      });
+    }
+
     // Audio para sonido de campanita (usa el contexto de audio compartido)
     function playChime() {
       try {
@@ -608,7 +617,7 @@ function initApp() {
       star.style.top = Math.random() * 92 + 4 + '%';
       star.style.opacity = 0.3 + Math.random() * 0.6;
       const thoughtIndex = Math.floor(Math.random() * THOUGHTS.length);
-      star.dataset.thought = THOUGHTS[thoughtIndex];
+      star.dataset.thought = JSON.stringify(THOUGHTS[thoughtIndex]);
       container.appendChild(star);
 
       gsap.to(star, {
@@ -622,14 +631,7 @@ function initApp() {
       star.addEventListener('click', (e) => {
         e.stopPropagation();
         playChime();
-        thoughtText.textContent = star.dataset.thought;
-        modal.classList.add('show');
-        gsap.from('.modal-content', {
-          scale: 0.8,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'back.out(1.7)'
-        });
+        showThought(star.dataset.thought);
       });
     }
 
@@ -652,7 +654,7 @@ function initApp() {
       star.style.top = p.y + '%';
       star.style.opacity = 0.9;
       const thought = THOUGHTS[Math.floor(Math.random() * THOUGHTS.length)];
-      star.dataset.thought = thought;
+      star.dataset.thought = JSON.stringify(thought);
       container.appendChild(star);
 
       gsap.to(star, {
@@ -666,14 +668,7 @@ function initApp() {
       star.addEventListener('click', (e) => {
         e.stopPropagation();
         playChime();
-        thoughtText.textContent = star.dataset.thought;
-        modal.classList.add('show');
-        gsap.from('.modal-content', {
-          scale: 0.8,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'back.out(1.7)'
-        });
+        showThought(star.dataset.thought);
       });
     });
 
