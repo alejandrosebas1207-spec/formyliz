@@ -258,6 +258,28 @@ body {
   box-shadow: 0 0 30px var(--red-glow);
 }
 
+.final-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+.final-actions .next-btn {
+  margin-top: 0;
+  padding: 14px 28px;
+  font-size: 15px;
+}
+#certButton {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+#certButton:hover {
+  background: var(--purple);
+  color: #09090B;
+  box-shadow: 0 0 30px var(--border-glow);
+}
+
 /* ===== CAPÍTULOS ===== */
 .chapter-header {
   text-align: center;
@@ -384,6 +406,59 @@ body {
   opacity: 0.7;
 }
 
+/* ===== MAPA DE NUESTROS LUGARES ===== */
+#lovemap {
+  width: 100%;
+  max-width: 700px;
+  height: 380px;
+  margin: 0 auto;
+  border-radius: 20px;
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  overflow: hidden;
+  background: var(--card);
+}
+.love-marker {
+  width: 38px;
+  height: 38px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--card);
+  border: 2px solid var(--red);
+  box-shadow: 0 2px 12px var(--red-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.love-marker span {
+  transform: rotate(45deg);
+  font-size: 1.1rem;
+}
+.leaflet-popup-content-wrapper {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 14px;
+  border: 1px solid var(--border-glow);
+}
+.leaflet-popup-tip {
+  background: var(--card);
+}
+.leaflet-popup-content {
+  margin: 12px 14px;
+  font-family: 'Inter', sans-serif;
+}
+.map-popup-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: var(--purple);
+  margin-bottom: 4px;
+}
+.map-popup-note {
+  color: var(--text-sec);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
 /* ===== GALERÍA ===== */
 .gallery-grid {
   display: grid;
@@ -467,6 +542,37 @@ body {
   font-size: 0.9rem;
   font-style: italic;
   margin-top: 3px;
+}
+
+.play-track-btn {
+  margin-top: 10px;
+  background: none;
+  border: 1px solid var(--purple);
+  color: var(--purple);
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+.play-track-btn:hover,
+.play-track-btn.playing {
+  background: var(--purple);
+  color: #09090B;
+}
+.track-player {
+  margin-top: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.track-player iframe {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 16 / 9;
+  border: none;
+  display: block;
+  border-radius: 12px;
 }
 
 /* ===== TIEMPO JUNTOS ===== */
@@ -792,6 +898,9 @@ body {
   #starfield {
     height: 280px;
   }
+  #lovemap {
+    height: 320px;
+  }
   .modal-content {
     padding: 30px 18px;
   }
@@ -852,6 +961,9 @@ body {
   }
   #starfield {
     height: 220px;
+  }
+  #lovemap {
+    height: 260px;
   }
   .polaroid {
     max-width: 180px;

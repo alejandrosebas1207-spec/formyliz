@@ -5,13 +5,13 @@ function initApp() {
   // =========================================
   const SECTION_IDS = [
     'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
-    'galeria', 'lo-que-amo', 'playlist', 'tiempo', 'carta', 'promesas',
+    'mapa', 'galeria', 'lo-que-amo', 'playlist', 'tiempo', 'carta', 'promesas',
     'capitulo-futuro', 'sorpresa', 'final'
   ];
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
-    'Galería de fotos', 'Lo que amo de ti', 'Nuestra playlist', 'Tiempo juntos',
+    'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti', 'Tiempo juntos',
     'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
@@ -240,6 +240,7 @@ function initApp() {
             updateProgress(index);
             isTransitioning = false;
             // Ejecutar funciones especiales para ciertas secciones (solo una vez)
+            if (nextSection.id === 'mapa') initLoveMap();
             if (nextSection.id === 'sorpresa') initStarfield();
             if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
@@ -324,6 +325,108 @@ function initApp() {
     document.getElementById('confirm-modal').classList.remove('show');
   });
 
+  // Botón "Descargar certificado"
+  const certBtn = document.getElementById('certButton');
+  if (certBtn) {
+    certBtn.addEventListener('click', generateCertificate);
+  }
+
+  function generateCertificate() {
+    const canvas = document.createElement('canvas');
+    const W = 1200, H = 800;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Fondo con degradado oscuro
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#09090B');
+    bg.addColorStop(1, '#16161D');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Halo de color sutil
+    const glow = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 700);
+    glow.addColorStop(0, 'rgba(179, 157, 219, 0.10)');
+    glow.addColorStop(1, 'rgba(9, 9, 11, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    // Marco doble
+    ctx.strokeStyle = 'rgba(179, 157, 219, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, W - 80, H - 80);
+    ctx.strokeStyle = 'rgba(192, 57, 43, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(55, 55, W - 110, H - 110);
+
+    // Estrellitas decorativas
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    for (let i = 0; i < 40; i++) {
+      const x = 80 + Math.random() * (W - 160);
+      const y = 80 + Math.random() * (H - 160);
+      const r = Math.random() * 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.textAlign = 'center';
+
+    // Encabezado
+    ctx.fillStyle = '#C0392B';
+    ctx.font = '300 20px Georgia, serif';
+    ctx.save();
+    ctx.letterSpacing = '6px';
+    ctx.fillText('C E R T I F I C A D O', W / 2, 190);
+    ctx.restore();
+
+    // Título principal
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '700 56px Georgia, serif';
+    ctx.fillText('Nuestra Historia', W / 2, 280);
+
+    // Subtítulo
+    ctx.fillStyle = '#B39DDB';
+    ctx.font = 'italic 28px Georgia, serif';
+    ctx.fillText('Certificado de nuestro amor', W / 2, 350);
+
+    // Texto de cuerpo
+    ctx.fillStyle = '#B5B5C3';
+    ctx.font = '18px Arial, sans-serif';
+    const lines = [
+      'Esto certifica que, después de todo,',
+      'has demostrado ser alguien que vale la pena',
+      'y alguien a quien quiero tener siempre.',
+      'Certifica, además, nuestro amor y las ganas de seguir.'
+    ];
+    lines.forEach((line, i) => {
+      ctx.fillText(line, W / 2, 405 + i * 30);
+    });
+
+    // Fecha
+    const today = new Date();
+    const fecha = today.toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' });
+    ctx.fillStyle = '#B5B5C3';
+    ctx.font = '16px Arial, sans-serif';
+    ctx.fillText(fecha, W / 2, 555);
+
+    // Corazón decorativo
+    ctx.font = '32px Arial';
+    ctx.fillText('♡', W / 2, 625);
+
+    // Firma
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'italic 26px Georgia, serif';
+    ctx.fillText('Con amor, Alejandro.', W / 2, 695);
+
+    // Descargar
+    const link = document.createElement('a');
+    link.download = 'certificado-nuestra-historia.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
   // Cerrar modal de confirmación con click fuera
   document.getElementById('confirm-modal').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) {
@@ -405,7 +508,7 @@ function initApp() {
   document.addEventListener('touchend', (e) => {
     if (isTransitioning) return;
     // No interceptar swipes dentro de zonas con su propia interacción táctil
-    if (e.target.closest('#starfield, .modal, .slideshow-container, #progress-nav')) return;
+    if (e.target.closest('#starfield, .modal, .slideshow-container, #progress-nav, .play-track-btn, .track-player')) return;
 
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
@@ -423,6 +526,40 @@ function initApp() {
       goToSection(currentIndex - 1);
     }
   }, { passive: true });
+
+  // =========================================
+  // 6c. REPRODUCTOR DE CANCIONES (YouTube embebido bajo demanda)
+  // =========================================
+  document.querySelectorAll('.playlist-track').forEach((track) => {
+    const btn = track.querySelector('.play-track-btn');
+    const playerBox = track.querySelector('.track-player');
+    const videoId = track.dataset.videoId;
+    if (!btn || !playerBox || !videoId) return;
+
+    btn.addEventListener('click', () => {
+      const isPlaying = btn.classList.contains('playing');
+
+      // Detener cualquier otra canción que esté sonando
+      document.querySelectorAll('.play-track-btn.playing').forEach((otherBtn) => {
+        if (otherBtn !== btn) {
+          otherBtn.classList.remove('playing');
+          otherBtn.textContent = '▶ Escuchar';
+          const otherBox = otherBtn.closest('.playlist-track').querySelector('.track-player');
+          if (otherBox) otherBox.innerHTML = '';
+        }
+      });
+
+      if (isPlaying) {
+        playerBox.innerHTML = '';
+        btn.classList.remove('playing');
+        btn.textContent = '▶ Escuchar';
+      } else {
+        playerBox.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" title="Reproductor de canción" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>`;
+        btn.classList.add('playing');
+        btn.textContent = '⏸ Ocultar';
+      }
+    });
+  });
 
   // =========================================
   // 7. CONTADOR DE TIEMPO JUNTOS (días, semanas y horas desde el 24 de abril de 2026)
@@ -502,6 +639,83 @@ function initApp() {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.5);
     } catch (e) { /* silencio */ }
+  }
+
+  // =========================================
+  // 7d. MAPA DE NUESTROS LUGARES (Leaflet, carga perezosa)
+  // =========================================
+  let loveMapInstance = null;
+  function initLoveMap() {
+    const mapEl = document.getElementById('lovemap');
+    if (!mapEl || loveMapInstance || typeof L === 'undefined') return;
+
+    const PLACES = [
+      {
+        name: 'Escuela Politécnica Nacional',
+        icon: '🎓',
+        lat: -0.2095662,
+        lng: -78.4895334,
+        note: 'El lugar donde más compartimos, y donde surgió todo.'
+      },
+      {
+        name: 'BLIZZ',
+        icon: '⛸️',
+        lat: -0.2171063,
+        lng: -78.4383212,
+        note: 'Nuestras súper prácticas de patinaje, donde te caíste.'
+      },
+      {
+        name: 'Parque Itchimbía · "El cielito"',
+        icon: '✨',
+        lat: -0.2223173,
+        lng: -78.4990989,
+        note: 'Aquí está el rincón al que le pusimos "el cielito".'
+      },
+      {
+        name: 'Café Río Intag',
+        icon: '☕',
+        lat: -0.2086487,
+        lng: -78.4829176,
+        note: 'El mejor lugar de Quito, donde fuimos desarrollando nuestro amor.'
+      },
+      {
+        name: 'El Panecillo',
+        icon: '🌄',
+        lat: -0.2303178,
+        lng: -78.5192298,
+        note: 'Nuestra súper primera cita. Parecíamos adolescentes.'
+      }
+    ];
+
+    loveMapInstance = L.map('lovemap', {
+      zoomControl: true,
+      scrollWheelZoom: false
+    }).setView([-0.213, -78.485], 12);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap, © CARTO',
+      maxZoom: 19
+    }).addTo(loveMapInstance);
+
+    const bounds = [];
+    PLACES.forEach((place) => {
+      const icon = L.divIcon({
+        className: '',
+        html: `<div class="love-marker"><span>${place.icon}</span></div>`,
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -34]
+      });
+      L.marker([place.lat, place.lng], { icon })
+        .addTo(loveMapInstance)
+        .bindPopup(`<p class="map-popup-title">${place.name}</p><p class="map-popup-note">${place.note}</p>`);
+      bounds.push([place.lat, place.lng]);
+    });
+
+    loveMapInstance.fitBounds(bounds, { padding: [30, 30] });
+
+    // Forzar recalculo de tamaño (el mapa se crea mientras el contenedor está animándose)
+    setTimeout(() => { if (loveMapInstance) loveMapInstance.invalidateSize(); }, 400);
   }
 
   // =========================================

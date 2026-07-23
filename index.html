@@ -20,6 +20,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
 
+  <!-- Leaflet (mapa de nuestros lugares) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -192,12 +195,22 @@
           <p class="chapter-quote">“Y aquí estamos, escribiendo nuestra historia, juntos.”</p>
         </div>
       </div>
+      <button class="next-btn" data-next="mapa">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== MAPA DE NUESTROS LUGARES ===== -->
+  <section class="section" id="mapa" data-index="6">
+    <div class="container">
+      <h2>📍 Nuestros lugares</h2>
+      <p class="section-sub">Toca cada punto para ver por qué importa</p>
+      <div id="lovemap"></div>
       <button class="next-btn" data-next="galeria">Siguiente →</button>
     </div>
   </section>
 
   <!-- ===== GALERÍA ===== -->
-  <section class="section" id="galeria" data-index="6">
+  <section class="section" id="galeria" data-index="7">
     <div class="container">
       <h2>📸 Nuestros momentos</h2>
       <p class="section-sub">Mis fotos favoritas</p>
@@ -224,7 +237,7 @@
   </section>
 
   <!-- ===== LO QUE AMO DE TI ===== -->
-  <section class="section" id="lo-que-amo" data-index="7">
+  <section class="section" id="lo-que-amo" data-index="8">
     <div class="container">
       <h2>❤️ Las cosas que amo de ti</h2>
       <ul class="love-list">
@@ -241,30 +254,36 @@
   </section>
 
   <!-- ===== NUESTRA PLAYLIST ===== -->
-  <section class="section" id="playlist" data-index="8">
+  <section class="section" id="playlist" data-index="9">
     <div class="container">
       <h2>🎵 Canciones que me recordaban a ti</h2>
       <p class="section-sub">Las que se me venían a la mente sin buscarlas</p>
       <ul class="playlist-list">
-        <li class="playlist-track">
+        <li class="playlist-track" data-video-id="128zFnSHKCs">
           <span class="track-icon">🎵</span>
           <div class="track-info">
             <p class="track-title">Razón, de Los Caligaris</p>
             <p class="track-note">La que mejor explica por qué contigo hasta los días grises se ven bonitos</p>
+            <button class="play-track-btn">▶ Escuchar</button>
+            <div class="track-player"></div>
           </div>
         </li>
-        <li class="playlist-track">
+        <li class="playlist-track" data-video-id="2GhF2mPKnDg">
           <span class="track-icon">🎵</span>
           <div class="track-info">
             <p class="track-title">Agua, de Jarabe de Palo</p>
             <p class="track-note">La escuchaba y no podía dejar de pensar en ti</p>
+            <button class="play-track-btn">▶ Escuchar</button>
+            <div class="track-player"></div>
           </div>
         </li>
-        <li class="playlist-track">
+        <li class="playlist-track" data-video-id="jW89DwNY3Os">
           <span class="track-icon">🎵</span>
           <div class="track-info">
             <p class="track-title">El lado oscuro, de Jarabe de Palo</p>
             <p class="track-note">Otra que simplemente me hacía pensar en ti, sin más explicación</p>
+            <button class="play-track-btn">▶ Escuchar</button>
+            <div class="track-player"></div>
           </div>
         </li>
       </ul>
@@ -273,7 +292,7 @@
   </section>
 
   <!-- ===== TIEMPO JUNTOS ===== -->
-  <section class="section" id="tiempo" data-index="9">
+  <section class="section" id="tiempo" data-index="10">
     <div class="container">
       <h2>⏳ Tiempo juntos</h2>
       <div class="counter-wrapper">
@@ -298,7 +317,7 @@
   </section>
 
   <!-- ===== CARTA ===== -->
-  <section class="section" id="carta" data-index="10">
+  <section class="section" id="carta" data-index="11">
     <div class="container">
       <h2>✉️ Una carta para ti</h2>
       <div class="letter-wrapper">
@@ -323,7 +342,7 @@
   </section>
 
   <!-- ===== PROMESAS (CAPÍTULO BONUS) ===== -->
-  <section class="section" id="promesas" data-index="11">
+  <section class="section" id="promesas" data-index="12">
     <div class="container">
       <div class="chapter-header">
         <span class="chapter-number">Capítulo bonus</span>
@@ -335,6 +354,7 @@
         <li>Hacer las cosas bien, para ser siempre merecedor de tu amor y tu calidez</li>
         <li>Entender tus días de estrés y ser un apoyo en ellos, no una carga más</li>
         <li>Buscar más tardes de patinar, de pintar, de no hacer nada y que sea suficiente</li>
+        <li>Llevarte en la moto a donde se te antoje, siempre con casco puesto</li>
         <li>Celebrar cada 24 de abril como si fuera el primero</li>
         <li>Escucharte en tus días completos, no solo en las partes buenas</li>
         <li>Estar en tus logros tanto como en tus dudas</li>
@@ -345,7 +365,7 @@
   </section>
 
   <!-- ===== CAPÍTULO SIN TERMINAR ===== -->
-  <section class="section" id="capitulo-futuro" data-index="12">
+  <section class="section" id="capitulo-futuro" data-index="13">
     <div class="container">
       <div class="chapter-header">
         <span class="chapter-number">El próximo capítulo</span>
@@ -372,7 +392,7 @@
   </section>
 
   <!-- ===== LAS ESTRELLAS (SORPRESA) ===== -->
-  <section class="section" id="sorpresa" data-index="13">
+  <section class="section" id="sorpresa" data-index="14">
     <div class="container">
       <h2>✨ Todavía no termina...</h2>
       <p class="section-sub">Toca una estrella y descubre un pensamiento</p>
@@ -389,7 +409,7 @@
   </section>
 
   <!-- ===== FINAL ===== -->
-  <section class="section" id="final" data-index="14">
+  <section class="section" id="final" data-index="15">
     <div class="container">
       <h2>Siempre estaré contigo</h2>
       <p class="section-sub">
@@ -427,9 +447,14 @@
         </p>
       </div>
 
-      <button id="restartButton" class="next-btn" style="margin-top: 30px;">
-        ↺ Volver a empezar
-      </button>
+      <div class="final-actions">
+        <button id="certButton" class="next-btn">
+          🎓 Descargar certificado
+        </button>
+        <button id="restartButton" class="next-btn">
+          ↺ Volver a empezar
+        </button>
+      </div>
 
       <p class="made" style="margin-top: 40px;"><span id="signatureReveal" class="signature-reveal">Con amor, Alejandro.</span></p>
     </div>
@@ -453,6 +478,8 @@
   <!-- ===== SCRIPTS ===== -->
   <!-- GSAP desde CDN, con respaldo local (vendor/gsap.min.js) por si falla la conexión -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" onerror="this.onerror=null; var s=document.createElement('script'); s.src='vendor/gsap.min.js'; s.onload=function(){ document.dispatchEvent(new Event('gsap-ready')); }; document.head.appendChild(s);"></script>
+  <!-- Leaflet (mapa de nuestros lugares) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
