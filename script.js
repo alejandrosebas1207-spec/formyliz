@@ -208,6 +208,7 @@ function initApp() {
     // --- Preparar la siguiente sección ---
     // Mostrar pero invisible y desplazada
     nextSection.style.display = 'flex';
+    nextSection.scrollTop = 0;
     nextSection.style.opacity = '0';
     nextSection.style.transform = 'translateX(24px)';
     nextSection.classList.add('active');

@@ -140,13 +140,16 @@ body {
 
 /* ===== SECCIONES ===== */
 .section {
-  position: relative;
+  position: fixed;
+  inset: 0;
   z-index: 1;
-  min-height: 100vh;
   display: none;
   justify-content: center;
   align-items: center;
   padding: 40px 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   background: var(--bg);
   background: radial-gradient(circle at 20% 30%, rgba(179, 157, 219, 0.03) 0%, transparent 70%),
               radial-gradient(circle at 80% 70%, rgba(192, 57, 43, 0.04) 0%, transparent 60%),
