@@ -15,21 +15,21 @@ function initApp() {
     'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
-    { phrase: "Contigo hasta los días grises se ven bonitos.", source: "Inspirado en “Razón” — Los Caligaris" },
-    { phrase: "Volví a sonreír de verdad desde que estás tú.", source: "Inspirado en “Razón” — Los Caligaris" },
-    { phrase: "Eres la razón por la que todo pesa menos.", source: "Inspirado en “Razón” — Los Caligaris" },
-    { phrase: "Contigo, hasta lo que dolía dejó de doler.", source: "Inspirado en “Razón” — Los Caligaris" },
-    { phrase: "No hay mucha explicación, solo sé que eres tú.", source: "Inspirado en “Razón” — Los Caligaris" },
-    { phrase: "No dejo de pensar en ti, ni lo intento.", source: "Inspirado en “Agua” — Jarabe de Palo" },
-    { phrase: "Cada vez que la escucho, pienso en ti.", source: "Inspirado en “Agua” — Jarabe de Palo" },
-    { phrase: "Hay canciones que ya no puedo separar de ti.", source: "Inspirado en “Agua” — Jarabe de Palo" },
-    { phrase: "Me acuerdo de ti hasta en lo más simple.", source: "Inspirado en “Agua” — Jarabe de Palo" },
-    { phrase: "Esa canción y tú ya son la misma cosa para mí.", source: "Inspirado en “Agua” — Jarabe de Palo" },
-    { phrase: "No me da miedo decirte que te quiero.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
-    { phrase: "Contigo no hace falta fingir nada.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
-    { phrase: "Te quiero tal como eres, sin condiciones.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
-    { phrase: "No necesito una razón para elegirte cada día.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" },
-    { phrase: "Contigo, hasta lo imperfecto se siente bien.", source: "Inspirado en “El lado oscuro” — Jarabe de Palo" }
+    { phrase: "Contigo hasta los días grises se ven bonitos.", source: "Inspirado en “Razón”, de Los Caligaris" },
+    { phrase: "Volví a sonreír de verdad desde que estás tú.", source: "Inspirado en “Razón”, de Los Caligaris" },
+    { phrase: "Eres la razón por la que todo pesa menos.", source: "Inspirado en “Razón”, de Los Caligaris" },
+    { phrase: "Contigo, hasta lo que dolía dejó de doler.", source: "Inspirado en “Razón”, de Los Caligaris" },
+    { phrase: "No hay mucha explicación, solo sé que eres tú.", source: "Inspirado en “Razón”, de Los Caligaris" },
+    { phrase: "No dejo de pensar en ti, ni lo intento.", source: "Inspirado en “Agua”, de Jarabe de Palo" },
+    { phrase: "Cada vez que la escucho, pienso en ti.", source: "Inspirado en “Agua”, de Jarabe de Palo" },
+    { phrase: "Hay canciones que ya no puedo separar de ti.", source: "Inspirado en “Agua”, de Jarabe de Palo" },
+    { phrase: "Me acuerdo de ti hasta en lo más simple.", source: "Inspirado en “Agua”, de Jarabe de Palo" },
+    { phrase: "Esa canción y tú ya son la misma cosa para mí.", source: "Inspirado en “Agua”, de Jarabe de Palo" },
+    { phrase: "No me da miedo decirte que te quiero.", source: "Inspirado en “El lado oscuro”, de Jarabe de Palo" },
+    { phrase: "Contigo no hace falta fingir nada.", source: "Inspirado en “El lado oscuro”, de Jarabe de Palo" },
+    { phrase: "Te quiero tal como eres, sin condiciones.", source: "Inspirado en “El lado oscuro”, de Jarabe de Palo" },
+    { phrase: "No necesito una razón para elegirte cada día.", source: "Inspirado en “El lado oscuro”, de Jarabe de Palo" },
+    { phrase: "Contigo, hasta lo imperfecto se siente bien.", source: "Inspirado en “El lado oscuro”, de Jarabe de Palo" }
   ];
 
   // Contexto de audio compartido (usado por el chime de estrellas y el sonido de página)
@@ -209,7 +209,7 @@ function initApp() {
     // Mostrar pero invisible y desplazada
     nextSection.style.display = 'flex';
     nextSection.style.opacity = '0';
-    nextSection.style.transform = 'translateX(40px)';
+    nextSection.style.transform = 'translateX(24px)';
     nextSection.classList.add('active');
     // Marcar como no animada internamente
     nextSection.dataset.animated = 'false';
@@ -224,7 +224,7 @@ function initApp() {
     // --- Animar salida de la sección actual ---
     gsap.to(currentSection, {
       opacity: 0,
-      x: -40,
+      x: -24,
       duration: 0.6,
       ease: 'power2.inOut',
       onComplete: () => {
@@ -424,7 +424,7 @@ function initApp() {
   }, { passive: true });
 
   // =========================================
-  // 7. CONTADOR DE TIEMPO JUNTOS (días, semanas, horas — desde el 24 de abril de 2026)
+  // 7. CONTADOR DE TIEMPO JUNTOS (días, semanas y horas desde el 24 de abril de 2026)
   // =========================================
   function updateCounter() {
     const start = new Date('2026-04-24T00:00:00');
