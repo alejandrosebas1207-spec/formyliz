@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>26.JUL · Nuestra historia</title>
+
+  <!-- Favicon (corazón) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2226%22 font-size=%2226%22>%E2%9D%A4%EF%B8%8F</text></svg>" />
+
+  <!-- Vista previa al compartir el link (WhatsApp, etc.) -->
+  <meta property="og:title" content="26.JUL · Nuestra historia" />
+  <meta property="og:description" content="Para Elizabeth ❤️ — un regalo hecho con cariño." />
+  <meta property="og:image" content="assets/images/capitulo5.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#09090B" />
+
+  <!-- Preload de fuentes e imágenes clave -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- LOADING -->
+  <div id="loader">
+    <div class="loader-ring"></div>
+    <p>Preparando nuestra historia...</p>
+  </div>
+
+  <!-- FONDO DE ESTRELLAS (permanente) -->
+  <div id="stars-bg"></div>
+
+  <!-- CORAZONES FLOTANTES (contenedor) -->
+  <div id="hearts-container"></div>
+
+  <!-- MENÚ DE PROGRESO (puntos) -->
+  <nav id="progress-nav" aria-label="Progreso de la historia">
+    <!-- Se llena con JS -->
+  </nav>
+
+  <!-- ===== SECCIÓN 1: INTRO ===== -->
+  <section class="section hero" id="intro" data-index="0">
+    <div class="container">
+      <p class="subtitle">Para Elizabeth</p>
+      <h1>26.JUL</h1>
+      <button id="startButton">Comenzar</button>
+      <p class="made">Hecho especialmente para ti ❤️</p>
+    </div>
+  </section>
+
+  <!-- ===== CAPÍTULO I ===== -->
+  <section class="section" id="capitulo1" data-index="1">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">Capítulo I</span>
+        <h2>Hay encuentros que parecen casualidad...</h2>
+      </div>
+      <div class="chapter-content">
+        <div class="polaroid" style="--rot: -2deg;">
+          <img src="assets/images/capitulo1.jpg" alt="El inicio de nuestra historia" loading="lazy" />
+          <div class="polaroid-caption">✨ El inicio</div>
+          <span class="polaroid-icon">✨</span>
+        </div>
+        <div class="chapter-text-full">
+          <p>
+            Hay instantes que pasan desapercibidos, pequeños destellos que el tiempo se lleva sin piedad. 
+            Pero otros, sin saberlo, se convierten en el centro de gravedad de tu existencia. 
+            Aquel día, en medio del bullicio de la universidad, nuestros caminos se cruzaron sin que 
+            el universo pidiera permiso. Fue un encuentro tan fugaz como eterno. No sabía que aquella persona, 
+            con su sonrisa tímida y su mirada curiosa, se convertiría en el eje de mi día a día. 
+            Fue una casualidad que el destino escribió con tinta indeleble, una de esas que marcan 
+            un antes y un después en el libro de tu vida.
+          </p>
+          <p class="chapter-quote">— Y así, sin saberlo, comenzó nuestra historia.</p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="capitulo2">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== CAPÍTULO II ===== -->
+  <section class="section" id="capitulo2" data-index="2">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">Capítulo II</span>
+        <h2>La universidad</h2>
+      </div>
+      <div class="chapter-content">
+        <div class="polaroid" style="--rot: 1deg;">
+          <img src="assets/images/capitulo2.jpg" alt="Práctica de drones en Topografía" loading="lazy" />
+          <div class="polaroid-caption">🛸 Práctica de drones</div>
+          <span class="polaroid-icon">🛸</span>
+        </div>
+        <div class="chapter-text-full">
+          <p>
+            El zumbido de los drones, el sol de la tarde cayendo sobre el campus, y de repente, ella. 
+            Te conocí en una práctica de Topografía, pero no fue un flechazo instantáneo; fue una certeza 
+            que germinó lentamente con cada mirada robada. Recuerdo que vestías un jersey rojo, tan vibrante 
+            y único como tu personalidad. Pero fue en la gira de Resistencia de Materiales donde el hechizo 
+            se completó. Verte en tu elemento, concentrada, apasionada, compartiendo tu saber con esa luz 
+            que llevas dentro, hizo que comprendiera que lo que sentía no era un simple capricho, sino 
+            una certeza absoluta. El rojo ya no era solo un color; era tu firma, tu sello, el latido 
+            que comenzaba a marcar mi ritmo.
+          </p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="capitulo3">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== CAPÍTULO III ===== -->
+  <section class="section" id="capitulo3" data-index="3">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">Capítulo III</span>
+        <h2>Patinar</h2>
+      </div>
+      <div class="chapter-content">
+        <div class="polaroid" style="--rot: -1.5deg;">
+          <img src="assets/images/capitulo3.jpg" alt="Nuestra primera cita patinando" loading="lazy" />
+          <div class="polaroid-caption">⛸️ Primera cita</div>
+          <span class="polaroid-icon">⛸️</span>
+        </div>
+        <div class="chapter-text-full">
+          <p>
+            Me armé de valor y te escribí. No fue fácil, pero el miedo a perderte era más grande 
+            que el miedo al rechazo. Empezamos a hablar, y cada mensaje era un descubrimiento, 
+            cada conversación un nuevo rincón de ti que quería explorar. Luego llegó la primera cita: 
+            patinar. No recuerdo la fecha exacta, pero sí la sensación de verte reír mientras intentábamos 
+            no caernos, como dos niños torpes en un mundo perfecto. Después vinieron los desayunos en 
+            cafeterías pequeñas, las tardes de café que se enfriaban entre risas y confidencias. 
+            Y aquella cita pintando, esperando las notas de Topografía que ya no importaban, 
+            fue el instante definitivo. Las horas pasaron volando, y supe que no quería dejar 
+            de compartir momentos así contigo, que mi lugar estaba justo a tu lado.
+          </p>
+          <p class="chapter-quote">“Aquella tarde supe que quería quedarme para siempre.”</p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="capitulo4">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== CAPÍTULO IV ===== -->
+  <section class="section" id="capitulo4" data-index="4">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">Capítulo IV</span>
+        <h2>Las vacaciones</h2>
+      </div>
+      <div class="chapter-content">
+        <div class="polaroid" style="--rot: 2deg;">
+          <img src="assets/images/capitulo4.jpg" alt="Las vacaciones y el reencuentro" loading="lazy" />
+          <div class="polaroid-caption">🌴 Vacaciones</div>
+          <span class="polaroid-icon">🌴</span>
+        </div>
+        <div class="chapter-text-full">
+          <p>
+            Llegaron las vacaciones y la distancia se sintió como un eco ensordecedor de lo que 
+            ya empezaba a ser vital. Los días sin ti se hicieron largos, el silencio del móvil 
+            pesaba más de lo que imaginaba. Pero al regreso, la química era innegable, más viva que nunca. 
+            Nos reencontramos con más ganas, con más certeza, como si el tiempo separados solo hubiera 
+            servido para confirmar que estábamos hechos el uno para el otro. Salimos más seguido, 
+            cada cita era un latido más fuerte, y cada despedida era un poco más difícil. 
+            Aquel reencuentro no hizo más que confirmar lo que el corazón ya sabía: 
+            que no quería vivir sin ella.
+          </p>
+          <p class="chapter-quote">“El reencuentro lo cambió todo para siempre.”</p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="capitulo5">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== CAPÍTULO V ===== -->
+  <section class="section" id="capitulo5" data-index="5">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">Capítulo V</span>
+        <h2>24 de abril</h2>
+      </div>
+      <div class="chapter-content">
+        <div class="polaroid" style="--rot: -0.5deg;">
+          <img src="assets/images/capitulo5.jpg" alt="El 24 de abril, nuestro día" loading="lazy" />
+          <div class="polaroid-caption">📅 24 de abril</div>
+          <span class="polaroid-icon">📅</span>
+        </div>
+        <div class="chapter-text-full">
+          <p>
+            Y un <strong class="highlight-date">24 de abril</strong> todo cambió para siempre. 
+            No es una fecha más en el calendario; es el día en que el universo decidió alinearse 
+            para que dejáramos de ser dos caminos paralelos para convertirnos en uno solo. 
+            Ese día, entre dudas y esperanzas, decidimos dejar de ser 'yo' y 'tú' para 
+            convertirnos en 'nosotros'. Desde entonces, entre los altibajos de la universidad, 
+            los exámenes, las risas y alguna que otra lágrima, hemos construido algo que vale 
+            cada segundo. Algo que no cambiaría por todo el oro del mundo. No ha sido un camino 
+            de rosas, pero cada espina ha merecido la pena por tenerla a mi lado.
+          </p>
+          <p class="chapter-quote">“Y aquí estamos, escribiendo nuestra historia, juntos.”</p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="galeria">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== GALERÍA ===== -->
+  <section class="section" id="galeria" data-index="6">
+    <div class="container">
+      <h2>📸 Nuestros momentos</h2>
+      <p class="section-sub">Mis fotos favoritas</p>
+      <div class="gallery-grid">
+        <div class="polaroid gallery-polaroid" style="--rot: 1deg;">
+          <img src="assets/images/galeria1.jpg" alt="Práctica de drones" loading="lazy" />
+          <div class="polaroid-caption">Nuestra gran primer cita</div>
+        </div>
+        <div class="polaroid gallery-polaroid" style="--rot: -1deg;">
+          <img src="assets/images/galeria2.jpg" alt="Gira de Resistencia" loading="lazy" />
+          <div class="polaroid-caption">Nuestras citas en Rio Intag</div>
+        </div>
+        <div class="polaroid gallery-polaroid" style="--rot: 2deg;">
+          <img src="assets/images/galeria3.jpg" alt="Tarde pintando" loading="lazy" />
+          <div class="polaroid-caption">Pintando esperando notas</div>
+        </div>
+        <div class="polaroid gallery-polaroid" style="--rot: -1.5deg;">
+          <img src="assets/images/galeria4.jpg" alt="Nuestro 24 de abril" loading="lazy" />
+          <div class="polaroid-caption">Nuestro 24 de abril</div>
+        </div>
+      </div>
+      <button class="next-btn" data-next="lo-que-amo">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== LO QUE AMO DE TI ===== -->
+  <section class="section" id="lo-que-amo" data-index="7">
+    <div class="container">
+      <h2>❤️ Las cosas que amo de ti</h2>
+      <ul class="love-list">
+        <li>Tu sonrisa cuando algo te emociona</li>
+        <li>La forma en que escuchas, de verdad</li>
+        <li>Tu pasión por lo que haces</li>
+        <li>Tu risa contagiosa</li>
+        <li>La luz que llevas dentro</li>
+        <li>El rojo, porque es tan vibrante y único como tú</li>
+        <li>Tu manera de hacer especial hasta el momento más simple</li>
+      </ul>
+      <button class="next-btn" data-next="playlist">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== NUESTRA PLAYLIST ===== -->
+  <section class="section" id="playlist" data-index="8">
+    <div class="container">
+      <h2>🎵 Nuestra playlist</h2>
+      <p class="section-sub">Las canciones que ya son nuestras</p>
+      <ul class="playlist-list">
+        <li class="playlist-track">
+          <span class="track-icon">🎵</span>
+          <div class="track-info">
+            <p class="track-title">Razón — Los Caligaris</p>
+            <p class="track-note">La que mejor explica por qué contigo hasta los días grises se ven bonitos</p>
+          </div>
+        </li>
+        <li class="playlist-track">
+          <span class="track-icon">🎵</span>
+          <div class="track-info">
+            <p class="track-title">Agua — Jarabe de Palo</p>
+            <p class="track-note">Habla de esa sed que no se apaga… la nuestra, contigo cerca, por fin sí</p>
+          </div>
+        </li>
+        <li class="playlist-track">
+          <span class="track-icon">🎵</span>
+          <div class="track-info">
+            <p class="track-title">El lado oscuro — Jarabe de Palo</p>
+            <p class="track-note">Porque venimos de mundos distintos y aun así no me da miedo decirte que te quiero</p>
+          </div>
+        </li>
+      </ul>
+      <button class="next-btn" data-next="tiempo">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== TIEMPO JUNTOS ===== -->
+  <section class="section" id="tiempo" data-index="9">
+    <div class="container">
+      <h2>⏳ Tiempo juntos</h2>
+      <div class="counter-wrapper">
+        <span class="counter-number" id="dayCounter">0</span>
+        <span class="counter-label">días desde el 24 de abril</span>
+        <p class="counter-phrase">“Cada día a tu lado es un regalo que no esperaba merecer.”</p>
+      </div>
+      <button class="next-btn" data-next="carta">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== CARTA ===== -->
+  <section class="section" id="carta" data-index="10">
+    <div class="container">
+      <h2>✉️ Una carta para ti</h2>
+      <div class="letter-wrapper">
+        <div class="letter">
+          <p>
+            Liz,<br><br>
+            Recuerdo aquella práctica de drones, sin saber que estaba conociendo a
+            la persona que cambiaría mi vida para siempre. Luego vino esa gira, 
+            y verte con ese rojo tan tuyo fue mi perdición más hermosa. 
+            Pero fue aquella tarde pintando, esperando notas que ya no importaban, 
+            donde supe que quería quedarme contigo para siempre.<br><br>
+            Cada desayuno, cada risa, cada paso que hemos dado desde el 24 de abril
+            me recuerda lo afortunado que soy. No sé qué depara el futuro, 
+            pero quiero escribirlo a tu lado, página por página, capítulo por capítulo.<br><br>
+            Con todo mi amor,<br>
+            Tu persona especial.
+          </p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="promesas">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== PROMESAS (CAPÍTULO BONUS) ===== -->
+  <section class="section" id="promesas" data-index="11">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">Capítulo bonus</span>
+        <h2>Lo que prometo</h2>
+      </div>
+      <p class="section-sub">No solo quiero recordar lo que fuimos, sino construir lo que seremos</p>
+      <ul class="love-list promise-list">
+        <li>Escribirte un capítulo nuevo cada vez que la vida nos regale uno</li>
+        <li>Seguir viendo el rojo en todo y pensar siempre en ti</li>
+        <li>Buscar más tardes de patinar, de pintar, de no hacer nada y que sea suficiente</li>
+        <li>Celebrar cada 24 de abril como si fuera el primero</li>
+        <li>Escuchar tus días completos, no solo las buenas partes</li>
+        <li>Estar en tus logros tanto como en tus dudas</li>
+        <li>Elegirte de nuevo, incluso en los días difíciles</li>
+      </ul>
+      <button class="next-btn" data-next="capitulo-futuro">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== CAPÍTULO SIN TERMINAR ===== -->
+  <section class="section" id="capitulo-futuro" data-index="12">
+    <div class="container">
+      <div class="chapter-header">
+        <span class="chapter-number">El próximo capítulo</span>
+        <h2>Esta página sigue en blanco</h2>
+      </div>
+      <div class="chapter-content">
+        <div class="polaroid polaroid-empty" style="--rot: -1deg;">
+          <div class="polaroid-placeholder">＋</div>
+          <div class="polaroid-caption">Aquí falta una foto</div>
+        </div>
+        <div class="chapter-text-full">
+          <p>
+            Todavía no sé qué va a pasar aquí. No tengo la foto, ni la fecha exacta, 
+            ni las palabras precisas — porque este capítulo no lo he vivido todavía. 
+            Puede ser un viaje, una graduación, una tarde cualquiera de un martes sin nada especial. 
+            Lo único que sé con certeza es que quiero escribirlo contigo, a tu lado, sin apuro, 
+            página por página.
+          </p>
+          <p class="chapter-quote">— El resto de la historia lo escribimos juntos.</p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="sorpresa">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== LAS ESTRELLAS (SORPRESA) ===== -->
+  <section class="section" id="sorpresa" data-index="13">
+    <div class="container">
+      <h2>✨ Todavía no termina...</h2>
+      <p class="section-sub">Toca una estrella y descubre un pensamiento</p>
+      <div id="starfield"></div>
+      <!-- Modal de pensamiento -->
+      <div id="thought-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="thought-text">
+        <div class="modal-content">
+          <span class="close-modal" aria-label="Cerrar">&times;</span>
+          <p id="thought-text"></p>
+        </div>
+      </div>
+      <button class="next-btn" data-next="final">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ===== FINAL ===== -->
+  <section class="section" id="final" data-index="14">
+    <div class="container">
+      <h2>Siempre estaré contigo</h2>
+      <p class="section-sub">
+        Aunque no estemos juntos, te llevas una parte de mí en cada recuerdo, en cada carta, en cada estrella.
+      </p>
+
+      <div class="slideshow-container">
+        <div class="slideshow-track" id="slideshowTrack">
+          <!-- Las imágenes se inyectan con JS -->
+        </div>
+        <!-- Indicadores del slideshow -->
+        <div class="slideshow-indicators" id="slideshowIndicators"></div>
+      </div>
+
+      <div class="final-qr-section">
+        <p class="qr-message">
+          Escanea este QR cuando quieras sentirme cerca.<br>
+          Aquí están todas las cartas que te he escrito este último mes.
+        </p>
+        <div class="qr-wrapper">
+          <img src="assets/images/qr-cartas.png" alt="QR con las cartas" class="qr-image" loading="lazy" />
+        </div>
+        <p class="qr-footer">
+          Cada palabra es un abrazo que llega desde lejos.
+        </p>
+      </div>
+
+      <div class="final-goodbye">
+        <p>
+          No importa la distancia, porque lo que construimos<br>
+          vive en cada latido, en cada sonrisa compartida.<br><br>
+          <span id="teAmoTrigger" class="te-amo-trigger" style="color: var(--purple); font-family: 'Cormorant Garamond', serif; font-size: 2rem;" role="button" tabindex="0" aria-label="Toca aquí">
+            Te amo.
+          </span>
+        </p>
+      </div>
+
+      <button id="restartButton" class="next-btn" style="margin-top: 30px;">
+        ↺ Volver a empezar
+      </button>
+
+      <p class="made" style="margin-top: 40px;"><span id="signatureReveal" class="signature-reveal">Con amor, Alejandro.</span></p>
+    </div>
+  </section>
+
+  <!-- ===== MODAL DE CONFIRMACIÓN (REINICIO) ===== -->
+  <div id="confirm-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal-content">
+      <h3 id="confirm-title" style="color: var(--purple); font-family: 'Cormorant Garamond', serif; font-size: 2rem;">¿Volver a empezar?</h3>
+      <p style="color: var(--text-sec); margin: 20px 0; font-size: 1.1rem;">
+        "¿Seguro que quieres revivir nuestra historia desde el principio?<br>
+        Podemos recorrerla juntos una vez más…"
+      </p>
+      <div style="display: flex; gap: 20px; justify-content: center;">
+        <button id="confirmYes" class="next-btn" style="margin: 0; padding: 12px 35px;">Sí, quiero</button>
+        <button id="confirmNo" class="next-btn" style="margin: 0; padding: 12px 35px; border-color: var(--text-sec); color: var(--text-sec);">No, mejor no</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <!-- GSAP desde CDN, con respaldo local (vendor/gsap.min.js) por si falla la conexión -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" onerror="this.onerror=null; var s=document.createElement('script'); s.src='vendor/gsap.min.js'; s.onload=function(){ document.dispatchEvent(new Event('gsap-ready')); }; document.head.appendChild(s);"></script>
+  <script src="script.js"></script>
+</body>
+</html>
