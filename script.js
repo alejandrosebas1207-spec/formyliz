@@ -531,7 +531,7 @@ function initApp() {
   });
 
   // =========================================
-  // 8. MÁQUINA DE ESCRIBIR EN CITAS (CORREGIDA)
+  // 8. MÁQUINA DE ESCRIBIR EN CITAS (CORREGIDA - VELOCIDAD ACELERADA)
   // =========================================
   function activateTypewriter(section) {
     const quote = section.querySelector('.chapter-quote');
@@ -550,7 +550,10 @@ function initApp() {
     quote.appendChild(cursor);
 
     let i = 0;
-    const speed = 45;
+    // ===== CAMBIO 1: velocidad más rápida (antes 45) =====
+    const speed = 18; // ms por letra
+    // ===== CAMBIO 2: retraso inicial mucho menor (antes 800) =====
+    const startDelay = 250; // ms
 
     function typeChar() {
       if (i < text.length) {
@@ -563,7 +566,7 @@ function initApp() {
       }
     }
 
-    setTimeout(typeChar, 800);
+    setTimeout(typeChar, startDelay);
   }
 
   // =========================================
