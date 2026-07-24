@@ -1269,7 +1269,7 @@ function initApp() {
       '',
       'Este documento certifica nuestro amor,',
       'nuestras risas, nuestros desayunos,',
-      'nuestras caídas en la pista de patinaje,',
+      'nuestras aventuras y nuestros silencios cómplices,',
       'y todas las páginas que aún nos faltan por escribir.'
     ];
     lines.forEach((line, i) => {
