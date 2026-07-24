@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>26.JUL · Nuestra historia</title>
+  <title>3 Meses · Nuestra historia</title>
 
   <!-- Favicon (corazón) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2226%22 font-size=%2226%22>%E2%9D%A4%EF%B8%8F</text></svg>" />
 
   <!-- Vista previa al compartir el link (WhatsApp, etc.) -->
-  <meta property="og:title" content="26.JUL · Nuestra historia" />
+  <meta property="og:title" content="3 Meses · Nuestra historia" />
   <meta property="og:description" content="Para Elizabeth ❤️. Un regalo hecho con cariño." />
   <meta property="og:image" content="assets/images/capitulo5.jpg" />
   <meta property="og:type" content="website" />
@@ -24,8 +24,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Audio ambiental: caja de música (se activa tras interacción) -->
+  <style>
+    /* Fallback CSS animations si GSAP no carga */
+    .no-gsap .section { transition: opacity 0.6s ease, transform 0.6s ease; }
+    .no-gsap .section.active { opacity: 1; transform: translateX(0); }
+    .no-gsap .section:not(.active) { opacity: 0; transform: translateX(24px); }
+  </style>
 </head>
 <body>
+  <!-- Preload de imágenes del primer capítulo para evitar flash -->
+  <link rel="preload" as="image" href="assets/images/capitulo1.jpg" />
+  <link rel="preload" as="image" href="assets/images/capitulo2.jpg" />
 
   <!-- LOADING -->
   <div id="loader">
@@ -45,12 +56,13 @@
   </nav>
 
   <!-- ===== SECCIÓN 1: INTRO ===== -->
-  <section class="section hero" id="intro" data-index="0">
+  <section class="section hero" id="intro" data-index="0" aria-label="Inicio">
     <div class="container">
-      <p class="subtitle">Para Elizabeth</p>
-      <h1>26.JUL</h1>
-      <button id="startButton">Comenzar</button>
-      <p class="made">Hecho especialmente para ti ❤️</p>
+      <p class="subtitle" id="heroSubtitle">Para Elizabeth</p>
+      <h1 id="heroTitle">3 Meses</h1>
+      <p class="hero-date" id="heroDate">Desde el 24 de abril</p>
+      <button id="startButton" aria-label="Comenzar a ver nuestra historia">Comenzar</button>
+      <p class="made" id="heroMade">Hecho especialmente para ti ❤️</p>
     </div>
   </section>
 
@@ -78,7 +90,7 @@
           <p class="chapter-quote">Y así, sin saberlo, comenzó nuestra historia.</p>
         </div>
       </div>
-      <button class="next-btn" data-next="capitulo2">Siguiente →</button>
+      <button class="next-btn" data-next="capitulo2" aria-label="Ir al capítulo 1">Siguiente →</button>
     </div>
   </section>
 
@@ -365,16 +377,17 @@
   </section>
 
   <!-- ===== CAPÍTULO SIN TERMINAR ===== -->
-  <section class="section" id="capitulo-futuro" data-index="13">
+  <section class="section" id="capitulo-futuro" data-index="13" aria-label="El próximo capítulo">
     <div class="container">
       <div class="chapter-header">
         <span class="chapter-number">El próximo capítulo</span>
         <h2>Esta página sigue en blanco</h2>
       </div>
       <div class="chapter-content">
-        <div class="polaroid polaroid-empty" style="--rot: -1deg;">
-          <div class="polaroid-placeholder">＋</div>
-          <div class="polaroid-caption">Aquí falta una foto</div>
+        <div class="polaroid polaroid-empty" id="futurePolaroid" style="--rot: -1deg; cursor: pointer;" role="button" tabindex="0" aria-label="Toca para ver un mensaje sobre nuestro futuro">
+          <div class="polaroid-placeholder" id="futurePlaceholder">＋</div>
+          <div class="polaroid-caption" id="futureCaption">Aquí falta una foto</div>
+          <div class="future-glow" id="futureGlow"></div>
         </div>
         <div class="chapter-text-full">
           <p>
@@ -384,12 +397,25 @@
             Lo único que sé con certeza es que quiero escribirlo contigo, a tu lado, sin apuro, 
             página por página.
           </p>
-          <p class="chapter-quote">El resto de la historia lo escribimos juntos.</p>
+          <p class="chapter-quote" id="futureQuote">El resto de la historia lo escribimos juntos.</p>
         </div>
       </div>
-      <button class="next-btn" data-next="sorpresa">Siguiente →</button>
+      <button class="next-btn" data-next="sorpresa" aria-label="Ir a la sorpresa">Siguiente →</button>
     </div>
   </section>
+
+  <!-- Modal del capítulo futuro -->
+  <div id="future-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="future-modal-title">
+    <div class="modal-content">
+      <span class="close-modal" id="closeFutureModal" aria-label="Cerrar">&times;</span>
+      <h3 id="future-modal-title" style="color: var(--purple); font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 15px;">Próximamente...</h3>
+      <p style="color: var(--text-sec); font-size: 1.1rem; line-height: 1.7;">
+        Esta foto aún no existe, pero la tomaremos juntos.<br><br>
+        Puede ser un viaje, una graduación, o una tarde cualquiera de un martes sin nada especial.<br><br>
+        <span style="color: var(--purple); font-style: italic;">Lo único que sé es que quiero que seas tú quien esté a mi lado cuando suceda.</span>
+      </p>
+    </div>
+  </div>
 
   <!-- ===== LAS ESTRELLAS (SORPRESA) ===== -->
   <section class="section" id="sorpresa" data-index="14">
