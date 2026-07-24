@@ -333,13 +333,12 @@ function initApp() {
 
   function generateCertificate() {
     const canvas = document.createElement('canvas');
-    const W = 1400, H = 1000;
+    const W = 1400, H = 1100;
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
     // ===== FONDO =====
-    // Degradado principal
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, '#09090B');
     bg.addColorStop(0.5, '#0D0D14');
@@ -347,7 +346,7 @@ function initApp() {
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // Halo púrpura sutil en el centro
+    // Halo púrpura sutil
     const glow = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 900);
     glow.addColorStop(0, 'rgba(179, 157, 219, 0.08)');
     glow.addColorStop(0.5, 'rgba(179, 157, 219, 0.03)');
@@ -355,13 +354,21 @@ function initApp() {
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
 
+    // Marca de agua: corazón grande tenue
+    ctx.save();
+    ctx.translate(W / 2, H / 2 + 50);
+    ctx.font = '400px Arial';
+    ctx.fillStyle = 'rgba(179, 157, 219, 0.015)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('❤', 0, 0);
+    ctx.restore();
+
     // ===== MARCOS ORNAMENTALES =====
-    // Marco exterior dorado/púrpura
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.4)';
     ctx.lineWidth = 2;
     ctx.strokeRect(50, 50, W - 100, H - 100);
 
-    // Marco interior
     ctx.strokeStyle = 'rgba(192, 57, 43, 0.3)';
     ctx.lineWidth = 1;
     ctx.strokeRect(70, 70, W - 140, H - 140);
@@ -378,7 +385,6 @@ function initApp() {
       ctx.lineTo(0, 0);
       ctx.lineTo(25, 0);
       ctx.stroke();
-      // Pequeño círculo en la esquina
       ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
       ctx.beginPath();
       ctx.arc(0, 0, 4, 0, Math.PI * 2);
@@ -391,7 +397,6 @@ function initApp() {
     drawCorner(50, H - 50, -Math.PI / 2);
 
     // ===== ESTRELLAS DECORATIVAS =====
-    // Estrellas de fondo
     const starPositions = [
       [120, 120], [W - 120, 120], [W - 120, H - 120], [120, H - 120],
       [200, 200], [W - 200, 200], [W - 200, H - 200], [200, H - 200],
@@ -404,7 +409,6 @@ function initApp() {
       ctx.fill();
     });
 
-    // Estrellas dispersas aleatoriamente
     ctx.fillStyle = 'rgba(255,255,255,0.25)';
     for (let i = 0; i < 60; i++) {
       const x = 100 + Math.random() * (W - 200);
@@ -417,8 +421,51 @@ function initApp() {
 
     ctx.textAlign = 'center';
 
+    // ===== SELLO CIRCULAR =====
+    function drawSeal(cx, cy, r) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      // Círculo exterior
+      ctx.strokeStyle = 'rgba(192, 57, 43, 0.5)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.stroke();
+      // Círculo interior
+      ctx.strokeStyle = 'rgba(179, 157, 219, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(0, 0, r - 8, 0, Math.PI * 2);
+      ctx.stroke();
+      // Corazón en el centro
+      ctx.font = '24px Arial';
+      ctx.fillStyle = 'rgba(192, 57, 43, 0.7)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('❤', 0, 0);
+      // Texto alrededor
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
+      const text = 'CERTIFICADO OFICIAL';
+      const angleStep = (Math.PI * 2) / text.length;
+      for (let i = 0; i < text.length; i++) {
+        ctx.save();
+        ctx.rotate(i * angleStep - Math.PI / 2);
+        ctx.fillText(text[i], 0, -(r - 4));
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+    drawSeal(W - 140, 140, 45);
+
+    // ===== NÚMERO DE CERTIFICADO =====
+    ctx.fillStyle = 'rgba(179, 157, 219, 0.4)';
+    ctx.font = '12px "JetBrains Mono", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('CERT. No. 001  —  Serie: Eterna', 90, 100);
+
     // ===== ENCABEZADO =====
-    // Línea decorativa superior
+    ctx.textAlign = 'center';
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -435,7 +482,7 @@ function initApp() {
     ctx.font = '700 72px "Cormorant Garamond", Georgia, serif';
     ctx.fillText('Nuestra Historia', W / 2, 290);
 
-    // Subrayado decorativo del título
+    // Subrayado decorativo
     ctx.strokeStyle = 'rgba(192, 57, 43, 0.6)';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -443,7 +490,6 @@ function initApp() {
     ctx.lineTo(W / 2 + 180, 310);
     ctx.stroke();
 
-    // Pequeños rombos a los lados del subrayado
     ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
     function drawDiamond(cx, cy, size) {
       ctx.beginPath();
@@ -462,13 +508,18 @@ function initApp() {
     ctx.font = 'italic 26px Georgia, serif';
     ctx.fillText('Certificado de Amor Eterno', W / 2, 360);
 
+    // ===== FECHA ESPECIAL =====
+    ctx.fillStyle = 'rgba(192, 57, 43, 0.7)';
+    ctx.font = '16px Georgia, serif';
+    ctx.fillText('Desde el 24 de abril de 2026', W / 2, 400);
+
     // ===== TEXTO PRINCIPAL =====
     ctx.fillStyle = '#B5B5C3';
     ctx.font = '18px Georgia, serif';
     const lines = [
       'Por la presente se certifica que',
       '',
-      'Elizabeth',
+      'Elizabeth Zambrano Saltos',
       '',
       'ha demostrado ser la persona que ilumina cada día,',
       'la razón por la que todo pesa menos,',
@@ -480,21 +531,30 @@ function initApp() {
       'y todas las páginas que aún nos faltan por escribir.'
     ];
     lines.forEach((line, i) => {
-      if (line === 'Elizabeth') {
+      if (line === 'Elizabeth Zambrano Saltos') {
+        // Glow effect para el nombre
+        ctx.shadowColor = 'rgba(179, 157, 219, 0.5)';
+        ctx.shadowBlur = 20;
         ctx.fillStyle = '#B39DDB';
-        ctx.font = 'italic 32px "Cormorant Garamond", Georgia, serif';
-        ctx.fillText(line, W / 2, 430 + i * 32);
+        ctx.font = 'italic 38px "Cormorant Garamond", Georgia, serif';
+        ctx.fillText(line, W / 2, 450 + i * 32);
+        ctx.shadowBlur = 0;
         ctx.fillStyle = '#B5B5C3';
         ctx.font = '18px Georgia, serif';
       } else if (line === '') {
-        // línea vacía, solo avanzar
+        // línea vacía
       } else {
-        ctx.fillText(line, W / 2, 430 + i * 32);
+        ctx.fillText(line, W / 2, 450 + i * 32);
       }
     });
 
-    // ===== LÍNEA DECORATIVA CENTRAL =====
-    const lineY = 760;
+    // ===== FRASE FINAL =====
+    ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
+    ctx.font = 'italic 16px Georgia, serif';
+    ctx.fillText('Este certificado no tiene fecha de vencimiento', W / 2, 770);
+
+    // ===== LÍNEA DECORATIVA =====
+    const lineY = 810;
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.2)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -502,24 +562,32 @@ function initApp() {
     ctx.lineTo(W / 2 + 100, lineY);
     ctx.stroke();
 
-    // ===== FECHA =====
+    // ===== FECHA DE EMISIÓN =====
     const today = new Date();
     const fecha = today.toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' });
     ctx.fillStyle = '#B5B5C3';
     ctx.font = '16px Georgia, serif';
-    ctx.fillText(fecha, W / 2, 800);
+    ctx.fillText('Emitido el ' + fecha, W / 2, 850);
 
     // ===== CORAZÓN DECORATIVO =====
     ctx.font = '40px Arial';
     ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
-    ctx.fillText('❤', W / 2, 860);
+    ctx.fillText('❤', W / 2, 900);
 
-    // ===== FIRMA =====
+    // ===== FIRMAS =====
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'italic 24px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('Con todo mi amor,', W / 2, 920);
+    ctx.font = 'italic 22px "Cormorant Garamond", Georgia, serif';
+    ctx.fillText('Con todo mi amor,', W / 2, 960);
     ctx.font = 'italic 28px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('Alejandro', W / 2, 960);
+    ctx.fillText('Alejandro', W / 2, 1000);
+
+    // Líneas de firma decorativas
+    ctx.strokeStyle = 'rgba(179, 157, 219, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 120, 1015);
+    ctx.lineTo(W / 2 + 120, 1015);
+    ctx.stroke();
 
     // ===== DESCARGAR =====
     const link = document.createElement('a');
