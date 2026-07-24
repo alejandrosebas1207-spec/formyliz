@@ -287,6 +287,7 @@ body {
 /* ===== BOTÓN SIGUIENTE ===== */
 .next-btn {
   margin-top: 40px;
+  margin-bottom: 20px; /* CORREGIDO: separación inferior */
   background: none;
   border: 1px solid var(--red);
   color: var(--red);
@@ -756,6 +757,9 @@ body {
   max-width: 700px;
   margin: 0 auto;
   perspective: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Sobre */
@@ -850,6 +854,9 @@ body {
   opacity: 0;
   transition: transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.8s ease;
   position: relative;
+  /* CORREGIDO: limitar altura y añadir scroll */
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .letter.visible {
@@ -1097,17 +1104,22 @@ body {
   .section h2 {
     font-size: 2.2rem;
   }
+
+  /* CORREGIDO: centrar polaroids en móvil */
   .chapter-content {
     flex-direction: column;
+    align-items: center;
     text-align: center;
   }
   .polaroid {
     max-width: 220px;
+    margin: 0 auto;
   }
   .chapter-text-full {
     font-size: 0.95rem;
     line-height: 1.6;
     text-align: left;
+    width: 100%;
   }
   .chapter-quote {
     font-size: 1.1rem;
@@ -1156,10 +1168,15 @@ body {
     width: 7px;
     height: 7px;
   }
+
+  /* CORREGIDO: mejorar la carta en móvil */
   .letter {
     padding: 25px 18px;
     font-size: 0.95rem;
-    max-height: 50vh;
+    max-height: 70vh; /* más altura para que se vea mejor */
+  }
+  .envelope {
+    max-width: 90%;
   }
 }
 
