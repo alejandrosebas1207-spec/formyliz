@@ -1278,22 +1278,22 @@ function initApp() {
         ctx.shadowBlur = 20;
         ctx.fillStyle = '#B39DDB';
         ctx.font = 'italic 38px "Cormorant Garamond", Georgia, serif';
-        ctx.fillText(line, W / 2, 450 + i * 32);
+        ctx.fillText(line, W / 2, 450 + i * 42);
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#B5B5C3';
         ctx.font = '18px Georgia, serif';
       } else if (line === '') {
         // línea vacía
       } else {
-        ctx.fillText(line, W / 2, 450 + i * 32);
+        ctx.fillText(line, W / 2, 450 + i * 42);
       }
     });
 
     ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
     ctx.font = 'italic 16px Georgia, serif';
-    ctx.fillText('Este certificado no tiene fecha de vencimiento', W / 2, 770);
+    ctx.fillText('Este certificado no tiene fecha de vencimiento', W / 2, 820);
 
-    const lineY = 810;
+    const lineY = 860;
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.2)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -1305,23 +1305,23 @@ function initApp() {
     const fecha = today.toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' });
     ctx.fillStyle = '#B5B5C3';
     ctx.font = '16px Georgia, serif';
-    ctx.fillText('Emitido el ' + fecha, W / 2, 850);
+    ctx.fillText('Emitido el ' + fecha, W / 2, 900);
 
     ctx.font = '40px Arial';
     ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
-    ctx.fillText('❤', W / 2, 900);
+    ctx.fillText('❤', W / 2, 950);
 
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'italic 22px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('Con todo mi amor,', W / 2, 960);
+    ctx.fillText('Con todo mi amor,', W / 2, 1010);
     ctx.font = 'italic 28px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('Alejandro', W / 2, 1000);
+    ctx.fillText('Alejandro', W / 2, 1050);
 
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(W / 2 - 120, 1015);
-    ctx.lineTo(W / 2 + 120, 1015);
+    ctx.moveTo(W / 2 - 120, 1065);
+    ctx.lineTo(W / 2 + 120, 1065);
     ctx.stroke();
 
     const link = document.createElement('a');
