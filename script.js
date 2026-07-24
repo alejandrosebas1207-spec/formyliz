@@ -333,39 +333,83 @@ function initApp() {
 
   function generateCertificate() {
     const canvas = document.createElement('canvas');
-    const W = 1200, H = 800;
+    const W = 1400, H = 1000;
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    // Fondo con degradado oscuro
+    // ===== FONDO =====
+    // Degradado principal
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, '#09090B');
+    bg.addColorStop(0.5, '#0D0D14');
     bg.addColorStop(1, '#16161D');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // Halo de color sutil
-    const glow = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 700);
-    glow.addColorStop(0, 'rgba(179, 157, 219, 0.10)');
+    // Halo púrpura sutil en el centro
+    const glow = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 900);
+    glow.addColorStop(0, 'rgba(179, 157, 219, 0.08)');
+    glow.addColorStop(0.5, 'rgba(179, 157, 219, 0.03)');
     glow.addColorStop(1, 'rgba(9, 9, 11, 0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
 
-    // Marco doble
-    ctx.strokeStyle = 'rgba(179, 157, 219, 0.5)';
+    // ===== MARCOS ORNAMENTALES =====
+    // Marco exterior dorado/púrpura
+    ctx.strokeStyle = 'rgba(179, 157, 219, 0.4)';
     ctx.lineWidth = 2;
-    ctx.strokeRect(40, 40, W - 80, H - 80);
-    ctx.strokeStyle = 'rgba(192, 57, 43, 0.4)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(55, 55, W - 110, H - 110);
+    ctx.strokeRect(50, 50, W - 100, H - 100);
 
-    // Estrellitas decorativas
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    for (let i = 0; i < 40; i++) {
-      const x = 80 + Math.random() * (W - 160);
-      const y = 80 + Math.random() * (H - 160);
-      const r = Math.random() * 1.5;
+    // Marco interior
+    ctx.strokeStyle = 'rgba(192, 57, 43, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(70, 70, W - 140, H - 140);
+
+    // Esquinas ornamentales
+    function drawCorner(x, y, rotation) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.strokeStyle = 'rgba(179, 157, 219, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -25);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(25, 0);
+      ctx.stroke();
+      // Pequeño círculo en la esquina
+      ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
+      ctx.beginPath();
+      ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    drawCorner(50, 50, 0);
+    drawCorner(W - 50, 50, Math.PI / 2);
+    drawCorner(W - 50, H - 50, Math.PI);
+    drawCorner(50, H - 50, -Math.PI / 2);
+
+    // ===== ESTRELLAS DECORATIVAS =====
+    // Estrellas de fondo
+    const starPositions = [
+      [120, 120], [W - 120, 120], [W - 120, H - 120], [120, H - 120],
+      [200, 200], [W - 200, 200], [W - 200, H - 200], [200, H - 200],
+      [W / 2, 90], [W / 2, H - 90], [90, H / 2], [W - 90, H / 2]
+    ];
+    starPositions.forEach(([sx, sy]) => {
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.beginPath();
+      ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Estrellas dispersas aleatoriamente
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    for (let i = 0; i < 60; i++) {
+      const x = 100 + Math.random() * (W - 200);
+      const y = 100 + Math.random() * (H - 200);
+      const r = Math.random() * 1.2;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
@@ -373,54 +417,111 @@ function initApp() {
 
     ctx.textAlign = 'center';
 
-    // Encabezado
+    // ===== ENCABEZADO =====
+    // Línea decorativa superior
+    ctx.strokeStyle = 'rgba(179, 157, 219, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 150, 160);
+    ctx.lineTo(W / 2 + 150, 160);
+    ctx.stroke();
+
     ctx.fillStyle = '#C0392B';
-    ctx.font = '300 20px Georgia, serif';
-    ctx.save();
-    ctx.letterSpacing = '6px';
-    ctx.fillText('C E R T I F I C A D O', W / 2, 190);
-    ctx.restore();
+    ctx.font = '300 18px Georgia, serif';
+    ctx.fillText('C E R T I F I C A D O   D E', W / 2, 200);
 
-    // Título principal
+    // ===== TÍTULO PRINCIPAL =====
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '700 56px Georgia, serif';
-    ctx.fillText('Nuestra Historia', W / 2, 280);
+    ctx.font = '700 72px "Cormorant Garamond", Georgia, serif';
+    ctx.fillText('Nuestra Historia', W / 2, 290);
 
-    // Subtítulo
+    // Subrayado decorativo del título
+    ctx.strokeStyle = 'rgba(192, 57, 43, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 180, 310);
+    ctx.lineTo(W / 2 + 180, 310);
+    ctx.stroke();
+
+    // Pequeños rombos a los lados del subrayado
+    ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
+    function drawDiamond(cx, cy, size) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - size);
+      ctx.lineTo(cx + size, cy);
+      ctx.lineTo(cx, cy + size);
+      ctx.lineTo(cx - size, cy);
+      ctx.closePath();
+      ctx.fill();
+    }
+    drawDiamond(W / 2 - 200, 310, 4);
+    drawDiamond(W / 2 + 200, 310, 4);
+
+    // ===== SUBTÍTULO =====
     ctx.fillStyle = '#B39DDB';
-    ctx.font = 'italic 28px Georgia, serif';
-    ctx.fillText('Certificado de nuestro amor', W / 2, 350);
+    ctx.font = 'italic 26px Georgia, serif';
+    ctx.fillText('Certificado de Amor Eterno', W / 2, 360);
 
-    // Texto de cuerpo
+    // ===== TEXTO PRINCIPAL =====
     ctx.fillStyle = '#B5B5C3';
-    ctx.font = '18px Arial, sans-serif';
+    ctx.font = '18px Georgia, serif';
     const lines = [
-      'Esto certifica que, después de todo,',
-      'has demostrado ser alguien que vale la pena',
-      'y alguien a quien quiero tener siempre.',
-      'Certifica, además, nuestro amor y las ganas de seguir.'
+      'Por la presente se certifica que',
+      '',
+      'Elizabeth',
+      '',
+      'ha demostrado ser la persona que ilumina cada día,',
+      'la razón por la que todo pesa menos,',
+      'y la compañía que se elige una y otra vez.',
+      '',
+      'Este documento certifica nuestro amor,',
+      'nuestras risas, nuestros desayunos,',
+      'nuestras caídas en la pista de patinaje,',
+      'y todas las páginas que aún nos faltan por escribir.'
     ];
     lines.forEach((line, i) => {
-      ctx.fillText(line, W / 2, 405 + i * 30);
+      if (line === 'Elizabeth') {
+        ctx.fillStyle = '#B39DDB';
+        ctx.font = 'italic 32px "Cormorant Garamond", Georgia, serif';
+        ctx.fillText(line, W / 2, 430 + i * 32);
+        ctx.fillStyle = '#B5B5C3';
+        ctx.font = '18px Georgia, serif';
+      } else if (line === '') {
+        // línea vacía, solo avanzar
+      } else {
+        ctx.fillText(line, W / 2, 430 + i * 32);
+      }
     });
 
-    // Fecha
+    // ===== LÍNEA DECORATIVA CENTRAL =====
+    const lineY = 760;
+    ctx.strokeStyle = 'rgba(179, 157, 219, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 100, lineY);
+    ctx.lineTo(W / 2 + 100, lineY);
+    ctx.stroke();
+
+    // ===== FECHA =====
     const today = new Date();
     const fecha = today.toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' });
     ctx.fillStyle = '#B5B5C3';
-    ctx.font = '16px Arial, sans-serif';
-    ctx.fillText(fecha, W / 2, 555);
+    ctx.font = '16px Georgia, serif';
+    ctx.fillText(fecha, W / 2, 800);
 
-    // Corazón decorativo
-    ctx.font = '32px Arial';
-    ctx.fillText('♡', W / 2, 625);
+    // ===== CORAZÓN DECORATIVO =====
+    ctx.font = '40px Arial';
+    ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
+    ctx.fillText('❤', W / 2, 860);
 
-    // Firma
+    // ===== FIRMA =====
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'italic 26px Georgia, serif';
-    ctx.fillText('Con amor, Alejandro.', W / 2, 695);
+    ctx.font = 'italic 24px "Cormorant Garamond", Georgia, serif';
+    ctx.fillText('Con todo mi amor,', W / 2, 920);
+    ctx.font = 'italic 28px "Cormorant Garamond", Georgia, serif';
+    ctx.fillText('Alejandro', W / 2, 960);
 
-    // Descargar
+    // ===== DESCARGAR =====
     const link = document.createElement('a');
     link.download = 'certificado-nuestra-historia.png';
     link.href = canvas.toDataURL('image/png');
@@ -495,37 +596,15 @@ function initApp() {
   });
 
   // =========================================
-  // 6b. SWIPE TÁCTIL (izquierda = siguiente, derecha = atrás)
+  // 6b. SWIPE TÁCTIL — DESACTIVADO
   // =========================================
-  let touchStartX = 0;
-  let touchStartY = 0;
-
-  document.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].clientX;
-    touchStartY = e.changedTouches[0].clientY;
-  }, { passive: true });
-
-  document.addEventListener('touchend', (e) => {
-    if (isTransitioning) return;
-    // No interceptar swipes dentro de zonas con su propia interacción táctil
-    if (e.target.closest('#starfield, .modal, .slideshow-container, #progress-nav, .play-track-btn, .track-player')) return;
-
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-
-    // Ignorar si el gesto fue más vertical que horizontal (scroll normal)
-    if (Math.abs(deltaX) < 60 || Math.abs(deltaX) < Math.abs(deltaY)) return;
-
-    if (deltaX < 0) {
-      // Swipe hacia la izquierda -> avanzar
-      goToSection(currentIndex + 1);
-    } else {
-      // Swipe hacia la derecha -> retroceder
-      goToSection(currentIndex - 1);
-    }
-  }, { passive: true });
+  // El swipe táctil para navegar entre secciones ha sido desactivado
+  // porque interfería con el scroll y con la interacción del mapa.
+  // Ahora la navegación se hace solo con:
+  //   - Botones "Siguiente"
+  //   - Dots del menú de progreso
+  //   - Teclado (flecha derecha / espacio)
+  // =========================================
 
   // =========================================
   // 6c. REPRODUCTOR DE CANCIONES (YouTube embebido bajo demanda)
@@ -758,17 +837,9 @@ function initApp() {
     const thoughtText = document.getElementById('thought-text');
     const closeModal = document.querySelector('.close-modal');
 
-    // Muestra la frase y, debajo, la canción que la inspiró
-    function showThought(jsonStr) {
-      let data;
-      try {
-        data = JSON.parse(jsonStr);
-      } catch (e) {
-        data = { phrase: jsonStr, source: '' };
-      }
-      thoughtText.innerHTML = data.source
-        ? `${data.phrase}<span class="thought-source">${data.source}</span>`
-        : data.phrase;
+    // Muestra la frase al tocar una estrella
+    function showThought(phrase) {
+      thoughtText.textContent = phrase;
       modal.classList.add('show');
       gsap.from('.modal-content', {
         scale: 0.8,
@@ -832,7 +903,7 @@ function initApp() {
       star.style.top = Math.random() * 92 + 4 + '%';
       star.style.opacity = 0.3 + Math.random() * 0.6;
       const thoughtIndex = Math.floor(Math.random() * THOUGHTS.length);
-      star.dataset.thought = JSON.stringify(THOUGHTS[thoughtIndex]);
+      star.dataset.thought = THOUGHTS[thoughtIndex];
       container.appendChild(star);
 
       gsap.to(star, {
@@ -869,7 +940,7 @@ function initApp() {
       star.style.top = p.y + '%';
       star.style.opacity = 0.9;
       const thought = THOUGHTS[Math.floor(Math.random() * THOUGHTS.length)];
-      star.dataset.thought = JSON.stringify(thought);
+      star.dataset.thought = thought;
       container.appendChild(star);
 
       gsap.to(star, {

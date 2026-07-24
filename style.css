@@ -145,8 +145,8 @@ body {
   z-index: 1;
   display: none;
   justify-content: center;
-  align-items: center;
-  padding: 40px 20px;
+  align-items: flex-start;
+  padding: 80px 20px 100px 20px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
@@ -162,12 +162,15 @@ body {
 .container {
   width: min(92%, 900px);
   max-width: 1100px;
-  margin: 0 auto;
+  margin: auto;
+  min-height: 0;
 }
 
 /* ===== INTRO (HERO) ===== */
 .hero {
   display: flex;
+  align-items: center;
+  padding-top: 40px;
 }
 .hero .container {
   text-align: center;
@@ -872,6 +875,12 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+  .section {
+    padding: 60px 16px 90px 16px;
+  }
+  .hero {
+    padding-top: 20px;
+  }
   .hero h1 {
     font-size: 4rem;
   }
@@ -943,6 +952,12 @@ body {
 }
 
 @media (max-width: 480px) {
+  .section {
+    padding: 50px 12px 80px 12px;
+  }
+  .hero {
+    padding-top: 10px;
+  }
   .hero h1 {
     font-size: 3.2rem;
   }
