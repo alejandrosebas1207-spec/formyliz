@@ -1101,6 +1101,27 @@ function initApp() {
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
+    // Dibuja un corazón vectorial (evita el bug de iOS que fuerza el emoji
+    // a color sin importar el fillStyle que se le ponga en canvas)
+    function drawHeart(context, centerX, centerY, size, color) {
+      const width = size;
+      const height = size;
+      const x = centerX;
+      const y = centerY - height / 2;
+      const topCurveHeight = height * 0.3;
+      context.save();
+      context.beginPath();
+      context.moveTo(x, y + topCurveHeight);
+      context.bezierCurveTo(x, y, x - width / 2, y, x - width / 2, y + topCurveHeight);
+      context.bezierCurveTo(x - width / 2, y + (height + topCurveHeight) / 2, x, y + (height + topCurveHeight) / 2, x, y + height);
+      context.bezierCurveTo(x, y + (height + topCurveHeight) / 2, x + width / 2, y + (height + topCurveHeight) / 2, x + width / 2, y + topCurveHeight);
+      context.bezierCurveTo(x + width / 2, y, x, y, x, y + topCurveHeight);
+      context.closePath();
+      context.fillStyle = color;
+      context.fill();
+      context.restore();
+    }
+
     // ---- Fondo ----
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, '#09090B');
@@ -1118,14 +1139,7 @@ function initApp() {
     ctx.fillRect(0, 0, W, H);
 
     // ---- Corazón de fondo (más pequeño) ----
-    ctx.save();
-    ctx.translate(W / 2, H / 2 + 50);
-    ctx.font = '200px Arial';
-    ctx.fillStyle = 'rgba(179, 157, 219, 0.015)';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('❤', 0, 0);
-    ctx.restore();
+    drawHeart(ctx, W / 2, H / 2 + 50, 190, 'rgba(179, 157, 219, 0.015)');
 
     // ---- Bordes y esquinas ----
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.4)';
@@ -1199,7 +1213,7 @@ function initApp() {
       ctx.fillStyle = 'rgba(192, 57, 43, 0.7)';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('❤', 0, 0);
+      drawHeart(ctx, 0, -2, 22, 'rgba(192, 57, 43, 0.7)');
       ctx.font = '10px Arial';
       ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
       const text = 'CERTIFICADO OFICIAL';
@@ -1322,9 +1336,7 @@ function initApp() {
     ctx.fillText('Emitido el ' + fecha, W / 2, lineY + 40);
 
     // Corazón final (más pequeño)
-    ctx.font = '40px Arial';
-    ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
-    ctx.fillText('❤', W / 2, lineY + 100);
+    drawHeart(ctx, W / 2, lineY + 118, 34, 'rgba(192, 57, 43, 0.8)');
 
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'italic 22px "Cormorant Garamond", Georgia, serif';
