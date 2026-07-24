@@ -370,6 +370,8 @@ body {
   text-align: center;
   margin-top: 10px;
   min-height: 2em;
+  opacity: 0; /* OCULTO INICIALMENTE */
+  transition: opacity 0.3s ease;
 }
 
 /* Efecto cursor de máquina de escribir */
@@ -849,6 +851,8 @@ body {
   opacity: 0;
   transition: transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.8s ease;
   position: relative;
+  max-height: 60vh; /* Para que no se salga de la pantalla */
+  overflow-y: auto;  /* Scroll si es necesario */
 }
 .letter.visible {
   transform: scale(1) rotateX(0deg);

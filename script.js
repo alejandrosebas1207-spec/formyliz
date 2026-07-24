@@ -504,7 +504,7 @@ function initApp() {
   });
 
   // =========================================
-  // 8. MÁQUINA DE ESCRIBIR EN CITAS
+  // 8. MÁQUINA DE ESCRIBIR EN CITAS (corregida)
   // =========================================
   function activateTypewriter(section) {
     const quote = section.querySelector('.chapter-quote');
@@ -512,6 +512,9 @@ function initApp() {
 
     const text = quote.textContent;
     quote.dataset.typed = 'true';
+
+    // Ocultar el texto y limpiar contenido
+    quote.style.opacity = '0';
     quote.textContent = '';
     quote.classList.remove('typewriter-done');
 
@@ -520,7 +523,7 @@ function initApp() {
     quote.appendChild(cursor);
 
     let i = 0;
-    const speed = 45; // ms por letra
+    const speed = 45;
 
     function typeChar() {
       if (i < text.length) {
@@ -529,10 +532,11 @@ function initApp() {
         setTimeout(typeChar, speed);
       } else {
         quote.classList.add('typewriter-done');
+        quote.style.opacity = '1';
       }
     }
 
-    // Retraso para que se vea después de que entra la sección
+    // Pequeño retraso para que la animación de entrada se note
     setTimeout(typeChar, 800);
   }
 
@@ -1089,7 +1093,7 @@ function initApp() {
   }
 
   // =========================================
-  // 18. CERTIFICADO MEJORADO
+  // 18. CERTIFICADO MEJORADO (CORREGIDO)
   // =========================================
   function generateCertificate() {
     const canvas = document.createElement('canvas');
@@ -1098,6 +1102,7 @@ function initApp() {
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
+    // Fondo
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, '#09090B');
     bg.addColorStop(0.5, '#0D0D14');
@@ -1105,6 +1110,7 @@ function initApp() {
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
+    // Glow central
     const glow = ctx.createRadialGradient(W / 2, H / 2, 50, W / 2, H / 2, 900);
     glow.addColorStop(0, 'rgba(179, 157, 219, 0.08)');
     glow.addColorStop(0.5, 'rgba(179, 157, 219, 0.03)');
@@ -1112,6 +1118,7 @@ function initApp() {
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
 
+    // Corazón gigante de fondo
     ctx.save();
     ctx.translate(W / 2, H / 2 + 50);
     ctx.font = '400px Arial';
@@ -1121,14 +1128,15 @@ function initApp() {
     ctx.fillText('❤', 0, 0);
     ctx.restore();
 
+    // Bordes decorativos
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.4)';
     ctx.lineWidth = 2;
     ctx.strokeRect(50, 50, W - 100, H - 100);
-
     ctx.strokeStyle = 'rgba(192, 57, 43, 0.3)';
     ctx.lineWidth = 1;
     ctx.strokeRect(70, 70, W - 140, H - 140);
 
+    // Esquinas
     function drawCorner(x, y, rotation) {
       ctx.save();
       ctx.translate(x, y);
@@ -1151,6 +1159,7 @@ function initApp() {
     drawCorner(W - 50, H - 50, Math.PI);
     drawCorner(50, H - 50, -Math.PI / 2);
 
+    // Estrellitas decorativas
     const starPositions = [
       [120, 120], [W - 120, 120], [W - 120, H - 120], [120, H - 120],
       [200, 200], [W - 200, 200], [W - 200, H - 200], [200, H - 200],
@@ -1163,6 +1172,7 @@ function initApp() {
       ctx.fill();
     });
 
+    // Fondo de estrellas aleatorias
     ctx.fillStyle = 'rgba(255,255,255,0.25)';
     for (let i = 0; i < 60; i++) {
       const x = 100 + Math.random() * (W - 200);
@@ -1173,8 +1183,7 @@ function initApp() {
       ctx.fill();
     }
 
-    ctx.textAlign = 'center';
-
+    // Sello
     function drawSeal(cx, cy, r) {
       ctx.save();
       ctx.translate(cx, cy);
@@ -1207,12 +1216,13 @@ function initApp() {
     }
     drawSeal(W - 140, 140, 45);
 
+    // Número de certificado
     ctx.fillStyle = 'rgba(179, 157, 219, 0.4)';
     ctx.font = '12px "JetBrains Mono", monospace';
     ctx.textAlign = 'left';
     ctx.fillText('CERT. No. 001  —  Serie: Eterna', 90, 100);
 
-    ctx.textAlign = 'center';
+    // Línea superior
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -1220,6 +1230,8 @@ function initApp() {
     ctx.lineTo(W / 2 + 150, 160);
     ctx.stroke();
 
+    // Título
+    ctx.textAlign = 'center';
     ctx.fillStyle = '#C0392B';
     ctx.font = '300 18px Georgia, serif';
     ctx.fillText('C E R T I F I C A D O   D E', W / 2, 200);
@@ -1235,6 +1247,7 @@ function initApp() {
     ctx.lineTo(W / 2 + 180, 310);
     ctx.stroke();
 
+    // Diamantes
     ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
     function drawDiamond(cx, cy, size) {
       ctx.beginPath();
@@ -1256,9 +1269,8 @@ function initApp() {
     ctx.font = '16px Georgia, serif';
     ctx.fillText('Desde el 24 de abril de 2026', W / 2, 400);
 
-    ctx.fillStyle = '#B5B5C3';
-    ctx.font = '18px Georgia, serif';
-    const lines = [
+    // --- CUERPO DEL TEXTO (sin superposiciones) ---
+    const bodyLines = [
       'Por la presente se certifica que',
       '',
       'Elizabeth Zambrano Saltos',
@@ -1269,31 +1281,49 @@ function initApp() {
       '',
       'Este documento certifica nuestro amor,',
       'nuestras risas, nuestros desayunos,',
-      'nuestras aventuras y nuestros silencios complices,',
+      'nuestras aventuras y nuestros silencios cómplices,',
       'y todas las páginas que aún nos faltan por escribir.'
     ];
-    lines.forEach((line, i) => {
+
+    // Configuración de fuente para el cuerpo
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    // Dibujamos línea por línea con espaciado suficiente
+    const startY = 460;  // posición Y inicial
+    const lineHeight = 38;
+    const fontSize = 16;
+    ctx.font = `${fontSize}px Georgia, serif`;
+    ctx.fillStyle = '#B5B5C3';
+
+    bodyLines.forEach((line, idx) => {
+      const y = startY + idx * lineHeight;
       if (line === 'Elizabeth Zambrano Saltos') {
+        // Nombre destacado
         ctx.shadowColor = 'rgba(179, 157, 219, 0.5)';
         ctx.shadowBlur = 20;
         ctx.fillStyle = '#B39DDB';
-        ctx.font = 'italic 38px "Cormorant Garamond", Georgia, serif';
-        ctx.fillText(line, W / 2, 450 + i * 42);
+        ctx.font = 'italic 32px "Cormorant Garamond", Georgia, serif';
+        ctx.fillText(line, W / 2, y);
         ctx.shadowBlur = 0;
+        // Restauramos el estilo para las siguientes líneas
         ctx.fillStyle = '#B5B5C3';
-        ctx.font = '18px Georgia, serif';
+        ctx.font = `${fontSize}px Georgia, serif`;
       } else if (line === '') {
-        // línea vacía
+        // línea vacía, no dibujamos nada
       } else {
-        ctx.fillText(line, W / 2, 450 + i * 42);
+        ctx.fillText(line, W / 2, y);
       }
     });
 
+    // Pie de página
+    const footerY = startY + bodyLines.length * lineHeight + 40;
     ctx.fillStyle = 'rgba(179, 157, 219, 0.6)';
     ctx.font = 'italic 16px Georgia, serif';
-    ctx.fillText('Este certificado no tiene fecha de vencimiento', W / 2, 820);
+    ctx.fillText('Este certificado no tiene fecha de vencimiento', W / 2, footerY);
 
-    const lineY = 860;
+    // Línea de firma
+    const lineY = footerY + 40;
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.2)';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -1301,29 +1331,34 @@ function initApp() {
     ctx.lineTo(W / 2 + 100, lineY);
     ctx.stroke();
 
+    // Fecha
     const today = new Date();
     const fecha = today.toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' });
     ctx.fillStyle = '#B5B5C3';
     ctx.font = '16px Georgia, serif';
-    ctx.fillText('Emitido el ' + fecha, W / 2, 900);
+    ctx.fillText('Emitido el ' + fecha, W / 2, lineY + 40);
 
+    // Corazón final
     ctx.font = '40px Arial';
     ctx.fillStyle = 'rgba(192, 57, 43, 0.8)';
-    ctx.fillText('❤', W / 2, 950);
+    ctx.fillText('❤', W / 2, lineY + 100);
 
+    // Firma
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'italic 22px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('Con todo mi amor,', W / 2, 1010);
+    ctx.fillText('Con todo mi amor,', W / 2, lineY + 150);
     ctx.font = 'italic 28px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('Alejandro', W / 2, 1050);
+    ctx.fillText('Alejandro', W / 2, lineY + 190);
 
+    // Línea bajo firma
     ctx.strokeStyle = 'rgba(179, 157, 219, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(W / 2 - 120, 1065);
-    ctx.lineTo(W / 2 + 120, 1065);
+    ctx.moveTo(W / 2 - 120, lineY + 205);
+    ctx.lineTo(W / 2 + 120, lineY + 205);
     ctx.stroke();
 
+    // Descargar
     const link = document.createElement('a');
     link.download = 'certificado-nuestra-historia.png';
     link.href = canvas.toDataURL('image/png');
@@ -1374,25 +1409,6 @@ function initApp() {
 function bootstrap() {
   if (typeof gsap === 'undefined') {
     document.body.classList.add('no-gsap');
-    document.addEventListener('gsap-ready', bootstrap, { once: true });
-    return;
-  }
-  initApp();
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootstrap);
-} else {
-  bootstrap();
-}
-
-// =========================================
-// ARRANQUE: espera al DOM y a que GSAP esté disponible
-// (si el CDN falló, index.html carga vendor/gsap.min.js y
-// dispara el evento 'gsap-ready' cuando termina)
-// =========================================
-function bootstrap() {
-  if (typeof gsap === 'undefined') {
     document.addEventListener('gsap-ready', bootstrap, { once: true });
     return;
   }
