@@ -342,6 +342,7 @@ function initApp() {
 
             // Ejecutar funciones especiales
             if (nextSection.id === 'mapa') initLoveMap();
+            if (nextSection.id === 'tiempo') updateCounter(true);
             if (nextSection.id === 'sorpresa') initStarfield();
             if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
@@ -406,7 +407,7 @@ function initApp() {
   });
 
   // Botones "Siguiente"
-  document.querySelectorAll('.next-btn').forEach(btn => {
+  document.querySelectorAll('.next-btn:not(#certButton):not(#restartButton)').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       if (isTransitioning) return;
@@ -437,6 +438,26 @@ function initApp() {
     certBtn.addEventListener('click', generateCertificate);
   }
 
+  // Botón de música ambiental
+  const ambientBtn = document.getElementById('ambient-audio');
+  let ambientPlaying = false;
+  if (ambientBtn) {
+    ambientBtn.addEventListener('click', () => {
+      ambientPlaying = !ambientPlaying;
+      if (ambientPlaying) {
+        playMusicBox();
+        ambientBtn.classList.add('playing');
+        ambientBtn.querySelector('.audio-label').textContent = 'Pausar';
+        ambientBtn.setAttribute('aria-pressed', 'true');
+      } else {
+        stopMusicBox();
+        ambientBtn.classList.remove('playing');
+        ambientBtn.querySelector('.audio-label').textContent = 'Música';
+        ambientBtn.setAttribute('aria-pressed', 'false');
+      }
+    });
+  }
+
   function resetToHero() {
     if (window.slideshowInterval) {
       clearInterval(window.slideshowInterval);
@@ -447,6 +468,12 @@ function initApp() {
       window.starfieldTimers = [];
     }
     stopMusicBox();
+    if (ambientBtn) {
+      ambientPlaying = false;
+      ambientBtn.classList.remove('playing');
+      ambientBtn.querySelector('.audio-label').textContent = 'Música';
+      ambientBtn.setAttribute('aria-pressed', 'false');
+    }
 
     sections.forEach(sec => {
       sec.classList.remove('active');
@@ -1078,6 +1105,9 @@ function initApp() {
         const width = track.parentElement.clientWidth;
         gsap.set(track, { x: -currentSlide * width });
       };
+      if (track._resizeHandler) {
+        window.removeEventListener('resize', track._resizeHandler);
+      }
       window.addEventListener('resize', resizeHandler);
 
       window.slideshowInterval = setInterval(() => {
@@ -1402,25 +1432,6 @@ function initApp() {
 function bootstrap() {
   if (typeof gsap === 'undefined') {
     document.body.classList.add('no-gsap');
-    document.addEventListener('gsap-ready', bootstrap, { once: true });
-    return;
-  }
-  initApp();
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootstrap);
-} else {
-  bootstrap();
-}
-
-// =========================================
-// ARRANQUE: espera al DOM y a que GSAP esté disponible
-// (si el CDN falló, index.html carga vendor/gsap.min.js y
-// dispara el evento 'gsap-ready' cuando termina)
-// =========================================
-function bootstrap() {
-  if (typeof gsap === 'undefined') {
     document.addEventListener('gsap-ready', bootstrap, { once: true });
     return;
   }

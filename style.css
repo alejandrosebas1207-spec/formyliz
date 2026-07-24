@@ -1194,6 +1194,14 @@ body {
   #lovemap {
     height: 260px;
   }
+  #ambient-audio {
+    bottom: 62px;
+    right: 12px;
+    padding: 8px 10px;
+  }
+  #ambient-audio .audio-label {
+    display: none;
+  }
   .polaroid {
     max-width: 180px;
     padding: 8px 8px 28px 8px;
