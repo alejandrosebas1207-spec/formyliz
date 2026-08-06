@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3 Meses · Nuestra historia</title>
+  <title>Mi amor, ya vamos · Nuestra historia</title>
 
   <!-- Favicon (corazón) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2226%22 font-size=%2226%22>%E2%9D%A4%EF%B8%8F</text></svg>" />
 
   <!-- Vista previa al compartir el link (WhatsApp, etc.) -->
-  <meta property="og:title" content="3 Meses · Nuestra historia" />
-  <meta property="og:description" content="Para Elizabeth ❤️. Un regalo hecho con cariño." />
+  <meta property="og:title" content="Mi amor, ya vamos · Nuestra historia" />
+  <meta property="og:description" content="Para Elizabeth ❤️. Nuestro archivo: capítulos, fotos, cartas y todo lo que hemos construido, día a día." />
   <meta property="og:image" content="assets/images/capitulo5.jpg" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#09090B" />
@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
 
   <!-- Leaflet (mapa de nuestros lugares) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="vendor/leaflet.min.css" />
 
   <link rel="stylesheet" href="style.css" />
 
@@ -64,11 +64,11 @@
   <!-- ===== SECCIÓN 1: INTRO ===== -->
   <section class="section hero" id="intro" data-index="0" aria-label="Inicio">
     <div class="section-scroll"><div class="container">
-      <p class="subtitle" id="heroSubtitle">Para Elizabeth</p>
-      <h1 id="heroTitle">3 Meses</h1>
-      <p class="hero-date" id="heroDate">Desde el 24 de abril</p>
+      <p class="subtitle" id="heroSubtitle">Para Elizabeth · Nuestra historia</p>
+      <h1 id="heroTitle">Mi amor, ya vamos</h1>
+      <p class="hero-date" id="heroDate">Desde el 24 de abril de 2026</p>
       <button id="startButton" aria-label="Comenzar a ver nuestra historia">Comenzar</button>
-      <p class="made" id="heroMade">Hecho especialmente para ti ❤️</p>
+      <p class="made" id="heroMade">Nuestro archivo, hoja por hoja ❤️</p>
     </div>
   </div>
   </section>
@@ -90,7 +90,7 @@
           <p>
            Siempre me ha parecido curioso cómo cambian las cosas. Hay días que parecen importantes y terminan siendo uno más. Y hay otros que empiezan como cualquier martes de universidad y, sin darte cuenta, terminan cambiándote la vida.
 Así empezó todo.
-Ese día no tenía idea de que la niña con la que iba a cruzarme terminaría convirtiéndose en la persona que más iba a pensar, la primera a la que quería contarle las cosas y mi lugar favorito después de un día pesado. En ese momento era solo una casualidad. Hoy es una de las mejores que me han pasado.
+Ese día no tenía idea de que la niña con la que iba a cruzarme terminaría convirtiéndose en la persona en la que más iba a pensar, la primera a la que quería contarle las cosas y mi lugar favorito después de un día pesado. En ese momento era solo una casualidad. Hoy es una de las mejores que me han pasado.
           </p>
           <p class="chapter-quote">Y así, sin saberlo, comenzó nuestra historia.</p>
         </div>
@@ -282,7 +282,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
           <span class="track-icon">🎵</span>
           <div class="track-info">
             <p class="track-title">Agua, de Jarabe de Palo</p>
-            <p class="track-note">Me hacias falta y no te tenia cerca</p>
+            <p class="track-note">Me hacías falta y no te tenía cerca</p>
             <button class="play-track-btn">▶ Escuchar</button>
             <div class="track-player"></div>
           </div>
@@ -291,7 +291,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
           <span class="track-icon">🎵</span>
           <div class="track-info">
             <p class="track-title">El lado oscuro, de Jarabe de Palo</p>
-            <p class="track-note">Ya no podia ocultar mi amor por ti y me daba igual, queria que lo sepas</p>
+            <p class="track-note">Ya no podía ocultar mi amor por ti y me daba igual, quería que lo supieras</p>
             <button class="play-track-btn">▶ Escuchar</button>
             <div class="track-player"></div>
           </div>
@@ -305,19 +305,28 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   <!-- ===== TIEMPO JUNTOS ===== -->
   <section class="section" id="tiempo" data-index="10">
     <div class="section-scroll"><div class="container">
-      <h2>⏳ Tiempo juntos</h2>
+      <h2>⏳ Ya vamos...</h2>
+      <p class="section-sub">Meses, días, horas... contigo, en tiempo real</p>
       <div class="counter-wrapper">
-        <span class="counter-number" id="dayCounter">0</span>
-        <span class="counter-label">días desde el 24 de abril</span>
+        <span class="counter-number" id="monthCounter">0</span>
+        <span class="counter-label">meses desde el 24 de abril de 2026</span>
 
         <div class="time-stats-grid">
           <div class="time-stat">
-            <span class="time-stat-number" id="weekCounter">0</span>
-            <span class="time-stat-label">semanas</span>
+            <span class="time-stat-number" id="dayCounter">0</span>
+            <span class="time-stat-label">días</span>
           </div>
           <div class="time-stat">
             <span class="time-stat-number" id="hourCounter">0</span>
             <span class="time-stat-label">horas</span>
+          </div>
+          <div class="time-stat">
+            <span class="time-stat-number" id="minuteCounter">0</span>
+            <span class="time-stat-label">minutos</span>
+          </div>
+          <div class="time-stat">
+            <span class="time-stat-number" id="secondCounter">0</span>
+            <span class="time-stat-label">segundos</span>
           </div>
         </div>
 
@@ -335,7 +344,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
       <div class="letter-wrapper">
         <div class="letter">
           <p>
-            Mi amor bella, si estás leyendo esto, es porque estas a punto de terminar la página que preparé para ti. Espero que te haya gustado. Mientras la hacía, me di cuenta de algo: por más fotos que encontrara, por más videos que pusiera o por más detalles que recordara, había una parte de nuestra historia que simplemente no cabía ahí.
+            Mi amor bella, si estás leyendo esto, es porque estás a punto de terminar la página que preparé para ti. Espero que te haya gustado. Mientras la hacía, me di cuenta de algo: por más fotos que encontrara, por más videos que pusiera o por más detalles que recordara, había una parte de nuestra historia que simplemente no cabía ahí.
           </p>
           <p>
             Hace algún tiempo empecé a escribir. No porque quisiera hacer un regalo como este, ni porque pensara que algún día alguien más lo iba a leer. Lo hacía porque había días en los que sentía demasiado y no quería que el tiempo terminara borrándolo. Entonces escribía. A veces después de llegar a mi casa, otras antes de dormir, otras cuando algo me hacía pensar mucho en nosotros. Era mi forma de guardar esos momentos antes de que se mezclaran con los siguientes.
@@ -347,7 +356,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
             Siempre he pensado que la memoria es injusta. Con los años uno empieza a olvidar detalles, conversaciones o la intensidad con la que llegó a sentir ciertas cosas. Yo no quería olvidar cómo se sentía quererte al principio. Quería poder volver a esos días y recordar qué estaba pensando, qué me preocupaba, qué me hacía sonreír o qué me quitaba el sueño. Sin darme cuenta, terminé escribiendo pequeños pedazos de nosotros.
           </p>
           <p>
-            Tal vez, cuando leas algunas cartas, encuentres ideas que hoy escribiría diferente. Es normal. Las personas si cambiamos mi amor. Pero hay algo que nunca cambiaría, y es la razón por la que las escribí. Todas nacieron del mismo lugar: de las ganas de conservar algo que para mí era demasiado valioso como para dejarlo únicamente en la memoria. No quiero que leas estas páginas como si fueran cartas de amor de un romantico empedernido, aunque en eso me has convertido mi amor. Quiero que las leas como si, por un momento, pudieras entrar en mi cabeza y acompañarme en cada uno de esos días. Porque muchas de las cosas que vas a encontrar ahí nunca las dije en voz alta. Algunas porque no encontraba las palabras, otras porque pensé que no eran tan importantes y otras simplemente porque se quedaron conmigo. Hoy quiero que también sean tuyas. Ojalá que, cuando termines de leerlas, no recuerdes las palabras exactas que escribí. Ojalá recuerdes cómo me sentía cuando las escribía. Porque, al final, eso era lo único que quería conservar.
+            Tal vez, cuando leas algunas cartas, encuentres ideas que hoy escribiría diferente. Es normal. Las personas sí cambiamos, mi amor. Pero hay algo que nunca cambiaría, y es la razón por la que las escribí. Todas nacieron del mismo lugar: de las ganas de conservar algo que para mí era demasiado valioso como para dejarlo únicamente en la memoria. No quiero que leas estas páginas como si fueran cartas de amor de un romántico empedernido, aunque en eso me has convertido, mi amor. Quiero que las leas como si, por un momento, pudieras entrar en mi cabeza y acompañarme en cada uno de esos días. Porque muchas de las cosas que vas a encontrar ahí nunca las dije en voz alta. Algunas porque no encontraba las palabras, otras porque pensé que no eran tan importantes y otras simplemente porque se quedaron conmigo. Hoy quiero que también sean tuyas. Ojalá que, cuando termines de leerlas, no recuerdes las palabras exactas que escribí. Ojalá recuerdes cómo me sentía cuando las escribía. Porque, al final, eso era lo único que quería conservar.
           </p>
           <p>
             Si alguna vez te preguntaste qué estaba pensando mientras vivíamos nuestra historia, aquí empieza la respuesta.
@@ -355,9 +364,9 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
           <p>
             En lugar de estudiar vías pero con todo mi amor,<br>
             Alejandro.<br>
-            A 3 días de tu cumpleaños. Y en nuestros 3 meses.<br>
+            A 3 días de tu cumpleaños. Y seguimos aquí, contando cada mes.<br>
             23/07/2026<br>
-            Sino te tengo a ti - Hombres G
+            «Si no te tengo a ti» - Hombres G
           </p>
         </div>
       </div>
@@ -425,10 +434,10 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
       <span class="close-modal" id="closeFutureModal" aria-label="Cerrar">&times;</span>
       <h3 id="future-modal-title" style="color: var(--purple); font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 15px;">Una foto pendiente...</h3>
       <p style="color: var(--text-sec); font-size: 1.1rem; line-height: 1.7;">
-        Este espacio está reservado para un momento que aun no vivimos.<br><br>
-        No se cuando sera, ni donde, ni como.<br>
-        Pero ya se con quien.<br><br>
-        <span style="color: var(--purple); font-style: italic;">El mejor capitulo siempre es el que viene.</span>
+        Este espacio está reservado para un momento que aún no vivimos.<br><br>
+        No sé cuándo será, ni dónde, ni cómo.<br>
+        Pero ya sé con quién.<br><br>
+        <span style="color: var(--purple); font-style: italic;">El mejor capítulo siempre es el que viene.</span>
       </p>
     </div>
   </div>
@@ -454,7 +463,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   <!-- ===== FINAL ===== -->
   <section class="section" id="final" data-index="15">
     <div class="section-scroll"><div class="container">
-      <h2>Si no eres tu, no quiero nada</h2>
+      <h2>Si no eres tú, no quiero nada</h2>
       <p class="section-sub">
         No siempre voy a poder estar cerca, pero quería que supieras todo lo que pienso, aunque no te lo diga cada día.
       </p>
@@ -520,10 +529,10 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
 
   <!-- ===== SCRIPTS ===== -->
-  <!-- GSAP desde CDN, con respaldo local (vendor/gsap.min.js) por si falla la conexión -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" onerror="this.onerror=null; var s=document.createElement('script'); s.src='vendor/gsap.min.js'; s.onload=function(){ document.dispatchEvent(new Event('gsap-ready')); }; document.head.appendChild(s);"></script>
-  <!-- Leaflet (mapa de nuestros lugares) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <!-- GSAP local primero (incluido en el repo), con CDN de respaldo por si algo falla -->
+  <script src="vendor/gsap.min.js" onerror="this.onerror=null; var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js'; s.onload=function(){ document.dispatchEvent(new Event('gsap-ready')); }; document.head.appendChild(s);"></script>
+  <!-- Leaflet (mapa de nuestros lugares), local para máxima fiabilidad -->
+  <script src="vendor/leaflet.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

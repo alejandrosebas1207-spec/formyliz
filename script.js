@@ -11,7 +11,7 @@ function initApp() {
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
-    'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti', 'Tiempo juntos',
+    'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti', 'Ya vamos',
     'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
@@ -34,6 +34,7 @@ function initApp() {
 
   // Contexto de audio compartido
   let audioCtx = null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function getAudioCtx() {
     if (!audioCtx) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -178,13 +179,15 @@ function initApp() {
     starsBg.appendChild(star);
     parallaxLayers[layer].push(star);
 
-    gsap.to(star, {
-      opacity: 0.2 + Math.random() * 0.6,
-      duration: 2 + Math.random() * 4,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut'
-    });
+    if (!reduceMotion) {
+      gsap.to(star, {
+        opacity: 0.2 + Math.random() * 0.6,
+        duration: 2 + Math.random() * 4,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+    }
   }
 
   // Efecto parallax con movimiento del mouse
@@ -195,14 +198,17 @@ function initApp() {
   });
 
   function updateParallax() {
-    parallaxLayers.forEach((layer, layerIndex) => {
-      const speed = (layerIndex + 1) * 8;
-      layer.forEach(star => {
-        const x = parseFloat(star.style.left);
-        const y = parseFloat(star.style.top);
-        star.style.transform = `translate(${mouseX * speed}px, ${mouseY * speed}px)`;
+    // No malgastar CPU si la pestaña está oculta o el usuario prefiere menos movimiento
+    if (!document.hidden && !reduceMotion) {
+      parallaxLayers.forEach((layer, layerIndex) => {
+        const speed = (layerIndex + 1) * 8;
+        layer.forEach(star => {
+          const x = parseFloat(star.style.left);
+          const y = parseFloat(star.style.top);
+          star.style.transform = `translate(${mouseX * speed}px, ${mouseY * speed}px)`;
+        });
       });
-    });
+    }
     requestAnimationFrame(updateParallax);
   }
   updateParallax();
@@ -211,6 +217,9 @@ function initApp() {
   // 3. CORAZONES FLOTANTES
   // =========================================
   const heartsContainer = document.getElementById('hearts-container');
+  if (reduceMotion && heartsContainer) {
+    heartsContainer.style.display = 'none';
+  }
   function createHeart() {
     const heart = document.createElement('div');
     heart.className = 'heart-float';
@@ -342,7 +351,12 @@ function initApp() {
 
             // Ejecutar funciones especiales
             if (nextSection.id === 'mapa') initLoveMap();
-            if (nextSection.id === 'tiempo') updateCounter(true);
+            if (nextSection.id === 'tiempo') {
+              if (!counterInterval) {
+                counterInterval = setInterval(() => updateCounter(false), 1000);
+              }
+              updateCounter(true);
+            }
             if (nextSection.id === 'sorpresa') initStarfield();
             if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
@@ -467,6 +481,15 @@ function initApp() {
       window.starfieldTimers.forEach(t => clearTimeout(t));
       window.starfieldTimers = [];
     }
+    if (counterInterval) {
+      clearInterval(counterInterval);
+      counterInterval = null;
+    }
+    counterAnimated = false;
+    monthAnimating = false;
+    letterOpened = false;
+    const envelope = document.querySelector('.envelope');
+    if (envelope) envelope.remove();
     stopMusicBox();
     if (ambientBtn) {
       ambientPlaying = false;
@@ -517,7 +540,14 @@ function initApp() {
   // 7. TECLADO
   // =========================================
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === ' ') {
+    if (document.querySelector('.modal.show')) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowRight') {
       e.preventDefault();
       if (isTransitioning) return;
       const nextIndex = currentIndex + 1;
@@ -525,10 +555,59 @@ function initApp() {
         goToSection(nextIndex);
       }
     }
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (isTransitioning) return;
+      const prevIndex = currentIndex - 1;
+      if (prevIndex >= 0) {
+        goToSection(prevIndex);
+      }
+    }
+    if (e.key === ' ') {
+      const current = sections[currentIndex];
+      const atBottom = current.scrollHeight - current.scrollTop - current.clientHeight < 40;
+      if (atBottom) {
+        e.preventDefault();
+        if (isTransitioning) return;
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < sections.length) {
+          goToSection(nextIndex);
+        }
+      }
     }
   });
+
+  // =========================================
+  // 7b. GESTOS TÁCTILES (swipe izquierda/derecha)
+  // =========================================
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (document.querySelector('.modal.show')) return;
+    if (isTransitioning) return;
+
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+
+    // Solo gestos claramente horizontales y con recorrido suficiente
+    if (absX < 60 || absX < absY * 1.2) return;
+
+    if (dx < 0) {
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < sections.length) goToSection(nextIndex);
+    } else {
+      const prevIndex = currentIndex - 1;
+      if (prevIndex >= 0) goToSection(prevIndex);
+    }
+  }, { passive: true });
 
   // =========================================
   // 8. MÁQUINA DE ESCRIBIR EN CITAS (CORREGIDA - VELOCIDAD ACELERADA)
@@ -603,37 +682,62 @@ function initApp() {
   });
 
   // =========================================
-  // 10. CONTADOR DE TIEMPO JUNTOS (ANIMADO)
+  // 10. CONTADOR DE TIEMPO JUNTOS (EN VIVO)
   // =========================================
   let counterAnimated = false;
+  let monthAnimating = false;
+  let counterInterval = null;
+  const RELATIONSHIP_START = new Date('2026-04-24T00:00:00');
+
+  function getRelationshipTime() {
+    const now = new Date();
+    let diffMs = now - RELATIONSHIP_START;
+    if (diffMs < 0) diffMs = 0;
+
+    // Meses calendario completos desde el 24 de abril de 2026
+    let months = (now.getFullYear() - RELATIONSHIP_START.getFullYear()) * 12
+      + (now.getMonth() - RELATIONSHIP_START.getMonth());
+    if (now.getDate() < RELATIONSHIP_START.getDate()) months -= 1;
+    if (months < 0) months = 0;
+
+    // Lo que sobra después de esos meses
+    const base = new Date(RELATIONSHIP_START);
+    base.setMonth(base.getMonth() + months);
+
+    const restMs = now - base;
+    const days = Math.floor(restMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((restMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((restMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((restMs % (1000 * 60)) / 1000);
+
+    return { months, days, hours, minutes, seconds };
+  }
 
   function updateCounter(animate = false) {
-    const start = new Date('2026-04-24T00:00:00');
-    const now = new Date();
-    const diffMs = now - start;
-    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const safeDays = days >= 0 ? days : 0;
-    const hours = Math.floor(diffMs / (1000 * 60 * 60));
-    const safeHours = hours >= 0 ? hours : 0;
-    const weeks = Math.floor(safeDays / 7);
-
+    const t = getRelationshipTime();
+    const monthEl = document.getElementById('monthCounter');
     const dayEl = document.getElementById('dayCounter');
-    const weekEl = document.getElementById('weekCounter');
     const hourEl = document.getElementById('hourCounter');
+    const minuteEl = document.getElementById('minuteCounter');
+    const secondEl = document.getElementById('secondCounter');
 
     if (animate && !counterAnimated) {
       counterAnimated = true;
-      animateNumber(dayEl, 0, safeDays, 1500);
-      animateNumber(weekEl, 0, weeks, 1500);
-      animateNumber(hourEl, 0, safeHours, 1500);
-    } else {
-      if (dayEl) dayEl.textContent = safeDays;
-      if (weekEl) weekEl.textContent = weeks;
-      if (hourEl) hourEl.textContent = safeHours.toLocaleString('es-EC');
+      monthAnimating = true;
+      animateNumber(monthEl, 0, t.months, 1500, () => { monthAnimating = false; });
+    } else if (!monthAnimating) {
+      if (monthEl) monthEl.textContent = t.months;
     }
+    if (dayEl) dayEl.textContent = t.days.toLocaleString('es-EC');
+    if (hourEl) hourEl.textContent = t.hours.toLocaleString('es-EC');
+    if (minuteEl) minuteEl.textContent = t.minutes.toLocaleString('es-EC');
+    if (secondEl) secondEl.textContent = t.seconds.toLocaleString('es-EC');
   }
 
-  function animateNumber(element, start, end, duration) {
+  updateCounter();
+  counterInterval = setInterval(() => updateCounter(false), 1000);
+
+  function animateNumber(element, start, end, duration, onDone) {
     if (!element) return;
     const startTime = performance.now();
 
@@ -650,6 +754,7 @@ function initApp() {
         element.textContent = end.toLocaleString('es-EC');
         element.classList.add('counter-animated');
         setTimeout(() => element.classList.remove('counter-animated'), 500);
+        if (onDone) onDone();
       }
     }
 
@@ -867,7 +972,7 @@ function initApp() {
 
     const modal = document.getElementById('thought-modal');
     const thoughtText = document.getElementById('thought-text');
-    const closeModal = document.querySelector('.close-modal');
+    const closeModal = modal ? modal.querySelector('.close-modal') : null;
 
     function showThought(phrase) {
       thoughtText.textContent = phrase;
@@ -1432,10 +1537,43 @@ function initApp() {
 // =========================================
 // ARRANQUE
 // =========================================
+function tryLoadLocalGsap() {
+  if (typeof gsap !== 'undefined') return;
+  const s = document.createElement('script');
+  s.src = 'vendor/gsap.min.js';
+  s.onload = () => document.dispatchEvent(new Event('gsap-ready'));
+  document.head.appendChild(s);
+}
+
+function showStaticHeroFallback() {
+  document.body.classList.add('no-gsap');
+  const loaderEl = document.getElementById('loader');
+  if (loaderEl) loaderEl.classList.add('hidden');
+  const hero = document.getElementById('intro');
+  if (hero) {
+    hero.style.display = 'flex';
+    hero.style.opacity = '1';
+    hero.style.transform = 'translateX(0)';
+    hero.classList.add('active', 'hero-animated');
+  }
+  const nav = document.getElementById('progress-nav');
+  if (nav) nav.style.display = 'none';
+  const startBtn = document.getElementById('startButton');
+  if (startBtn) startBtn.style.display = 'none';
+  const musicBtn = document.getElementById('ambient-audio');
+  if (musicBtn) musicBtn.style.display = 'none';
+}
+
 function bootstrap() {
   if (typeof gsap === 'undefined') {
     document.body.classList.add('no-gsap');
     document.addEventListener('gsap-ready', bootstrap, { once: true });
+    // Red de seguridad: reintenta el archivo local y, si nada funciona,
+    // muestra la portada estática en lugar de dejar la página en blanco.
+    setTimeout(tryLoadLocalGsap, 2000);
+    setTimeout(() => {
+      if (typeof gsap === 'undefined') showStaticHeroFallback();
+    }, 6000);
     return;
   }
   initApp();

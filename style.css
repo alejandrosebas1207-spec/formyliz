@@ -1187,6 +1187,13 @@ body {
   .section:not(.hero) .section-scroll {
     padding-top: 30px;
   }
+  .time-stat {
+    min-width: 82px;
+    padding: 12px 10px;
+  }
+  .time-stat-number {
+    font-size: 1.35rem;
+  }
   .hero h1 {
     font-size: 3.2rem;
   }
