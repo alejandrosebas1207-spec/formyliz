@@ -737,6 +737,29 @@ function initApp() {
   updateCounter();
   counterInterval = setInterval(() => updateCounter(false), 1000);
 
+  // =========================================
+  // 10b. CONTADOR EN VIVO DEL INICIO
+  // =========================================
+  function formatUnit(value, singular, plural) {
+    return value + ' ' + (value === 1 ? singular : plural);
+  }
+
+  function updateHeroCounter() {
+    const el = document.getElementById('heroTimeLine');
+    if (!el) return;
+    const t = getRelationshipTime();
+    el.textContent = [
+      formatUnit(t.months, 'mes', 'meses'),
+      formatUnit(t.days, 'día', 'días'),
+      formatUnit(t.hours, 'hora', 'horas'),
+      t.minutes + ' min',
+      t.seconds + ' s'
+    ].join(' · ');
+  }
+
+  updateHeroCounter();
+  setInterval(updateHeroCounter, 1000);
+
   function animateNumber(element, start, end, duration, onDone) {
     if (!element) return;
     const startTime = performance.now();
