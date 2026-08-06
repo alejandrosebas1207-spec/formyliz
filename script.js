@@ -6,13 +6,13 @@ function initApp() {
   const SECTION_IDS = [
     'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
     'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
-    'capitulo-futuro', 'sorpresa', 'final'
+    'propositos', 'capitulo-futuro', 'sorpresa', 'final'
   ];
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
-    'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
+    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -1485,6 +1485,143 @@ function initApp() {
     preloadNextImages(index);
     return originalGoToSection(index);
   };
+
+  // =========================================
+  // 21. PROPÓSITOS DEL SEMESTRE
+  // =========================================
+  const PROPOSITOS = [
+    {
+      titulo: 'Los tuyos',
+      icono: '🌱',
+      items: [
+        {
+          titulo: 'Ser más constante',
+          texto: 'En la carrera, en mis ideas y en cada palabra que te doy.'
+        },
+        {
+          titulo: 'Escribir a tiempo',
+          texto: 'No solo cuando me nace, también en los días en que lo necesitas.'
+        },
+        {
+          titulo: 'Escuchar bien',
+          texto: 'Bajar la cabeza cuando hables y darte el espacio que mereces.'
+        }
+      ]
+    },
+    {
+      titulo: 'Tuyos, mi amor',
+      icono: '🌷',
+      items: [
+        {
+          titulo: 'Sin tanto estrés',
+          texto: 'Un semestre donde los exámenes no roben tu paz.'
+        },
+        {
+          titulo: 'Culminar tus metas',
+          texto: 'Ese proyecto, esas notas, ese sueño tuyo conmigo de lado.'
+        },
+        {
+          titulo: 'Pedir sin culpa',
+          texto: 'Que me pidas ayuda cuando la necesites. Para eso estamos.'
+        }
+      ]
+    },
+    {
+      titulo: 'Los nuestros',
+      icono: '💜',
+      items: [
+        {
+          titulo: 'Más tardes así',
+          texto: 'Seguir patinando, pintando y estando sin hacer nada y que baste.'
+        },
+        {
+          titulo: 'Un viaje juntos',
+          texto: 'Ya lo planearemos con calma, uno de esos que nunca se olvidan.'
+        },
+        {
+          titulo: 'Seguir eligiéndonos',
+          texto: 'En la angustia, en los días grises y en cada 24 de abril.'
+        }
+      ]
+    }
+  ];
+
+  function renderPropositos() {
+    const grid = document.getElementById('propGrid');
+    if (!grid || grid.dataset.rendered === 'true') return;
+    grid.dataset.rendered = 'true';
+
+    PROPOSITOS.forEach((categoria) => {
+      const col = document.createElement('div');
+      col.className = 'prop-col';
+
+      const head = document.createElement('div');
+      head.className = 'prop-col-head';
+      head.innerHTML = `<span class="prop-col-icon">${categoria.icono}</span><h3>${categoria.titulo}</h3>`;
+      col.appendChild(head);
+
+      const cardsBox = document.createElement('div');
+      cardsBox.className = 'prop-cards';
+
+      categoria.items.forEach((meta) => {
+        const cardBox = document.createElement('div');
+        cardBox.className = 'prop-card';
+        cardBox.setAttribute('role', 'button');
+        cardBox.setAttribute('tabindex', '0');
+        cardBox.setAttribute('aria-label', `Cada propósito: ${meta.titulo}`);
+
+        const inner = document.createElement('div');
+        inner.className = 'prop-inner';
+
+        const front = document.createElement('div');
+        front.className = 'prop-face prop-front';
+        front.textContent = meta.titulo;
+
+        const back = document.createElement('div');
+        back.className = 'prop-face prop-back';
+        const backText = document.createElement('p');
+        backText.textContent = meta.texto;
+        back.appendChild(backText);
+
+        inner.appendChild(front);
+        inner.appendChild(back);
+        cardBox.appendChild(inner);
+        cardsBox.appendChild(cardBox);
+
+        const flip = () => cardBox.classList.toggle('flipped');
+        cardBox.addEventListener('click', flip);
+        cardBox.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            flip();
+          }
+        });
+      });
+
+      col.appendChild(cardsBox);
+      grid.appendChild(col);
+    });
+
+    const promiseBtn = document.getElementById('propPromise');
+    if (promiseBtn) {
+      let promised = false;
+      promiseBtn.addEventListener('click', () => {
+        const rect = promiseBtn.getBoundingClientRect();
+        launchConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        playChimeGlobal();
+        if (!promised) {
+          promised = true;
+          promiseBtn.textContent = 'Lo hemos prometido ❤️';
+        } else {
+          promiseBtn.classList.add('promised');
+        }
+        const textEl = document.getElementById('propPromiseText');
+        if (textEl) textEl.textContent = 'Prometido. Ahora solo falta cumplirlo, juntos.';
+      });
+    }
+  }
+
+  renderPropositos();
 
 }
 

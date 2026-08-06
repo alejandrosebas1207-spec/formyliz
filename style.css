@@ -645,6 +645,120 @@ body {
   color: var(--purple);
 }
 
+/* ===== PROPÓSITOS DEL SEMESTRE ===== */
+.prop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin: 24px auto;
+  max-width: 980px;
+}
+.prop-col {
+  background: var(--card);
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  padding: 18px 16px;
+}
+.prop-col-head {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.prop-col-icon {
+  font-size: 1.8rem;
+  display: block;
+}
+.prop-col-head h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--purple);
+  margin-top: 6px;
+}
+.prop-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.prop-card {
+  perspective: 900px;
+  height: 120px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.prop-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1);
+}
+.prop-card.flipped .prop-inner {
+  transform: rotateY(180deg);
+}
+.prop-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px;
+  border: 1px solid var(--border-glow);
+  overflow: hidden;
+}
+.prop-front {
+  background: linear-gradient(135deg, #1a1a24, #101018);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+.prop-card:hover .prop-front {
+  border-color: var(--purple);
+}
+.prop-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, rgba(179, 157, 219, 0.14), rgba(192, 57, 43, 0.14)), var(--card);
+  color: var(--text-sec);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border-color: var(--red);
+}
+.prop-back p {
+  margin: 0;
+}
+.prop-close {
+  text-align: center;
+  margin-top: 26px;
+}
+.prop-promise-text {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--text-sec);
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+.prop-promise-text,
+.prop-close .next-btn {
+  transition: transform 0.3s ease;
+}
+.prop-close .next-btn.promised {
+  border-color: var(--purple);
+  color: var(--purple);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .prop-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .prop-card {
+    height: 104px;
+  }
+}
+
 /* ===== PLAYLIST ===== */
 .playlist-list {
   list-style: none;
