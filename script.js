@@ -5,13 +5,13 @@ function initApp() {
   // =========================================
   const SECTION_IDS = [
     'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
-    'mapa', 'galeria', 'lo-que-amo', 'playlist', 'tiempo', 'carta', 'promesas',
+    'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
     'capitulo-futuro', 'sorpresa', 'final'
   ];
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
-    'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti', 'Ya vamos',
+    'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
     'Una carta para ti', 'Lo que prometo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
@@ -326,7 +326,7 @@ function initApp() {
     nextSection.dataset.animated = 'false';
 
     const innerTargets = nextSection.querySelectorAll(
-      '.chapter-content, .gallery-grid, .love-list, .playlist-list, .counter-wrapper, .letter-wrapper, #starfield, .slideshow-container, .final-qr-section, .final-goodbye'
+      '.chapter-content, .gallery-grid, .love-list, .playlist-list, .letter-wrapper, #starfield, .slideshow-container, .final-qr-section, .final-goodbye'
     );
     gsap.set(innerTargets, { opacity: 0, y: 25 });
 
@@ -351,12 +351,6 @@ function initApp() {
 
             // Ejecutar funciones especiales
             if (nextSection.id === 'mapa') initLoveMap();
-            if (nextSection.id === 'tiempo') {
-              if (!counterInterval) {
-                counterInterval = setInterval(() => updateCounter(false), 1000);
-              }
-              updateCounter(true);
-            }
             if (nextSection.id === 'sorpresa') initStarfield();
             if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
@@ -481,12 +475,6 @@ function initApp() {
       window.starfieldTimers.forEach(t => clearTimeout(t));
       window.starfieldTimers = [];
     }
-    if (counterInterval) {
-      clearInterval(counterInterval);
-      counterInterval = null;
-    }
-    counterAnimated = false;
-    monthAnimating = false;
     letterOpened = false;
     const envelope = document.querySelector('.envelope');
     if (envelope) envelope.remove();
@@ -682,11 +670,8 @@ function initApp() {
   });
 
   // =========================================
-  // 10. CONTADOR DE TIEMPO JUNTOS (EN VIVO)
+  // 10. CONTADOR EN VIVO DEL INICIO
   // =========================================
-  let counterAnimated = false;
-  let monthAnimating = false;
-  let counterInterval = null;
   const RELATIONSHIP_START = new Date('2026-04-24T00:00:00');
 
   function getRelationshipTime() {
@@ -713,33 +698,6 @@ function initApp() {
     return { months, days, hours, minutes, seconds };
   }
 
-  function updateCounter(animate = false) {
-    const t = getRelationshipTime();
-    const monthEl = document.getElementById('monthCounter');
-    const dayEl = document.getElementById('dayCounter');
-    const hourEl = document.getElementById('hourCounter');
-    const minuteEl = document.getElementById('minuteCounter');
-    const secondEl = document.getElementById('secondCounter');
-
-    if (animate && !counterAnimated) {
-      counterAnimated = true;
-      monthAnimating = true;
-      animateNumber(monthEl, 0, t.months, 1500, () => { monthAnimating = false; });
-    } else if (!monthAnimating) {
-      if (monthEl) monthEl.textContent = t.months;
-    }
-    if (dayEl) dayEl.textContent = t.days.toLocaleString('es-EC');
-    if (hourEl) hourEl.textContent = t.hours.toLocaleString('es-EC');
-    if (minuteEl) minuteEl.textContent = t.minutes.toLocaleString('es-EC');
-    if (secondEl) secondEl.textContent = t.seconds.toLocaleString('es-EC');
-  }
-
-  updateCounter();
-  counterInterval = setInterval(() => updateCounter(false), 1000);
-
-  // =========================================
-  // 10b. CONTADOR EN VIVO DEL INICIO
-  // =========================================
   function formatUnit(value, singular, plural) {
     return value + ' ' + (value === 1 ? singular : plural);
   }
@@ -759,33 +717,6 @@ function initApp() {
 
   updateHeroCounter();
   setInterval(updateHeroCounter, 1000);
-
-  function animateNumber(element, start, end, duration, onDone) {
-    if (!element) return;
-    const startTime = performance.now();
-
-    function update(currentTime) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-      const current = Math.floor(start + (end - start) * easeProgress);
-      element.textContent = current.toLocaleString('es-EC');
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        element.textContent = end.toLocaleString('es-EC');
-        element.classList.add('counter-animated');
-        setTimeout(() => element.classList.remove('counter-animated'), 500);
-        if (onDone) onDone();
-      }
-    }
-
-    requestAnimationFrame(update);
-  }
-
-  updateCounter();
-  setInterval(() => updateCounter(false), 60000);
 
   // =========================================
   // 11. FIRMA ANIMADA

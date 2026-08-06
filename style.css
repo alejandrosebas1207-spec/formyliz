@@ -716,70 +716,6 @@ body {
   border-radius: 12px;
 }
 
-/* ===== TIEMPO JUNTOS ===== */
-.counter-wrapper {
-  text-align: center;
-  margin: 30px 0;
-}
-.counter-number {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 5rem;
-  font-weight: 300;
-  background: linear-gradient(135deg, var(--purple), var(--red));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: block;
-  line-height: 1.1;
-}
-.counter-label {
-  color: var(--text-sec);
-  font-size: 1rem;
-  letter-spacing: 2px;
-  margin-top: 5px;
-}
-.counter-phrase {
-  color: var(--text-sec);
-  font-size: 1.1rem;
-  font-style: italic;
-  margin-top: 25px;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.5;
-}
-
-/* ===== ESTADÍSTICAS ADICIONALES (TIEMPO JUNTOS) ===== */
-.time-stats-grid {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 25px;
-}
-.time-stat {
-  background: var(--card);
-  border: 1px solid var(--border-glow);
-  border-radius: 16px;
-  padding: 14px 20px;
-  min-width: 110px;
-  text-align: center;
-}
-.time-stat-number {
-  display: block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: var(--purple);
-}
-.time-stat-label {
-  display: block;
-  color: var(--text-sec);
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-}
-
 /* ===== CARTA ===== */
 .letter-wrapper {
   max-width: 700px;
@@ -1152,9 +1088,6 @@ body {
   .chapter-quote {
     font-size: 1.1rem;
   }
-  .counter-number {
-    font-size: 4rem;
-  }
   #starfield {
     height: 280px;
   }
@@ -1215,13 +1148,6 @@ body {
   .section:not(.hero) .section-scroll {
     padding-top: 30px;
   }
-  .time-stat {
-    min-width: 82px;
-    padding: 12px 10px;
-  }
-  .time-stat-number {
-    font-size: 1.35rem;
-  }
   .hero h1 {
     font-size: 3.2rem;
   }
@@ -1246,9 +1172,6 @@ body {
   }
   .love-list li {
     font-size: 1rem;
-  }
-  .counter-number {
-    font-size: 3.2rem;
   }
   #starfield {
     height: 220px;
@@ -1319,17 +1242,6 @@ body {
   border-radius: 50%;
   background: white;
   will-change: transform;
-}
-
-/* ===== CONTADOR ANIMADO ===== */
-.counter-animated {
-  animation: counterPulse 0.5s ease;
-}
-
-@keyframes counterPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); color: var(--red); }
-  100% { transform: scale(1); }
 }
 
 /* ===== SONIDO AMBIENTAL ===== */
