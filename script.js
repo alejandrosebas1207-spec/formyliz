@@ -1853,6 +1853,21 @@ function initApp() {
     }
   }
 
+  function fetchYTSuggest(query, callback) {
+    var cbName = '__ytScb' + Date.now();
+    var script = document.createElement('script');
+    window[cbName] = function (data) {
+      delete window[cbName];
+      script.remove();
+      try {
+        var sugs = (Array.isArray(data) && Array.isArray(data[1]) ? data[1] : []).slice(0, 8);
+        callback(sugs || []);
+      } catch (e) { callback([]); }
+    };
+    script.src = 'https://clients1.google.com/complete/search?client=youtube&ds=yt&q=' + encodeURIComponent(query) + '&callback=' + cbName;
+    document.head.appendChild(script);
+  }
+
   function initMuro() {
     const autorSeg = document.getElementById('muroAutor');
     const tipoSeg = document.getElementById('muroTipo');
@@ -1950,19 +1965,13 @@ function initApp() {
         clearTimeout(suggestTimer);
         const q = textoEl.value.trim();
         if (!q) { cerrarSuggest(); return; }
-        suggestTimer = setTimeout(async () => {
-          try {
-            const url = 'https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=' + encodeURIComponent(q);
-            const res = await fetch(url);
-            const text = await res.text();
-            const match = text.match(/\[([\s\S]*?\])\s*\]/);
-            if (!match) { cerrarSuggest(); return; }
-            const parsed = JSON.parse('[' + match[1] + ']');
-            const sugs = (Array.isArray(parsed) && Array.isArray(parsed[1]) ? parsed[1] : []).slice(0, 8);
-            if (!sugs.length) { cerrarSuggest(); return; }
+        suggestTimer = setTimeout(() => {
+          if (muroTipo !== 'cancion') return;
+          fetchYTSuggest(q, (sugs) => {
+            if (!sugs || !sugs.length || muroTipo !== 'cancion') { cerrarSuggest(); return; }
             suggestUl.innerHTML = sugs.map(s => '<li class="muro-suggest-item">' + escapeHtml(s) + '</li>').join('');
             suggestUl.style.display = 'block';
-          } catch (e) { cerrarSuggest(); }
+          });
         }, 350);
       });
 
