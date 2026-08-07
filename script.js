@@ -1860,8 +1860,9 @@ function initApp() {
       delete window[cbName];
       script.remove();
       try {
-        var sugs = (Array.isArray(data) && Array.isArray(data[1]) ? data[1] : []).slice(0, 8);
-        callback(sugs || []);
+        var raw = (Array.isArray(data) && Array.isArray(data[1]) ? data[1] : []).slice(0, 8);
+        var sugs = raw.map(function (r) { return Array.isArray(r) ? (r[0] || '') : String(r); });
+        callback(sugs);
       } catch (e) { callback([]); }
     };
     script.src = 'https://clients1.google.com/complete/search?client=youtube&ds=yt&q=' + encodeURIComponent(query) + '&callback=' + cbName;
