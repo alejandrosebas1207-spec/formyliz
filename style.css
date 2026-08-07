@@ -1,13 +1,13 @@
 :root {
-  --bg: #09090B;
-  --card: #16161D;
-  --text: #FFFFFF;
-  --text-sec: #B5B5C3;
-  --purple: #B39DDB;
-  --red: #C0392B;
-  --border-glow: rgba(179, 157, 219, 0.15);
-  --purple-glow: rgba(179, 157, 219, 0.3);
-  --red-glow: rgba(192, 57, 43, 0.25);
+  --bg: #101827;
+  --card: #182338;
+  --text: #F7F1E5;
+  --text-sec: #B8C4D6;
+  --purple: #D9A441;
+  --red: #D77A61;
+  --border-glow: rgba(217, 164, 65, 0.2);
+  --purple-glow: rgba(217, 164, 65, 0.32);
+  --red-glow: rgba(215, 122, 97, 0.28);
 }
 
 * {
@@ -31,7 +31,7 @@ body {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' fill='%23b39ddb' stroke='%23b39ddb' stroke-width='.5' opacity='.9'/%3E%3C/svg%3E") 12 12, auto;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' fill='%23d9a441' stroke='%23d9a441' stroke-width='.5' opacity='.9'/%3E%3C/svg%3E") 12 12, auto;
 }
 a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .polaroid, .muro-card, #startButton, .playlist-track, .muro-seg-btn, .muro-enlace {
   cursor: pointer;
@@ -1657,4 +1657,41 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
 }
 #ambient-audio .audio-icon {
   font-size: 1rem;
+}
+
+/* ===== PALETA AZUL NOCHE / CREMA / TERRACOTA ===== */
+#timeline-nav .timeline-dot:hover {
+  background: rgba(217, 164, 65, 0.45);
+}
+.section.active[data-chapter="1"]::before {
+  background: radial-gradient(ellipse at 70% 20%, rgba(217,164,65,0.22), transparent 65%),
+              radial-gradient(ellipse at 20% 80%, rgba(91,125,160,0.16), transparent 60%);
+}
+.section.active[data-chapter="2"]::before {
+  background: radial-gradient(ellipse at 30% 25%, rgba(91,125,160,0.24), transparent 60%),
+              radial-gradient(ellipse at 80% 70%, rgba(217,164,65,0.13), transparent 55%);
+}
+.section.active[data-chapter="3"]::before {
+  background: radial-gradient(ellipse at 50% 30%, rgba(215,122,97,0.2), transparent 60%),
+              radial-gradient(ellipse at 40% 75%, rgba(217,164,65,0.2), transparent 55%);
+}
+.section.active[data-chapter="4"]::before {
+  background: radial-gradient(ellipse at 60% 20%, rgba(217,164,65,0.2), transparent 65%),
+              radial-gradient(ellipse at 20% 60%, rgba(91,125,160,0.18), transparent 60%);
+}
+.section.active[data-chapter="5"]::before {
+  background: radial-gradient(ellipse at 40% 25%, rgba(215,122,97,0.22), transparent 55%),
+              radial-gradient(ellipse at 70% 65%, rgba(217,164,65,0.2), transparent 60%);
+}
+#ambient-audio {
+  background: rgba(16, 24, 39, 0.78);
+  border-color: rgba(247, 241, 229, 0.14);
+}
+#startButton:hover,
+.next-btn:hover {
+  color: var(--bg);
+}
+.made {
+  color: var(--text-sec);
+  opacity: 0.7;
 }
