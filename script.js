@@ -18,6 +18,27 @@ function initApp() {
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
     'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
+  const TYPED_IDS = ['heroTitle', 'heroDate', 'heroJuntos']; // títulos que se escriben solos
+
+  function typeText(el, text, speed, delay) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        let i = 0;
+        el.textContent = '';
+        const t = setInterval(() => {
+          el.textContent += text.charAt(i);
+          i++;
+          if (i >= text.length) { clearInterval(t); resolve(); }
+        }, speed);
+      }, delay || 0);
+    });
+  }
+
+  function activateTypewriter(section) {
+    const quotes = section.querySelectorAll('.chapter-quote');
+    quotes.forEach(q => { if (!q.dataset.typed) { q.dataset.typed = '1'; typeText(q, q.textContent.trim(), 40, 600); } });
+  }
+
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
     "Volví a sonreír de verdad desde que estás tú.",
@@ -194,22 +215,27 @@ function initApp() {
     }
   }
 
-  // Efecto parallax con movimiento del mouse
-  let mouseX = 0, mouseY = 0;
+  // Efecto parallax con movimiento del mouse + scroll
+  let mouseX = 0, mouseY = 0, scrollSpeed = 0, lastScrollY = 0;
   document.addEventListener('mousemove', (e) => {
     mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
     mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
+  document.addEventListener('scroll', () => {
+    const sy = window.scrollY || document.documentElement.scrollTop;
+    scrollSpeed = Math.min(Math.abs(sy - lastScrollY) * 0.3, 15);
+    lastScrollY = sy;
+    setTimeout(() => { scrollSpeed = Math.max(0, scrollSpeed - 1); }, 100);
+  }, { passive: true });
 
   function updateParallax() {
-    // No malgastar CPU si la pestaña está oculta o el usuario prefiere menos movimiento
     if (!document.hidden && !reduceMotion) {
+      const baseX = mouseX * 5 + scrollSpeed * 0.7;
+      const baseY = mouseY * 5 + scrollSpeed * 0.5;
       parallaxLayers.forEach((layer, layerIndex) => {
-        const speed = (layerIndex + 1) * 8;
+        const speed = (layerIndex + 1) * 2.5;
         layer.forEach(star => {
-          const x = parseFloat(star.style.left);
-          const y = parseFloat(star.style.top);
-          star.style.transform = `translate(${mouseX * speed}px, ${mouseY * speed}px)`;
+          star.style.transform = `translate(${baseX * speed}px, ${baseY * speed}px)`;
         });
       });
     }
@@ -245,22 +271,28 @@ function initApp() {
   });
 
   // =========================================
-  // 4. MENÚ DE PROGRESO (DOTS)
+  // 4. LÍNEA DE TIEMPO LATERAL
   // =========================================
-  const progressNav = document.getElementById('progress-nav');
-  SECTION_IDS.forEach((id, index) => {
-    const dot = document.createElement('button');
-    dot.className = 'progress-dot';
-    dot.dataset.index = index;
-    dot.setAttribute('aria-label', `Ir a: ${SECTION_LABELS[index]}`);
-    dot.setAttribute('title', SECTION_LABELS[index]);
-    dot.addEventListener('click', () => goToSection(index));
-    progressNav.appendChild(dot);
-  });
-  const dots = progressNav.querySelectorAll('.progress-dot');
+  const timeline = document.getElementById('timeline-nav');
+  if (timeline) {
+    SECTION_IDS.forEach((id, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'timeline-dot';
+      dot.dataset.index = index;
+      dot.setAttribute('aria-label', `Ir a: ${SECTION_LABELS[index]}`);
+      dot.setAttribute('title', SECTION_LABELS[index]);
+      const label = document.createElement('span');
+      label.className = 'timeline-label';
+      label.textContent = SECTION_LABELS[index].split(' · ')[0];
+      dot.appendChild(label);
+      dot.addEventListener('click', () => goToSection(index));
+      timeline.appendChild(dot);
+    });
+  }
+  const timelineDots = timeline ? timeline.querySelectorAll('.timeline-dot') : [];
 
   function updateProgress(index) {
-    dots.forEach((dot, i) => {
+    timelineDots.forEach((dot, i) => {
       dot.classList.toggle('active', i === index);
     });
   }
@@ -334,19 +366,22 @@ function initApp() {
     );
     gsap.set(innerTargets, { opacity: 0, y: 25 });
 
-    // Animar salida de la sección actual con partículas
+    // Animar salida con efecto de página que se voltea
+    gsap.set(currentSection, { transformOrigin: 'left center' });
     gsap.to(currentSection, {
       opacity: 0,
-      x: -24,
-      duration: 0.4,
-      ease: 'power2.inOut',
+      rotateY: -40,
+      x: -20,
+      duration: 0.45,
+      ease: 'power2.in',
       onComplete: () => {
         currentSection.style.display = 'none';
         currentSection.classList.remove('active');
+        gsap.set(currentSection, { rotateY: 0, x: 0 });
 
-        // Partículas al entrar
         createTransitionParticles();
 
+        gsap.set(nextSection, { x: 30, rotateY: 10, transformOrigin: 'right center' });
         const tl = gsap.timeline({
           onComplete: () => {
             currentIndex = index;
@@ -367,7 +402,8 @@ function initApp() {
         tl.to(nextSection, {
           opacity: 1,
           x: 0,
-          duration: 0.6,
+          rotateY: 0,
+          duration: 0.5,
           ease: 'power2.out'
         }, 0);
 
@@ -410,6 +446,17 @@ function initApp() {
     const hero = document.getElementById('intro');
     if (hero) {
       hero.classList.add('hero-animated');
+      // Máquina de escribir en los títulos del hero
+      const h1 = document.getElementById('heroTitle');
+      if (h1) { typeText(h1, 'Mi amor, ya vamos', 80, 200); }
+      const date = document.getElementById('heroDate');
+      if (date) {
+        setTimeout(() => typeText(date, 'Desde el 24 de abril de 2026', 60, 0), 800);
+      }
+      const juntos = document.getElementById('heroJuntos');
+      if (juntos) {
+        setTimeout(() => typeText(juntos, '¡Juntos!', 100, 0), 2000);
+      }
     }
   }, 1800); // Después del loader
 
