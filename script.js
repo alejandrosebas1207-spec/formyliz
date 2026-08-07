@@ -1704,6 +1704,7 @@ function initApp() {
   let muroAutor = 'Alejandro';
   let muroTipo = 'nota';
   let muroFotoData = null;
+  let muroVideoUrl = null;  // URL exacta del video seleccionado
   let muroLoaded = false;
 
   function escapeHtml(str) {
@@ -1793,7 +1794,7 @@ function initApp() {
         body += '<p class="muro-texto">' + escapeHtml(e.texto) + '</p>';
       }
       if (e.tipo === 'cancion') {
-        body += '<a class="muro-enlace" href="' + escapeHtml(e.url || 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.texto || '')) + '" target="_blank" rel="noopener">Escuchar en YouTube 🎧</a>';
+        body += '<a class="muro-enlace" href="' + escapeHtml(e.url || 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.texto || '')) + '" target="_blank" rel="noopener">Escuchar 🎧</a>';
       }
 
       card.innerHTML =
@@ -1831,7 +1832,7 @@ function initApp() {
       autor: muroAutor,
       titulo: null,
       texto: texto || null,
-      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(texto) : null)
+      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' ? (muroVideoUrl || null) : null)
     };
 
     try {
@@ -1844,6 +1845,7 @@ function initApp() {
 
       if (textoEl) textoEl.value = '';
       muroFotoData = null;
+      muroVideoUrl = null;
       const nombre = document.getElementById('muroNombreFoto');
       if (nombre) nombre.textContent = '';
       setMuroStatus('Dejado en el muro 💜', false);
@@ -1853,20 +1855,23 @@ function initApp() {
     }
   }
 
-  function fetchYTSuggest(query, callback) {
-    var cbName = '__ytScb' + Date.now();
-    var script = document.createElement('script');
-    window[cbName] = function (data) {
-      delete window[cbName];
-      script.remove();
-      try {
-        var raw = (Array.isArray(data) && Array.isArray(data[1]) ? data[1] : []).slice(0, 8);
-        var sugs = raw.map(function (r) { return Array.isArray(r) ? (r[0] || '') : String(r); });
-        callback(sugs);
-      } catch (e) { callback([]); }
-    };
-    script.src = 'https://clients1.google.com/complete/search?client=youtube&ds=yt&q=' + encodeURIComponent(query) + '&callback=' + cbName;
-    document.head.appendChild(script);
+  function buscarCanciones(query, callback) {
+    var url = 'https://pipedapi.kavin.rocks/search?q=' + encodeURIComponent(query) + '&filter=videos';
+    fetch(url).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (data) {
+      var items = (Array.isArray(data.items) ? data.items : []).slice(0, 6);
+      callback(items.map(function (v) {
+        return {
+          title: v.title || '',
+          url: v.url ? 'https://www.youtube.com' + v.url : '',
+          thumb: v.thumbnail || ''
+        };
+      }));
+    }).catch(function () {
+      callback([]);
+    });
   }
 
   function initMuro() {
@@ -1900,8 +1905,12 @@ function initApp() {
             textoEl.placeholder = 'Pega el nombre o el enlace de YouTube de la canción…';
           } else if (muroTipo === 'foto') {
             textoEl.placeholder = 'Pie de foto (opcional)…';
+            muroVideoUrl = null;
+            if (window._cerrarMuroSuggest) window._cerrarMuroSuggest();
           } else {
             textoEl.placeholder = 'Escribe tu nota, canción o pie de foto aquí…';
+            muroVideoUrl = null;
+            if (window._cerrarMuroSuggest) window._cerrarMuroSuggest();
           }
         }
         if (fotoField) fotoField.style.display = muroTipo === 'foto' ? 'block' : 'none';
@@ -1949,28 +1958,33 @@ function initApp() {
       suggestUl.style.display = 'none';
       textoEl.parentNode.appendChild(suggestUl);
 
-      function cerrarSuggest() {
+      window._cerrarMuroSuggest = function () {
         suggestUl.style.display = 'none';
         suggestUl.innerHTML = '';
-      }
+      };
 
       document.addEventListener('click', (e) => {
-        if (!textoEl.contains(e.target) && !suggestUl.contains(e.target)) cerrarSuggest();
+        if (!textoEl.contains(e.target) && !suggestUl.contains(e.target)) window._cerrarMuroSuggest();
       });
       textoEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') cerrarSuggest();
+        if (e.key === 'Escape') window._cerrarMuroSuggest();
       });
 
       textoEl.addEventListener('input', () => {
-        if (muroTipo !== 'cancion') { cerrarSuggest(); return; }
+        if (muroTipo !== 'cancion') { window._cerrarMuroSuggest(); return; }
         clearTimeout(suggestTimer);
         const q = textoEl.value.trim();
-        if (!q) { cerrarSuggest(); return; }
+        if (!q) { window._cerrarMuroSuggest(); return; }
         suggestTimer = setTimeout(() => {
           if (muroTipo !== 'cancion') return;
-          fetchYTSuggest(q, (sugs) => {
-            if (!sugs || !sugs.length || muroTipo !== 'cancion') { cerrarSuggest(); return; }
-            suggestUl.innerHTML = sugs.map(s => '<li class="muro-suggest-item">' + escapeHtml(s) + '</li>').join('');
+          buscarCanciones(q, (resultados) => {
+            if (!resultados || !resultados.length || muroTipo !== 'cancion') { window._cerrarMuroSuggest(); return; }
+            suggestUl.innerHTML = resultados.map(r =>
+              '<li class="muro-suggest-item" data-videourl="' + escapeHtml(r.url) + '">' +
+                '<img class="muro-suggest-thumb" src="' + escapeHtml(r.thumb) + '" alt="" loading="lazy" />' +
+                '<span class="muro-suggest-title">' + escapeHtml(r.title) + '</span>' +
+              '</li>'
+            ).join('');
             suggestUl.style.display = 'block';
           });
         }, 350);
@@ -1979,8 +1993,9 @@ function initApp() {
       suggestUl.addEventListener('click', (e) => {
         const li = e.target.closest('.muro-suggest-item');
         if (!li) return;
-        textoEl.value = li.textContent;
-        cerrarSuggest();
+        textoEl.value = li.querySelector('.muro-suggest-title').textContent;
+        muroVideoUrl = li.dataset.videourl;
+        window._cerrarMuroSuggest();
       });
     })();
 
