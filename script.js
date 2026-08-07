@@ -18,27 +18,6 @@ function initApp() {
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
     'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
-  const TYPED_IDS = ['heroTitle', 'heroDate', 'heroJuntos']; // títulos que se escriben solos
-
-  function typeText(el, text, speed, delay) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        let i = 0;
-        el.textContent = '';
-        const t = setInterval(() => {
-          el.textContent += text.charAt(i);
-          i++;
-          if (i >= text.length) { clearInterval(t); resolve(); }
-        }, speed);
-      }, delay || 0);
-    });
-  }
-
-  function activateTypewriter(section) {
-    const quotes = section.querySelectorAll('.chapter-quote');
-    quotes.forEach(q => { if (!q.dataset.typed) { q.dataset.typed = '1'; typeText(q, q.textContent.trim(), 40, 600); } });
-  }
-
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
     "Volví a sonreír de verdad desde que estás tú.",
@@ -393,9 +372,6 @@ function initApp() {
             if (nextSection.id === 'sorpresa') initStarfield();
             if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
-
-            // Activar máquina de escribir en la cita del capítulo
-            activateTypewriter(nextSection);
           }
         });
 
@@ -446,17 +422,6 @@ function initApp() {
     const hero = document.getElementById('intro');
     if (hero) {
       hero.classList.add('hero-animated');
-      // Máquina de escribir en los títulos del hero
-      const h1 = document.getElementById('heroTitle');
-      if (h1) { typeText(h1, 'Mi amor, ya vamos', 80, 200); }
-      const date = document.getElementById('heroDate');
-      if (date) {
-        setTimeout(() => typeText(date, 'Desde el 24 de abril de 2026', 60, 0), 800);
-      }
-      const juntos = document.getElementById('heroJuntos');
-      if (juntos) {
-        setTimeout(() => typeText(juntos, '¡Juntos!', 100, 0), 2000);
-      }
     }
   }, 1800); // Después del loader
 
