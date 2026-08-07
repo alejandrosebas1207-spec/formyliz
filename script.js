@@ -1729,6 +1729,20 @@ function initApp() {
     }
   }
 
+  async function deleteMuro(id) {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/entradas?id=eq.' + id, {
+        method: 'DELETE',
+        headers: muroAuthHeaders()
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      setMuroStatus('Eliminado ✓', false);
+      loadMuro();
+    } catch (e) {
+      setMuroStatus('No se pudo eliminar. Intenta de nuevo.', true);
+    }
+  }
+
   async function loadMuro() {
     try {
       const res = await fetch(SUPABASE_URL + '/rest/v1/entradas?select=*&order=created_at.asc', {
@@ -1784,9 +1798,13 @@ function initApp() {
         '<div class="muro-card-head">' +
           '<span class="muro-icon">' + icono + '</span>' +
           '<span class="muro-autor ' + autorCls + '">' + escapeHtml(e.autor) + '</span>' +
+          '<button class="muro-del" data-id="' + e.id + '" aria-label="Eliminar entrada">✕</button>' +
         '</div>' +
         body +
         '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>';
+
+      const delBtn = card.querySelector('.muro-del');
+      delBtn.addEventListener('click', () => deleteMuro(e.id));
 
       grid.appendChild(card);
     });
