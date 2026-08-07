@@ -1792,8 +1792,8 @@ function initApp() {
       if (e.texto) {
         body += '<p class="muro-texto">' + escapeHtml(e.texto) + '</p>';
       }
-      if (e.tipo === 'cancion' && e.url) {
-        body += '<a class="muro-enlace" href="' + escapeHtml(e.url) + '" target="_blank" rel="noopener">Escuchar en YouTube 🎧</a>';
+      if (e.tipo === 'cancion') {
+        body += '<a class="muro-enlace" href="' + escapeHtml(e.url || 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.texto || '')) + '" target="_blank" rel="noopener">Escuchar en YouTube 🎧</a>';
       }
 
       card.innerHTML =
@@ -1831,7 +1831,7 @@ function initApp() {
       autor: muroAutor,
       titulo: null,
       texto: texto || null,
-      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null)
+      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(texto) : null)
     };
 
     try {
@@ -1922,6 +1922,58 @@ function initApp() {
     }
 
     if (enviar) enviar.addEventListener('click', enviarMuro);
+
+    // Autocompletado de YouTube al buscar canciones
+    (function () {
+      const textoEl = document.getElementById('muroTexto');
+      if (!textoEl) return;
+      let suggestTimer = null;
+      let suggestUl = document.createElement('ul');
+      suggestUl.className = 'muro-suggest';
+      suggestUl.style.display = 'none';
+      textoEl.parentNode.appendChild(suggestUl);
+
+      function cerrarSuggest() {
+        suggestUl.style.display = 'none';
+        suggestUl.innerHTML = '';
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!textoEl.contains(e.target) && !suggestUl.contains(e.target)) cerrarSuggest();
+      });
+      textoEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') cerrarSuggest();
+      });
+
+      textoEl.addEventListener('input', () => {
+        if (muroTipo !== 'cancion') { cerrarSuggest(); return; }
+        clearTimeout(suggestTimer);
+        const q = textoEl.value.trim();
+        if (!q) { cerrarSuggest(); return; }
+        suggestTimer = setTimeout(async () => {
+          try {
+            const url = 'https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=' + encodeURIComponent(q);
+            const res = await fetch(url);
+            const text = await res.text();
+            const match = text.match(/\[([\s\S]*?\])\s*\]/);
+            if (!match) { cerrarSuggest(); return; }
+            const parsed = JSON.parse('[' + match[1] + ']');
+            const sugs = (Array.isArray(parsed) && Array.isArray(parsed[1]) ? parsed[1] : []).slice(0, 8);
+            if (!sugs.length) { cerrarSuggest(); return; }
+            suggestUl.innerHTML = sugs.map(s => '<li class="muro-suggest-item">' + escapeHtml(s) + '</li>').join('');
+            suggestUl.style.display = 'block';
+          } catch (e) { cerrarSuggest(); }
+        }, 350);
+      });
+
+      suggestUl.addEventListener('click', (e) => {
+        const li = e.target.closest('.muro-suggest-item');
+        if (!li) return;
+        textoEl.value = li.textContent;
+        cerrarSuggest();
+      });
+    })();
+
     loadMuro();
   }
 

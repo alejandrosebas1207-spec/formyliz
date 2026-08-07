@@ -971,6 +971,36 @@ body {
   font-size: 1rem;
   margin: 20px 0;
 }
+.muro-suggest {
+  list-style: none;
+  padding: 0;
+  margin: -4px 0 0;
+  background: var(--card);
+  border: 1px solid var(--border-glow);
+  border-radius: 0 0 14px 14px;
+  overflow: hidden;
+  position: absolute;
+  width: calc(100% - 2px);
+  z-index: 20;
+}
+.muro-suggest-item {
+  padding: 10px 14px;
+  color: var(--text-sec);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  border-bottom: 1px solid var(--border-glow);
+}
+.muro-suggest-item:last-child {
+  border-bottom: none;
+}
+.muro-suggest-item:hover {
+  background: rgba(179, 157, 219, 0.12);
+  color: var(--text);
+}
+.muro-field-text {
+  position: relative;
+}
 
 /* ===== PLAYLIST ===== */
 .playlist-list {
