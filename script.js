@@ -1704,7 +1704,6 @@ function initApp() {
   let muroAutor = 'Alejandro';
   let muroTipo = 'nota';
   let muroFotoData = null;
-  let muroVideoUrl = null;  // URL exacta del video seleccionado
   let muroLoaded = false;
 
   function escapeHtml(str) {
@@ -1793,8 +1792,8 @@ function initApp() {
       if (e.texto) {
         body += '<p class="muro-texto">' + escapeHtml(e.texto) + '</p>';
       }
-      if (e.tipo === 'cancion') {
-        body += '<a class="muro-enlace" href="' + escapeHtml(e.url || 'https://www.youtube.com/results?search_query=' + encodeURIComponent(e.texto || '')) + '" target="_blank" rel="noopener">Escuchar 🎧</a>';
+      if (e.tipo === 'cancion' && e.url) {
+        body += '<a class="muro-enlace" href="' + escapeHtml(e.url) + '" target="_blank" rel="noopener">Escuchar 🎧</a>';
       }
 
       card.innerHTML =
@@ -1832,7 +1831,7 @@ function initApp() {
       autor: muroAutor,
       titulo: null,
       texto: texto || null,
-      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' ? (muroVideoUrl || null) : null)
+      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null)
     };
 
     try {
@@ -1845,7 +1844,6 @@ function initApp() {
 
       if (textoEl) textoEl.value = '';
       muroFotoData = null;
-      muroVideoUrl = null;
       const nombre = document.getElementById('muroNombreFoto');
       if (nombre) nombre.textContent = '';
       setMuroStatus('Dejado en el muro 💜', false);
@@ -1853,25 +1851,6 @@ function initApp() {
     } catch (e) {
       setMuroStatus('No se pudo publicar. Intenta de nuevo.', true);
     }
-  }
-
-  function buscarCanciones(query, callback) {
-    var url = 'https://pipedapi.kavin.rocks/search?q=' + encodeURIComponent(query) + '&filter=videos';
-    fetch(url).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    }).then(function (data) {
-      var items = (Array.isArray(data.items) ? data.items : []).slice(0, 6);
-      callback(items.map(function (v) {
-        return {
-          title: v.title || '',
-          url: v.url ? 'https://www.youtube.com' + v.url : '',
-          thumb: v.thumbnail || ''
-        };
-      }));
-    }).catch(function () {
-      callback([]);
-    });
   }
 
   function initMuro() {
@@ -1905,12 +1884,8 @@ function initApp() {
             textoEl.placeholder = 'Pega el nombre o el enlace de YouTube de la canción…';
           } else if (muroTipo === 'foto') {
             textoEl.placeholder = 'Pie de foto (opcional)…';
-            muroVideoUrl = null;
-            if (window._cerrarMuroSuggest) window._cerrarMuroSuggest();
           } else {
-            textoEl.placeholder = 'Escribe tu nota, canción o pie de foto aquí…';
-            muroVideoUrl = null;
-            if (window._cerrarMuroSuggest) window._cerrarMuroSuggest();
+            textoEl.placeholder = 'Escribe tu nota aquí…';
           }
         }
         if (fotoField) fotoField.style.display = muroTipo === 'foto' ? 'block' : 'none';
@@ -1947,57 +1922,6 @@ function initApp() {
     }
 
     if (enviar) enviar.addEventListener('click', enviarMuro);
-
-    // Autocompletado de YouTube al buscar canciones
-    (function () {
-      const textoEl = document.getElementById('muroTexto');
-      if (!textoEl) return;
-      let suggestTimer = null;
-      let suggestUl = document.createElement('ul');
-      suggestUl.className = 'muro-suggest';
-      suggestUl.style.display = 'none';
-      textoEl.parentNode.appendChild(suggestUl);
-
-      window._cerrarMuroSuggest = function () {
-        suggestUl.style.display = 'none';
-        suggestUl.innerHTML = '';
-      };
-
-      document.addEventListener('click', (e) => {
-        if (!textoEl.contains(e.target) && !suggestUl.contains(e.target)) window._cerrarMuroSuggest();
-      });
-      textoEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') window._cerrarMuroSuggest();
-      });
-
-      textoEl.addEventListener('input', () => {
-        if (muroTipo !== 'cancion') { window._cerrarMuroSuggest(); return; }
-        clearTimeout(suggestTimer);
-        const q = textoEl.value.trim();
-        if (!q) { window._cerrarMuroSuggest(); return; }
-        suggestTimer = setTimeout(() => {
-          if (muroTipo !== 'cancion') return;
-          buscarCanciones(q, (resultados) => {
-            if (!resultados || !resultados.length || muroTipo !== 'cancion') { window._cerrarMuroSuggest(); return; }
-            suggestUl.innerHTML = resultados.map(r =>
-              '<li class="muro-suggest-item" data-videourl="' + escapeHtml(r.url) + '">' +
-                '<img class="muro-suggest-thumb" src="' + escapeHtml(r.thumb) + '" alt="" loading="lazy" />' +
-                '<span class="muro-suggest-title">' + escapeHtml(r.title) + '</span>' +
-              '</li>'
-            ).join('');
-            suggestUl.style.display = 'block';
-          });
-        }, 350);
-      });
-
-      suggestUl.addEventListener('click', (e) => {
-        const li = e.target.closest('.muro-suggest-item');
-        if (!li) return;
-        textoEl.value = li.querySelector('.muro-suggest-title').textContent;
-        muroVideoUrl = li.dataset.videourl;
-        window._cerrarMuroSuggest();
-      });
-    })();
 
     loadMuro();
   }
