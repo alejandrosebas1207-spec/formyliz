@@ -469,8 +469,7 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
   text-align: center;
   margin-top: 10px;
   min-height: 2em;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  opacity: 1;
 }
 
 /* Efecto cursor de máquina de escribir */
