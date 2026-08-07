@@ -1489,136 +1489,157 @@ function initApp() {
   // =========================================
   // 21. PROPÓSITOS DEL SEMESTRE
   // =========================================
-  const PROPOSITOS = [
+  const PROPOSITOS_DEFAULT = [
     {
-      titulo: 'Los tuyos',
-      icono: '🌱',
+      titulo: 'Alejandro',
       items: [
-        {
-          titulo: 'Ser más constante',
-          texto: 'En la carrera, en mis ideas y en cada palabra que te doy.'
-        },
-        {
-          titulo: 'Escribir a tiempo',
-          texto: 'No solo cuando me nace, también en los días en que lo necesitas.'
-        },
-        {
-          titulo: 'Escuchar bien',
-          texto: 'Bajar la cabeza cuando hables y darte el espacio que mereces.'
-        }
+        ''
       ]
     },
     {
-      titulo: 'Tuyos, mi amor',
-      icono: '🌷',
+      titulo: 'Elizabeth',
       items: [
-        {
-          titulo: 'Sin tanto estrés',
-          texto: 'Un semestre donde los exámenes no roben tu paz.'
-        },
-        {
-          titulo: 'Culminar tus metas',
-          texto: 'Ese proyecto, esas notas, ese sueño tuyo conmigo de lado.'
-        },
-        {
-          titulo: 'Pedir sin culpa',
-          texto: 'Que me pidas ayuda cuando la necesites. Para eso estamos.'
-        }
+        'Comprar lonchera',
+        'Comprar blusitas, pañitos húmedos, desmaquillante y maquillaje',
+        'Comprar cosas que faltan en la casita',
+        'Buscar prácticas preprofesionales',
+        'Aprender Excel, Civil 3D, AutoCAD, planillaje, presupuestos de ing civil, Revit y R',
+        'Nunca faltar a clases'
       ]
     },
     {
-      titulo: 'Los nuestros',
-      icono: '💜',
+      titulo: 'Juntos',
       items: [
-        {
-          titulo: 'Más tardes así',
-          texto: 'Seguir patinando, pintando y estando sin hacer nada y que baste.'
-        },
-        {
-          titulo: 'Un viaje juntos',
-          texto: 'Ya lo planearemos con calma, uno de esos que nunca se olvidan.'
-        },
-        {
-          titulo: 'Seguir eligiéndonos',
-          texto: 'En la angustia, en los días grises y en cada 24 de abril.'
-        }
+        'Planificación de comidas',
+        'Ahorro en pareja',
+        'Horas de vinculación',
+        'Planificación del semestre académico',
+        'Ir a ver Avengers en diciembre',
+        'Mantener organizada la casita',
+        'Matricularse juntos',
+        'Pedir material pasado',
+        'Ser cepillines',
+        'Planear citas, viajes y experiencias en pareja'
       ]
     }
   ];
 
+  const PROPOSITOS_KEY = 'propositos_semestre_v1';
+  let propositosData = loadPropositos();
+
+  function loadPropositos() {
+    try {
+      const raw = localStorage.getItem(PROPOSITOS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length === PROPOSITOS_DEFAULT.length) {
+          return parsed.map((col, i) => ({
+            titulo: col.titulo || PROPOSITOS_DEFAULT[i].titulo,
+            items: Array.isArray(col.items) ? col.items : []
+          }));
+        }
+      }
+    } catch (e) {}
+    return PROPOSITOS_DEFAULT.map(col => ({ titulo: col.titulo, items: col.items.slice() }));
+  }
+
+  function savePropositos() {
+    try { localStorage.setItem(PROPOSITOS_KEY, JSON.stringify(propositosData)); } catch (e) {}
+  }
+
   function renderPropositos() {
     const grid = document.getElementById('propGrid');
-    if (!grid || grid.dataset.rendered === 'true') return;
-    grid.dataset.rendered = 'true';
+    if (!grid) return;
 
-    PROPOSITOS.forEach((categoria) => {
+    if (grid.dataset.bound !== 'true') {
+      grid.dataset.bound = 'true';
+
+      grid.addEventListener('input', (e) => {
+        if (e.target && e.target.classList.contains('prop-input')) {
+          const ci = Number(e.target.dataset.ci);
+          const ii = Number(e.target.dataset.ii);
+          if (propositosData[ci] && propositosData[ci].items[ii] !== undefined) {
+            propositosData[ci].items[ii] = e.target.value;
+            savePropositos();
+          }
+        }
+      });
+
+      grid.addEventListener('click', (e) => {
+        const del = e.target.closest('.prop-del');
+        if (del) {
+          const ci = Number(del.dataset.ci);
+          const ii = Number(del.dataset.ii);
+          propositosData[ci].items.splice(ii, 1);
+          savePropositos();
+          redrawPropositos();
+        }
+      });
+    }
+
+    const cols = propositosData.map((categoria, ci) => {
       const col = document.createElement('div');
       col.className = 'prop-col';
 
       const head = document.createElement('div');
       head.className = 'prop-col-head';
-      head.innerHTML = `<span class="prop-col-icon">${categoria.icono}</span><h3>${categoria.titulo}</h3>`;
+      head.innerHTML = `<h3>${categoria.titulo}</h3>`;
       col.appendChild(head);
 
-      const cardsBox = document.createElement('div');
-      cardsBox.className = 'prop-cards';
+      const list = document.createElement('div');
+      list.className = 'prop-list';
 
-      categoria.items.forEach((meta) => {
-        const cardBox = document.createElement('div');
-        cardBox.className = 'prop-card';
-        cardBox.setAttribute('role', 'button');
-        cardBox.setAttribute('tabindex', '0');
-        cardBox.setAttribute('aria-label', `Cada propósito: ${meta.titulo}`);
-
-        const inner = document.createElement('div');
-        inner.className = 'prop-inner';
-
-        const front = document.createElement('div');
-        front.className = 'prop-face prop-front';
-        front.textContent = meta.titulo;
-
-        const back = document.createElement('div');
-        back.className = 'prop-face prop-back';
-        const backText = document.createElement('p');
-        backText.textContent = meta.texto;
-        back.appendChild(backText);
-
-        inner.appendChild(front);
-        inner.appendChild(back);
-        cardBox.appendChild(inner);
-        cardsBox.appendChild(cardBox);
-
-        const flip = () => cardBox.classList.toggle('flipped');
-        cardBox.addEventListener('click', flip);
-        cardBox.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            flip();
-          }
-        });
+      categoria.items.forEach((texto, ii) => {
+        list.appendChild(buildPropItem(ci, ii));
       });
 
-      col.appendChild(cardsBox);
-      grid.appendChild(col);
+      const addBtn = document.createElement('button');
+      addBtn.className = 'prop-add';
+      addBtn.innerHTML = '+ Agregar';
+      addBtn.addEventListener('click', () => {
+        propositosData[ci].items.push('');
+        savePropositos();
+        redrawPropositos();
+      });
+
+      list.appendChild(addBtn);
+      col.appendChild(list);
+      return col;
     });
 
-    const promiseBtn = document.getElementById('propPromise');
-    if (promiseBtn) {
-      let promised = false;
-      promiseBtn.addEventListener('click', () => {
-        const rect = promiseBtn.getBoundingClientRect();
-        launchConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
-        playChimeGlobal();
-        if (!promised) {
-          promised = true;
-          promiseBtn.textContent = 'Lo hemos prometido ❤️';
-        } else {
-          promiseBtn.classList.add('promised');
-        }
-        const textEl = document.getElementById('propPromiseText');
-        if (textEl) textEl.textContent = 'Prometido. Ahora solo falta cumplirlo, juntos.';
-      });
-    }
+    grid.replaceChildren(...cols);
+  }
+
+  function buildPropItem(ci, ii) {
+    const row = document.createElement('div');
+    row.className = 'prop-row';
+
+    const input = document.createElement('input');
+    input.className = 'prop-input';
+    input.type = 'text';
+    input.value = propositosData[ci].items[ii];
+    input.placeholder = 'Escribe un propósito…';
+    input.dataset.ci = ci;
+    input.dataset.ii = ii;
+    input.setAttribute('aria-label', `Propósito de ${propositosData[ci].titulo}`);
+
+    const del = document.createElement('button');
+    del.className = 'prop-del';
+    del.innerHTML = '✕';
+    del.dataset.ci = ci;
+    del.dataset.ii = ii;
+    del.setAttribute('aria-label', 'Eliminar propósito');
+
+    row.appendChild(input);
+    row.appendChild(del);
+    return row;
+  }
+
+  function redrawPropositos() {
+    const grid = document.getElementById('propGrid');
+    if (!grid) return;
+    propositosData = loadPropositos();
+    renderPropositos();
   }
 
   renderPropositos();

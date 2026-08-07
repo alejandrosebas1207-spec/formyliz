@@ -663,99 +663,79 @@ body {
   text-align: center;
   margin-bottom: 14px;
 }
-.prop-col-icon {
-  font-size: 1.8rem;
-  display: block;
-}
 .prop-col-head h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.5rem;
   color: var(--purple);
-  margin-top: 6px;
+  margin-top: 0;
 }
-.prop-cards {
+.prop-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
-.prop-card {
-  perspective: 900px;
-  height: 120px;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-.prop-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1);
-}
-.prop-card.flipped .prop-inner {
-  transform: rotateY(180deg);
-}
-.prop-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 14px;
+.prop-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 14px;
-  border: 1px solid var(--border-glow);
-  overflow: hidden;
+  gap: 8px;
 }
-.prop-front {
+.prop-input {
+  flex: 1;
+  width: 100%;
   background: linear-gradient(135deg, #1a1a24, #101018);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem;
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  padding: 10px 12px;
   color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
 }
-.prop-card:hover .prop-front {
+.prop-input::placeholder {
+  color: var(--text-sec);
+  opacity: 0.7;
+}
+.prop-input:focus {
+  outline: none;
   border-color: var(--purple);
 }
-.prop-back {
-  transform: rotateY(180deg);
-  background: linear-gradient(135deg, rgba(179, 157, 219, 0.14), rgba(192, 57, 43, 0.14)), var(--card);
+.prop-del {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  background: transparent;
   color: var(--text-sec);
   font-size: 0.9rem;
-  line-height: 1.5;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.prop-del:hover {
+  color: var(--red);
   border-color: var(--red);
 }
-.prop-back p {
-  margin: 0;
-}
-.prop-close {
-  text-align: center;
-  margin-top: 26px;
-}
-.prop-promise-text {
-  font-family: 'Cormorant Garamond', serif;
+.prop-add {
+  margin-top: 4px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px dashed var(--border-glow);
+  border-radius: 12px;
   color: var(--text-sec);
-  font-style: italic;
-  font-size: 1.1rem;
-  margin-bottom: 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
-.prop-promise-text,
-.prop-close .next-btn {
-  transition: transform 0.3s ease;
-}
-.prop-close .next-btn.promised {
-  border-color: var(--purple);
+.prop-add:hover {
   color: var(--purple);
-  transform: scale(1.05);
+  border-color: var(--purple);
 }
 
 @media (max-width: 768px) {
   .prop-grid {
     grid-template-columns: 1fr;
     gap: 14px;
-  }
-  .prop-card {
-    height: 104px;
   }
 }
 
