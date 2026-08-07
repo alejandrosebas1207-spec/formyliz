@@ -616,45 +616,6 @@ function initApp() {
   }, { passive: true });
 
   // =========================================
-  // 8. MÁQUINA DE ESCRIBIR EN CITAS (CORREGIDA - VELOCIDAD ACELERADA)
-  // =========================================
-  function activateTypewriter(section) {
-    const quote = section.querySelector('.chapter-quote');
-    if (!quote || quote.dataset.typed === 'true') return;
-
-    const text = quote.textContent;
-    quote.dataset.typed = 'true';
-
-    // Ocultar el texto y limpiar contenido
-    quote.style.opacity = '0';
-    quote.textContent = '';
-    quote.classList.remove('typewriter-done');
-
-    const cursor = document.createElement('span');
-    cursor.className = 'typewriter-cursor';
-    quote.appendChild(cursor);
-
-    let i = 0;
-    // ===== CAMBIO 1: velocidad más rápida (antes 45) =====
-    const speed = 18; // ms por letra
-    // ===== CAMBIO 2: retraso inicial mucho menor (antes 800) =====
-    const startDelay = 250; // ms
-
-    function typeChar() {
-      if (i < text.length) {
-        quote.insertBefore(document.createTextNode(text.charAt(i)), cursor);
-        i++;
-        setTimeout(typeChar, speed);
-      } else {
-        quote.classList.add('typewriter-done');
-        quote.style.opacity = '1';
-      }
-    }
-
-    setTimeout(typeChar, startDelay);
-  }
-
-  // =========================================
   // 9. REPRODUCTOR DE CANCIONES
   // =========================================
   document.querySelectorAll('.playlist-track').forEach((track) => {
