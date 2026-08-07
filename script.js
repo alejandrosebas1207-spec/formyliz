@@ -1593,7 +1593,7 @@ function initApp() {
       list.className = 'prop-list';
 
       categoria.items.forEach((texto, ii) => {
-        if (texto.trim() === '') return;
+        if (!editing && texto.trim() === '') return;
         list.appendChild(buildPropItem(ci, ii, editing));
       });
 
@@ -1605,6 +1605,9 @@ function initApp() {
           propositosData[ci].items.push('');
           savePropositos();
           redrawPropositos();
+          const newRows = document.querySelectorAll('.prop-col');
+          const inputs = newRows[ci] ? newRows[ci].querySelectorAll('.prop-input') : [];
+          if (inputs.length) inputs[inputs.length - 1].focus();
         });
         list.appendChild(addBtn);
       }
