@@ -385,13 +385,63 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
         <!-- Las listas se generan con JS -->
       </div>
 
+      <button class="next-btn" data-next="muro">Siguiente →</button>
+    </div>
+  </div>
+  </section>
+
+  <!-- ===== NUESTRO MURO ===== -->
+  <section class="section" id="muro" data-index="13">
+    <div class="section-scroll"><div class="container">
+      <h2>💌 Nuestro muro</h2>
+      <p class="section-sub">Notas, canciones y fotos que nos vamos dejando. Este muro es de los dos.</p>
+
+      <div class="muro-compose" id="muroCompose">
+        <div class="muro-fields">
+          <div class="muro-field">
+            <label class="muro-label" for="muroAutor">¿Quién escribe?</label>
+            <div class="muro-seg" id="muroAutor">
+              <button type="button" class="muro-seg-btn active" data-autor="Alejandro">Alejandro</button>
+              <button type="button" class="muro-seg-btn" data-autor="Elizabeth">Elizabeth</button>
+            </div>
+          </div>
+
+          <div class="muro-field">
+            <label class="muro-label" for="muroTipo">¿Qué vas a dejar?</label>
+            <div class="muro-seg" id="muroTipo">
+              <button type="button" class="muro-seg-btn active" data-tipo="nota">✍️ Nota</button>
+              <button type="button" class="muro-seg-btn" data-tipo="cancion">🎵 Canción</button>
+              <button type="button" class="muro-seg-btn" data-tipo="foto">📸 Foto</button>
+            </div>
+          </div>
+
+          <div class="muro-field muro-field-text">
+            <input type="text" id="muroTexto" class="muro-input" placeholder="Escribe tu nota, canción o pie de foto aquí…" maxlength="500" />
+          </div>
+
+          <div class="muro-field muro-field-file" id="muroFieldFoto" style="display:none;">
+            <label class="muro-file-btn" for="muroArchivo">📷 Elegir una foto</label>
+            <input type="file" id="muroArchivo" accept="image/*" style="display:none;" />
+            <span id="muroNombreFoto" class="muro-foto-nombre"></span>
+          </div>
+
+          <button id="muroEnviar" class="next-btn muro-enviar">Dejar en el muro 💜</button>
+          <p id="muroStatus" class="muro-status" role="status"></p>
+        </div>
+      </div>
+
+      <div class="muro-grid" id="muroGrid">
+        <!-- Las entradas se cargan con JS -->
+      </div>
+      <p id="muroVacio" class="muro-vacio">Todavía no hay nada aquí… deja la primera nota 🕊️</p>
+
       <button class="next-btn" data-next="capitulo-futuro">Siguiente →</button>
     </div>
   </div>
   </section>
 
   <!-- ===== CAPÍTULO SIN TERMINAR ===== -->
-  <section class="section" id="capitulo-futuro" data-index="13" aria-label="El próximo capítulo">
+  <section class="section" id="capitulo-futuro" data-index="14" aria-label="El próximo capítulo">
     <div class="section-scroll"><div class="container">
       <div class="chapter-header">
         <span class="chapter-number">El próximo capítulo</span>
@@ -434,7 +484,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
 
   <!-- ===== LAS ESTRELLAS (SORPRESA) ===== -->
-  <section class="section" id="sorpresa" data-index="14">
+  <section class="section" id="sorpresa" data-index="15">
     <div class="section-scroll"><div class="container">
       <h2>✨ Todavía no termina...</h2>
       <p class="section-sub">Toca las estrellas, mi amor</p>
@@ -452,7 +502,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </section>
 
   <!-- ===== FINAL ===== -->
-  <section class="section" id="final" data-index="15">
+  <section class="section" id="final" data-index="16">
     <div class="section-scroll"><div class="container">
       <h2>Si no eres tú, no quiero nada</h2>
       <p class="section-sub">

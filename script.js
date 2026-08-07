@@ -1,3 +1,7 @@
+// Configuración de Supabase (compartida entre los dos dispositivos)
+var SUPABASE_URL = 'https://rkukomuuqfcccaywvfqk.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_O3-INhLVYd9nd284UiPVZQ_TjbnXQW0';
+
 function initApp() {
 
   // =========================================
@@ -6,13 +10,13 @@ function initApp() {
   const SECTION_IDS = [
     'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
     'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
-    'propositos', 'capitulo-futuro', 'sorpresa', 'final'
+    'propositos', 'muro', 'capitulo-futuro', 'sorpresa', 'final'
   ];
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
-    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'El próximo capítulo', 'Sorpresa', 'Final'
+    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -1691,6 +1695,217 @@ function initApp() {
 
   renderPropositos();
   initPropToggle();
+
+  // =========================================
+  // 22. NUESTRO MURO (notas, canciones y fotos)
+  // =========================================
+  let muroAutor = 'Alejandro';
+  let muroTipo = 'nota';
+  let muroFotoData = null;
+  let muroLoaded = false;
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function muroAuthHeaders() {
+    return {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    };
+  }
+
+  function setMuroStatus(msg, isError) {
+    const el = document.getElementById('muroStatus');
+    if (el) {
+      el.textContent = msg || '';
+      el.classList.toggle('error', !!isError);
+    }
+  }
+
+  async function loadMuro() {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/entradas?select=*&order=created_at.asc', {
+        headers: muroAuthHeaders()
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      renderMuro(Array.isArray(data) ? data : []);
+      muroLoaded = true;
+    } catch (e) {
+      setMuroStatus('No se pudo conectar. Revisa la conexión.', true);
+    }
+  }
+
+  function formatMuroDate(iso) {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) + ' · ' +
+        d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function renderMuro(entradas) {
+    const grid = document.getElementById('muroGrid');
+    const vacio = document.getElementById('muroVacio');
+    if (!grid) return;
+
+    if (vacio) vacio.style.display = entradas.length ? 'none' : 'block';
+    grid.innerHTML = '';
+
+    entradas.forEach((e) => {
+      const card = document.createElement('article');
+      card.className = 'muro-card muro-' + (e.tipo || 'nota');
+      card.setAttribute('data-id', e.id);
+
+      const autorCls = e.autor === 'Elizabeth' ? 'muro-autor-elizabeth' : 'muro-autor-alejandro';
+      const icono = e.tipo === 'cancion' ? '🎵' : (e.tipo === 'foto' ? '📸' : '💌');
+
+      let body = '';
+      if (e.tipo === 'foto' && e.url) {
+        body += '<img class="muro-foto" src="' + escapeHtml(e.url) + '" alt="' + escapeHtml(e.texto || 'foto') + '" loading="lazy" />';
+      }
+      if (e.texto) {
+        body += '<p class="muro-texto">' + escapeHtml(e.texto) + '</p>';
+      }
+      if (e.tipo === 'cancion' && e.url) {
+        body += '<a class="muro-enlace" href="' + escapeHtml(e.url) + '" target="_blank" rel="noopener">Escuchar en YouTube 🎧</a>';
+      }
+
+      card.innerHTML =
+        '<div class="muro-card-head">' +
+          '<span class="muro-icon">' + icono + '</span>' +
+          '<span class="muro-autor ' + autorCls + '">' + escapeHtml(e.autor) + '</span>' +
+        '</div>' +
+        body +
+        '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>';
+
+      grid.appendChild(card);
+    });
+  }
+
+  async function enviarMuro() {
+    const textoEl = document.getElementById('muroTexto');
+    const texto = textoEl ? textoEl.value.trim() : '';
+
+    if (muroTipo === 'foto') {
+      if (!muroFotoData) {
+        setMuroStatus('Elige una foto primero 📷', true);
+        return;
+      }
+    } else if (!texto) {
+      setMuroStatus('Escribe algo antes de publicar ✍️', true);
+      return;
+    }
+
+    const payload = {
+      tipo: muroTipo,
+      autor: muroAutor,
+      titulo: null,
+      texto: texto || null,
+      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null)
+    };
+
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/entradas', {
+        method: 'POST',
+        headers: muroAuthHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      if (textoEl) textoEl.value = '';
+      muroFotoData = null;
+      const nombre = document.getElementById('muroNombreFoto');
+      if (nombre) nombre.textContent = '';
+      setMuroStatus('Dejado en el muro 💜', false);
+      loadMuro();
+    } catch (e) {
+      setMuroStatus('No se pudo publicar. Intenta de nuevo.', true);
+    }
+  }
+
+  function initMuro() {
+    const autorSeg = document.getElementById('muroAutor');
+    const tipoSeg = document.getElementById('muroTipo');
+    const archivo = document.getElementById('muroArchivo');
+    const enviar = document.getElementById('muroEnviar');
+
+    if (autorSeg) {
+      autorSeg.addEventListener('click', (e) => {
+        const btn = e.target.closest('.muro-seg-btn');
+        if (!btn) return;
+        autorSeg.querySelectorAll('.muro-seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        muroAutor = btn.dataset.autor;
+      });
+    }
+
+    if (tipoSeg) {
+      tipoSeg.addEventListener('click', (e) => {
+        const btn = e.target.closest('.muro-seg-btn');
+        if (!btn) return;
+        tipoSeg.querySelectorAll('.muro-seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        muroTipo = btn.dataset.tipo;
+
+        const textoEl = document.getElementById('muroTexto');
+        const fotoField = document.getElementById('muroFieldFoto');
+        if (textoEl) {
+          if (muroTipo === 'cancion') {
+            textoEl.placeholder = 'Pega el nombre o el enlace de YouTube de la canción…';
+          } else if (muroTipo === 'foto') {
+            textoEl.placeholder = 'Pie de foto (opcional)…';
+          } else {
+            textoEl.placeholder = 'Escribe tu nota, canción o pie de foto aquí…';
+          }
+        }
+        if (fotoField) fotoField.style.display = muroTipo === 'foto' ? 'block' : 'none';
+      });
+    }
+
+    if (archivo) {
+      archivo.addEventListener('change', () => {
+        const file = archivo.files && archivo.files[0];
+        if (!file) return;
+        if (!file.type.match(/^image\//)) {
+          setMuroStatus('Ese archivo no es una imagen.', true);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxW = 900;
+            const scale = Math.min(1, maxW / img.width);
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            muroFotoData = canvas.toDataURL('image/jpeg', 0.75);
+            const nombre = document.getElementById('muroNombreFoto');
+            if (nombre) nombre.textContent = '✓ ' + file.name;
+            setMuroStatus('', false);
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    if (enviar) enviar.addEventListener('click', enviarMuro);
+    loadMuro();
+  }
+
+  initMuro();
 
 }
 
