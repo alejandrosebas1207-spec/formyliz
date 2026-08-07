@@ -1526,6 +1526,7 @@ function initApp() {
 
   const PROPOSITOS_KEY = 'propositos_semestre_v1';
   let propositosData = loadPropositos();
+  let propositosEditing = false;
 
   function loadPropositos() {
     try {
@@ -1550,6 +1551,8 @@ function initApp() {
   function renderPropositos() {
     const grid = document.getElementById('propGrid');
     if (!grid) return;
+
+    const editing = propositosEditing;
 
     if (grid.dataset.bound !== 'true') {
       grid.dataset.bound = 'true';
@@ -1590,19 +1593,22 @@ function initApp() {
       list.className = 'prop-list';
 
       categoria.items.forEach((texto, ii) => {
-        list.appendChild(buildPropItem(ci, ii));
+        if (texto.trim() === '') return;
+        list.appendChild(buildPropItem(ci, ii, editing));
       });
 
-      const addBtn = document.createElement('button');
-      addBtn.className = 'prop-add';
-      addBtn.innerHTML = '+ Agregar';
-      addBtn.addEventListener('click', () => {
-        propositosData[ci].items.push('');
-        savePropositos();
-        redrawPropositos();
-      });
+      if (editing) {
+        const addBtn = document.createElement('button');
+        addBtn.className = 'prop-add';
+        addBtn.innerHTML = '+ Agregar';
+        addBtn.addEventListener('click', () => {
+          propositosData[ci].items.push('');
+          savePropositos();
+          redrawPropositos();
+        });
+        list.appendChild(addBtn);
+      }
 
-      list.appendChild(addBtn);
       col.appendChild(list);
       return col;
     });
@@ -1610,28 +1616,35 @@ function initApp() {
     grid.replaceChildren(...cols);
   }
 
-  function buildPropItem(ci, ii) {
+  function buildPropItem(ci, ii, editing) {
     const row = document.createElement('div');
-    row.className = 'prop-row';
+    row.className = editing ? 'prop-row' : 'prop-item';
+    row.setAttribute('aria-label', `Propósito de ${propositosData[ci].titulo}`);
 
-    const input = document.createElement('input');
-    input.className = 'prop-input';
-    input.type = 'text';
-    input.value = propositosData[ci].items[ii];
-    input.placeholder = 'Escribe un propósito…';
-    input.dataset.ci = ci;
-    input.dataset.ii = ii;
-    input.setAttribute('aria-label', `Propósito de ${propositosData[ci].titulo}`);
+    if (editing) {
+      const input = document.createElement('input');
+      input.className = 'prop-input';
+      input.type = 'text';
+      input.value = propositosData[ci].items[ii];
+      input.placeholder = 'Escribe un propósito…';
+      input.dataset.ci = ci;
+      input.dataset.ii = ii;
+      row.appendChild(input);
 
-    const del = document.createElement('button');
-    del.className = 'prop-del';
-    del.innerHTML = '✕';
-    del.dataset.ci = ci;
-    del.dataset.ii = ii;
-    del.setAttribute('aria-label', 'Eliminar propósito');
+      const del = document.createElement('button');
+      del.className = 'prop-del';
+      del.innerHTML = '✕';
+      del.dataset.ci = ci;
+      del.dataset.ii = ii;
+      del.setAttribute('aria-label', 'Eliminar propósito');
+      row.appendChild(del);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'prop-text';
+      span.textContent = propositosData[ci].items[ii];
+      row.appendChild(span);
+    }
 
-    row.appendChild(input);
-    row.appendChild(del);
     return row;
   }
 
@@ -1640,9 +1653,41 @@ function initApp() {
     if (!grid) return;
     propositosData = loadPropositos();
     renderPropositos();
+    syncPropToggle();
+  }
+
+  function syncPropToggle() {
+    const btn = document.getElementById('propToggle');
+    if (!btn) return;
+    if (propositosEditing) {
+      btn.textContent = 'Guardar';
+      btn.setAttribute('aria-pressed', 'true');
+    } else {
+      btn.textContent = 'Editar';
+      btn.setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  function initPropToggle() {
+    const btn = document.getElementById('propToggle');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      if (propositosEditing) {
+        propositosData = propositosData.map(col => ({
+          titulo: col.titulo,
+          items: col.items.map(s => s.trim()).filter(Boolean)
+        }));
+        savePropositos();
+      }
+      propositosEditing = !propositosEditing;
+      renderPropositos();
+      syncPropToggle();
+    });
+    syncPropToggle();
   }
 
   renderPropositos();
+  initPropToggle();
 
 }
 

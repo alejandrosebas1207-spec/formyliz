@@ -646,6 +646,24 @@ body {
 }
 
 /* ===== PROPÓSITOS DEL SEMESTRE ===== */
+.prop-actions-bar {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.prop-toggle {
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid var(--purple);
+  border-radius: 999px;
+  color: var(--purple);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.prop-toggle:hover {
+  background: rgba(179, 157, 219, 0.14);
+}
 .prop-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -678,6 +696,19 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.prop-item {
+  background: linear-gradient(135deg, #1a1a24, #101018);
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.prop-text {
+  display: block;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  word-break: break-word;
 }
 .prop-input {
   flex: 1;
