@@ -556,6 +556,8 @@ function initApp() {
       }
     }
     if (e.key === ' ') {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
       const current = sections[currentIndex];
       const atBottom = current.scrollHeight - current.scrollTop - current.clientHeight < 40;
       if (atBottom) {
