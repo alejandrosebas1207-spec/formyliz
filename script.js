@@ -1888,6 +1888,20 @@ function initApp() {
     if (vacio) vacio.style.display = entradas.length ? 'none' : 'block';
     grid.innerHTML = '';
 
+    const columns = {};
+    [
+      ['nota', '✍️', 'Mensajes'],
+      ['cancion', '🎵', 'Canciones'],
+      ['foto', '📸', 'Fotos']
+    ].forEach(([tipo, icono, titulo]) => {
+      const column = document.createElement('div');
+      column.className = 'muro-column';
+      column.innerHTML = '<h3 class="muro-column-title"><span>' + icono + '</span>' + titulo + '</h3>' +
+        '<div class="muro-column-list"></div>';
+      grid.appendChild(column);
+      columns[tipo] = column.querySelector('.muro-column-list');
+    });
+
     entradas.forEach((e) => {
       const card = document.createElement('article');
       card.className = 'muro-card muro-card--' + (e.tipo || 'nota');
@@ -1933,7 +1947,7 @@ function initApp() {
         loadComentarios(e.id, card.querySelector('.muro-comments'));
       }
 
-      grid.appendChild(card);
+      (columns[e.tipo] || columns.nota).appendChild(card);
     });
   }
 
