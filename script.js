@@ -1833,6 +1833,11 @@ function initApp() {
     }
   }
 
+  function getYouTubeId(url) {
+    const match = String(url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([A-Za-z0-9_-]{11})/);
+    return match ? match[1] : '';
+  }
+
   async function loadComentarios(entradaId, box) {
     try {
       const res = await fetch(SUPABASE_URL + '/rest/v1/comentarios?entrada_id=eq.' + entradaId + '&select=*&order=created_at.asc', {
@@ -1895,11 +1900,20 @@ function initApp() {
       if (e.tipo === 'foto' && e.url) {
         body += '<img class="muro-foto" src="' + escapeHtml(e.url) + '" alt="' + escapeHtml(e.texto || 'foto') + '" loading="lazy" />';
       }
-      if (e.texto) {
+      const songUrl = e.tipo === 'cancion' ? (e.url || (e.texto && e.texto.match(/^https?:\/\//) ? e.texto : '')) : '';
+      const songId = getYouTubeId(songUrl);
+
+      if (e.texto && !(e.tipo === 'cancion' && e.texto.match(/^https?:\/\//))) {
         body += '<p class="muro-texto">' + escapeHtml(e.texto) + '</p>';
       }
-      if (e.tipo === 'cancion' && e.url) {
-        body += '<a class="muro-enlace" href="' + escapeHtml(e.url) + '" target="_blank" rel="noopener">Escuchar 🎧</a>';
+      if (e.tipo === 'cancion' && songUrl) {
+        if (songId) {
+          body += '<a class="muro-song" href="' + escapeHtml(songUrl) + '" target="_blank" rel="noopener">' +
+            '<img class="muro-song-thumb" src="https://i.ytimg.com/vi/' + songId + '/hqdefault.jpg" alt="Miniatura de la canción" loading="lazy" />' +
+            '<span class="muro-song-link">▶ Escuchar en YouTube</span></a>';
+        } else {
+          body += '<a class="muro-enlace" href="' + escapeHtml(songUrl) + '" target="_blank" rel="noopener">Escuchar 🎧</a>';
+        }
       }
 
       card.innerHTML =

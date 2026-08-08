@@ -1006,6 +1006,30 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
 .muro-enlace:hover {
   background: rgba(179, 157, 219, 0.12);
 }
+.muro-song {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(16, 24, 39, 0.55);
+}
+.muro-song-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.muro-song-link {
+  display: block;
+  padding: 9px 12px;
+  color: var(--purple);
+  font-size: 0.88rem;
+}
+.muro-song:hover {
+  border-color: var(--purple);
+}
 .muro-card-foot {
   margin-top: auto;
   font-size: 0.78rem;
