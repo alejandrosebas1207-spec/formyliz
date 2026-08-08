@@ -1504,10 +1504,10 @@ function initApp() {
   ];
 
   const PROPOSITOS_KEY = 'propositos_semestre_v1';
-  let propositosData = loadPropositos();
+  let propositosData = getLocalPropositos();
   let propositosEditing = false;
 
-  function loadPropositos() {
+  function getLocalPropositos() {
     try {
       const raw = localStorage.getItem(PROPOSITOS_KEY);
       if (raw) {
@@ -1515,16 +1515,71 @@ function initApp() {
         if (Array.isArray(parsed) && parsed.length === PROPOSITOS_DEFAULT.length) {
           return parsed.map((col, i) => ({
             titulo: col.titulo || PROPOSITOS_DEFAULT[i].titulo,
-            items: Array.isArray(col.items) ? col.items : []
+            items: Array.isArray(col.items)
+              ? col.items.filter(item => typeof item === 'string').map((texto, orden) => ({ id: null, texto, orden }))
+              : []
           }));
         }
       }
     } catch (e) {}
-    return PROPOSITOS_DEFAULT.map(col => ({ titulo: col.titulo, items: col.items.slice() }));
+    return PROPOSITOS_DEFAULT.map(col => ({
+      titulo: col.titulo,
+      items: col.items.filter(Boolean).map((texto, orden) => ({ id: null, texto, orden }))
+    }));
   }
 
   function savePropositos() {
-    try { localStorage.setItem(PROPOSITOS_KEY, JSON.stringify(propositosData)); } catch (e) {}
+    try {
+      localStorage.setItem(PROPOSITOS_KEY, JSON.stringify(propositosData.map(col => ({
+        titulo: col.titulo,
+        items: col.items.map(item => item.texto)
+      }))));
+    } catch (e) {}
+  }
+
+  function propositosHeaders() {
+    return {
+      apikey: SUPABASE_KEY,
+      Authorization: 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    };
+  }
+
+  async function syncPropositos() {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/propositos?select=*&order=categoria,orden,id', {
+        headers: propositosHeaders()
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      let rows = await res.json();
+
+      if (!rows.length) {
+        const seed = propositosData.flatMap(col => col.items
+          .filter(item => item.texto.trim())
+          .map((item, orden) => ({ categoria: col.titulo, texto: item.texto.trim(), orden })));
+        if (seed.length) {
+          const seedRes = await fetch(SUPABASE_URL + '/rest/v1/propositos', {
+            method: 'POST',
+            headers: { ...propositosHeaders(), Prefer: 'return=representation' },
+            body: JSON.stringify(seed)
+          });
+          if (!seedRes.ok) throw new Error('HTTP ' + seedRes.status);
+          rows = await seedRes.json();
+        }
+      }
+
+      const byCategory = PROPOSITOS_DEFAULT.map(col => ({
+        titulo: col.titulo,
+        items: rows.filter(row => row.categoria === col.titulo)
+          .sort((a, b) => a.orden - b.orden)
+          .map(row => ({ id: row.id, texto: row.texto, orden: row.orden }))
+      }));
+      propositosData = byCategory;
+      savePropositos();
+      renderPropositos();
+    } catch (e) {
+      // La vista local sigue disponible si Supabase no responde.
+    }
   }
 
   function renderPropositos() {
@@ -1540,20 +1595,55 @@ function initApp() {
         if (e.target && e.target.classList.contains('prop-input')) {
           const ci = Number(e.target.dataset.ci);
           const ii = Number(e.target.dataset.ii);
-          if (propositosData[ci] && propositosData[ci].items[ii] !== undefined) {
-            propositosData[ci].items[ii] = e.target.value;
+          const item = propositosData[ci] && propositosData[ci].items[ii];
+          if (item) {
+            item.texto = e.target.value;
             savePropositos();
           }
+        }
+      });
+
+      grid.addEventListener('change', async (e) => {
+        if (!e.target || !e.target.classList.contains('prop-input')) return;
+        const ci = Number(e.target.dataset.ci);
+        const ii = Number(e.target.dataset.ii);
+        const item = propositosData[ci] && propositosData[ci].items[ii];
+        if (!item || !item.texto.trim()) return;
+        const payload = { categoria: propositosData[ci].titulo, texto: item.texto.trim(), orden: ii };
+        try {
+          const url = item.id
+            ? SUPABASE_URL + '/rest/v1/propositos?id=eq.' + item.id
+            : SUPABASE_URL + '/rest/v1/propositos';
+          const res = await fetch(url, {
+            method: item.id ? 'PATCH' : 'POST',
+            headers: { ...propositosHeaders(), Prefer: 'return=representation' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          if (!item.id) {
+            const saved = await res.json();
+            if (saved[0]) item.id = saved[0].id;
+          }
+          savePropositos();
+        } catch (error) {
+          // El texto queda en localStorage y se reintenta en la próxima edición.
         }
       });
 
       grid.addEventListener('click', (e) => {
         const del = e.target.closest('.prop-del');
         if (del) {
-          const ci = Number(del.dataset.ci);
-          const ii = Number(del.dataset.ii);
+        const ci = Number(del.dataset.ci);
+        const ii = Number(del.dataset.ii);
+          const item = propositosData[ci].items[ii];
           propositosData[ci].items.splice(ii, 1);
           savePropositos();
+          if (item && item.id) {
+            fetch(SUPABASE_URL + '/rest/v1/propositos?id=eq.' + item.id, {
+              method: 'DELETE',
+              headers: propositosHeaders()
+            });
+          }
           redrawPropositos();
         }
       });
@@ -1572,7 +1662,7 @@ function initApp() {
       list.className = 'prop-list';
 
       categoria.items.forEach((texto, ii) => {
-        if (!editing && texto.trim() === '') return;
+        if (!editing && texto.texto.trim() === '') return;
         list.appendChild(buildPropItem(ci, ii, editing));
       });
 
@@ -1581,7 +1671,7 @@ function initApp() {
         addBtn.className = 'prop-add';
         addBtn.innerHTML = '+ Agregar';
         addBtn.addEventListener('click', () => {
-          propositosData[ci].items.push('');
+          propositosData[ci].items.push({ id: null, texto: '', orden: propositosData[ci].items.length });
           savePropositos();
           redrawPropositos();
           const newRows = document.querySelectorAll('.prop-col');
@@ -1602,12 +1692,13 @@ function initApp() {
     const row = document.createElement('div');
     row.className = editing ? 'prop-row' : 'prop-item';
     row.setAttribute('aria-label', `Propósito de ${propositosData[ci].titulo}`);
+    const item = propositosData[ci].items[ii];
 
     if (editing) {
       const input = document.createElement('input');
       input.className = 'prop-input';
       input.type = 'text';
-      input.value = propositosData[ci].items[ii];
+      input.value = item.texto;
       input.placeholder = 'Escribe un propósito…';
       input.dataset.ci = ci;
       input.dataset.ii = ii;
@@ -1623,7 +1714,7 @@ function initApp() {
     } else {
       const span = document.createElement('span');
       span.className = 'prop-text';
-      span.textContent = propositosData[ci].items[ii];
+      span.textContent = item.texto;
       row.appendChild(span);
     }
 
@@ -1633,7 +1724,6 @@ function initApp() {
   function redrawPropositos() {
     const grid = document.getElementById('propGrid');
     if (!grid) return;
-    propositosData = loadPropositos();
     renderPropositos();
     syncPropToggle();
   }
@@ -1657,7 +1747,7 @@ function initApp() {
       if (propositosEditing) {
         propositosData = propositosData.map(col => ({
           titulo: col.titulo,
-          items: col.items.map(s => s.trim()).filter(Boolean)
+          items: col.items.filter(item => item.texto.trim())
         }));
         savePropositos();
       }
@@ -1670,6 +1760,7 @@ function initApp() {
 
   renderPropositos();
   initPropToggle();
+  syncPropositos();
 
   // =========================================
   // 22. NUESTRO MURO (notas, canciones y fotos)
@@ -1742,6 +1833,48 @@ function initApp() {
     }
   }
 
+  async function loadComentarios(entradaId, box) {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/comentarios?entrada_id=eq.' + entradaId + '&select=*&order=created_at.asc', {
+        headers: muroAuthHeaders()
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      renderComentarios(await res.json(), box, entradaId);
+    } catch (e) {
+      box.innerHTML = '<p class="muro-comments-error">No se pudieron cargar los comentarios.</p>';
+    }
+  }
+
+  function renderComentarios(comentarios, box, entradaId) {
+    const list = comentarios.map(comment =>
+      '<div class="muro-comment"><strong>' + escapeHtml(comment.autor) + '</strong><span>' + escapeHtml(comment.texto) + '</span></div>'
+    ).join('');
+    box.innerHTML =
+      '<div class="muro-comment-list">' + (list || '<span class="muro-no-comments">Sin comentarios todavía</span>') + '</div>' +
+      '<form class="muro-comment-form" data-entry-id="' + entradaId + '">' +
+        '<select class="muro-comment-author" aria-label="Autor del comentario"><option>Alejandro</option><option>Elizabeth</option></select>' +
+        '<input class="muro-comment-input" type="text" maxlength="240" placeholder="Añadir comentario…" />' +
+        '<button type="submit" aria-label="Publicar comentario">＋</button>' +
+      '</form>';
+    box.querySelector('.muro-comment-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const input = form.querySelector('.muro-comment-input');
+      const texto = input.value.trim();
+      if (!texto) return;
+      const res = await fetch(SUPABASE_URL + '/rest/v1/comentarios', {
+        method: 'POST',
+        headers: { ...muroAuthHeaders(), Prefer: 'return=representation' },
+        body: JSON.stringify({
+          entrada_id: entradaId,
+          autor: form.querySelector('.muro-comment-author').value,
+          texto
+        })
+      });
+      if (res.ok) loadComentarios(entradaId, box);
+    });
+  }
+
   function renderMuro(entradas) {
     const grid = document.getElementById('muroGrid');
     const vacio = document.getElementById('muroVacio');
@@ -1776,10 +1909,15 @@ function initApp() {
           '<button class="muro-del" data-id="' + e.id + '" aria-label="Eliminar entrada">✕</button>' +
         '</div>' +
         body +
-        '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>';
+        '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>' +
+        (e.tipo === 'foto' || e.tipo === 'cancion' ? '<div class="muro-comments"></div>' : '');
 
       const delBtn = card.querySelector('.muro-del');
       delBtn.addEventListener('click', () => deleteMuro(e.id));
+
+      if (e.tipo === 'foto' || e.tipo === 'cancion') {
+        loadComentarios(e.id, card.querySelector('.muro-comments'));
+      }
 
       grid.appendChild(card);
     });

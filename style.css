@@ -1041,6 +1041,99 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
   font-size: 1rem;
   margin: 20px 0;
 }
+.muro-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+.muro-card {
+  min-width: 0;
+  overflow: hidden;
+}
+.muro-foto {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(55vh, 420px);
+  object-fit: contain;
+  object-position: center;
+  background: rgba(16, 24, 39, 0.5);
+}
+.muro-comments {
+  border-top: 1px solid var(--border-glow);
+  padding-top: 10px;
+  margin-top: 2px;
+}
+.muro-comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+.muro-comment {
+  display: flex;
+  gap: 6px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.muro-comment strong {
+  color: var(--purple);
+  flex: none;
+}
+.muro-comment span {
+  color: var(--text-sec);
+}
+.muro-no-comments,
+.muro-comments-error {
+  color: var(--text-sec);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.muro-comment-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 30px;
+  gap: 5px;
+  margin-top: 9px;
+}
+.muro-comment-author,
+.muro-comment-input,
+.muro-comment-form button {
+  min-width: 0;
+  border: 1px solid var(--border-glow);
+  border-radius: 8px;
+  background: rgba(16, 24, 39, 0.7);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 7px;
+}
+.muro-comment-input:focus,
+.muro-comment-author:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+.muro-comment-form button {
+  color: var(--purple);
+  cursor: pointer;
+  padding: 0;
+}
+@media (max-width: 480px) {
+  .muro-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .muro-card {
+    padding: 13px;
+  }
+  .muro-foto {
+    max-height: 55vh;
+  }
+  .muro-comment-form {
+    grid-template-columns: 1fr 30px;
+  }
+  .muro-comment-author {
+    grid-column: 1 / -1;
+  }
+}
 
 /* ===== PLAYLIST ===== */
 .playlist-list {
