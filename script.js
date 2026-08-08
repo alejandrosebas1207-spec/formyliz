@@ -1885,7 +1885,7 @@ function initApp() {
 
     entradas.forEach((e) => {
       const card = document.createElement('article');
-      card.className = 'muro-card muro-' + (e.tipo || 'nota');
+      card.className = 'muro-card muro-card--' + (e.tipo || 'nota');
       card.setAttribute('data-id', e.id);
 
       const autorCls = e.autor === 'Elizabeth' ? 'muro-autor-elizabeth' : 'muro-autor-alejandro';
