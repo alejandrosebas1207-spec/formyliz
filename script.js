@@ -18,9 +18,10 @@ function initApp() {
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
     'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'Cartas para abrir', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
-  const PROTECTED_SECTION_IDS = ['carta', 'promesas', 'propositos', 'muro', 'cartas-programadas'];
+  const PROTECTED_SECTION_IDS = ['carta', 'propositos', 'muro', 'cartas-programadas'];
   const PRIVATE_PASSWORD = 'desfogue';
   let privateGateBypassIndex = null;
+  let qrUnlocked = false;
   let pendingPrivateIndex = null;
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -372,6 +373,33 @@ function initApp() {
     setTimeout(() => input.focus(), 50);
   }
 
+  function lockQrGate() {
+    qrUnlocked = false;
+    const locked = document.getElementById('qrLocked');
+    const content = document.getElementById('qrProtectedContent');
+    if (locked) locked.hidden = false;
+    if (content) content.hidden = true;
+  }
+
+  function initQrGate() {
+    const form = document.getElementById('qrUnlockForm');
+    if (!form) return;
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const input = form.querySelector('input');
+      const error = document.getElementById('qrUnlockError');
+      if (input.value === PRIVATE_PASSWORD) {
+        qrUnlocked = true;
+        document.getElementById('qrLocked').hidden = true;
+        document.getElementById('qrProtectedContent').hidden = false;
+        error.textContent = '';
+      } else {
+        input.value = '';
+        error.textContent = 'Contraseña incorrecta';
+      }
+    });
+  }
+
   function goToSection(index) {
     if (isTransitioning) return;
     if (index < 0 || index >= sections.length) return;
@@ -382,6 +410,9 @@ function initApp() {
         return;
       }
       privateGateBypassIndex = null;
+    }
+    if (sections[currentIndex] && sections[currentIndex].id === 'final' && SECTION_IDS[index] !== 'final') {
+      lockQrGate();
     }
 
     isTransitioning = true;
@@ -2215,6 +2246,7 @@ function initApp() {
     loadMuro();
   }
 
+  initQrGate();
   initMuro();
 
 }

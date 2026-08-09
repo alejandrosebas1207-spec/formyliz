@@ -23,7 +23,7 @@
   <!-- Leaflet (mapa de nuestros lugares) -->
   <link rel="stylesheet" href="vendor/leaflet.min.css" />
 
-  <link rel="stylesheet" href="style.css?v=shared-9" />
+  <link rel="stylesheet" href="style.css?v=shared-10" />
 
   <!-- Audio ambiental: caja de música (se activa tras interacción) -->
   <style>
@@ -532,17 +532,27 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
         <div class="slideshow-indicators" id="slideshowIndicators"></div>
       </div>
 
-      <div class="final-qr-section">
-        <p class="qr-message">
-          Escanea este QR cuando quieras.<br>
-          Aquí están cosas que he escrito. Es mi manera de estar contigo, aunque no pueda estar presente.
-        </p>
-        <div class="qr-wrapper">
-          <img src="assets/images/qr-cartas.png" alt="QR con las cartas" class="qr-image" loading="lazy" />
+      <div class="final-qr-section" id="finalQrSection">
+        <div id="qrLocked" class="qr-locked">
+          <p class="qr-message">Este QR está reservado para una sección privada.</p>
+          <form id="qrUnlockForm" class="qr-unlock-form">
+            <input type="password" placeholder="Contraseña" aria-label="Contraseña del QR" />
+            <button type="submit">Mostrar QR</button>
+          </form>
+          <small id="qrUnlockError"></small>
         </div>
-        <p class="qr-footer">
-          Ojalá que cada una de estas palabras te haga sentir un poquito más cerca de mí.
-        </p>
+        <div id="qrProtectedContent" hidden>
+          <p class="qr-message">
+            Escanea este QR cuando quieras.<br>
+            Aquí están cosas que he escrito. Es mi manera de estar contigo, aunque no pueda estar presente.
+          </p>
+          <div class="qr-wrapper">
+            <img src="assets/images/qr-cartas.png" alt="QR con las cartas" class="qr-image" loading="lazy" />
+          </div>
+          <p class="qr-footer">
+            Ojalá que cada una de estas palabras te haga sentir un poquito más cerca de mí.
+          </p>
+        </div>
       </div>
 
       <div class="final-goodbye">
@@ -589,6 +599,6 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   <script src="vendor/gsap.min.js" onerror="this.onerror=null; var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js'; s.onload=function(){ document.dispatchEvent(new Event('gsap-ready')); }; document.head.appendChild(s);"></script>
   <!-- Leaflet (mapa de nuestros lugares), local para máxima fiabilidad -->
   <script src="vendor/leaflet.min.js"></script>
-  <script src="script.js?v=shared-9"></script>
+  <script src="script.js?v=shared-10"></script>
 </body>
 </html>
