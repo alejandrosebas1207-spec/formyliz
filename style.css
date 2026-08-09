@@ -1971,3 +1971,86 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
   font-weight: 500;
   font-synthesis: none;
 }
+.private-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(16, 24, 39, 0.78);
+  backdrop-filter: blur(10px);
+}
+.private-gate.show {
+  display: flex;
+}
+.private-gate-card {
+  position: relative;
+  width: min(100%, 390px);
+  padding: 30px 24px;
+  border: 1px solid var(--border-glow);
+  border-radius: 22px;
+  background: var(--card);
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+.private-gate-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--text-sec);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.private-gate-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+.private-gate-card h2 {
+  color: var(--purple);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+}
+.private-gate-card p {
+  margin: 8px 0 18px;
+  color: var(--text-sec);
+}
+.private-gate-form {
+  display: flex;
+  gap: 8px;
+}
+.private-gate-form input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  padding: 11px 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+.private-gate-form input:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+.private-gate-form input.is-wrong {
+  border-color: var(--red);
+}
+.private-gate-form button {
+  border: 1px solid var(--purple);
+  border-radius: 10px;
+  padding: 10px 15px;
+  background: transparent;
+  color: var(--purple);
+  font: inherit;
+  cursor: pointer;
+}
+.private-gate-error {
+  display: block;
+  min-height: 1.2em;
+  margin-top: 10px;
+  color: var(--red);
+}

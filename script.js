@@ -18,6 +18,10 @@ function initApp() {
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
     'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'Cartas para abrir', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
+  const PROTECTED_SECTION_IDS = ['carta', 'promesas', 'propositos', 'muro', 'cartas-programadas'];
+  const PRIVATE_PASSWORD = 'desfogue';
+  let privateAccessGranted = localStorage.getItem('formyliz_private_access') === 'true';
+  let pendingPrivateIndex = null;
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
     "Volví a sonreír de verdad desde que estás tú.",
@@ -321,10 +325,62 @@ function initApp() {
   let currentIndex = 0;
   let isTransitioning = false;
 
+  function openPrivateGate(index) {
+    pendingPrivateIndex = index;
+    let modal = document.getElementById('private-gate');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'private-gate';
+      modal.className = 'private-gate';
+      modal.innerHTML =
+        '<div class="private-gate-card" role="dialog" aria-modal="true" aria-labelledby="private-gate-title">' +
+          '<button class="private-gate-close" type="button" aria-label="Cerrar">×</button>' +
+          '<div class="private-gate-icon">🔒</div>' +
+          '<h2 id="private-gate-title">Sección privada</h2>' +
+          '<p>Escribe la contraseña para continuar.</p>' +
+          '<form class="private-gate-form">' +
+            '<input type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña" />' +
+            '<button type="submit">Entrar</button>' +
+          '</form>' +
+          '<small class="private-gate-error"></small>' +
+        '</div>';
+      document.body.appendChild(modal);
+      const close = () => { modal.classList.remove('show'); pendingPrivateIndex = null; };
+      modal.querySelector('.private-gate-close').addEventListener('click', close);
+      modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
+      modal.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const input = modal.querySelector('input');
+        const error = modal.querySelector('.private-gate-error');
+        if (input.value === PRIVATE_PASSWORD) {
+          privateAccessGranted = true;
+          localStorage.setItem('formyliz_private_access', 'true');
+          const target = pendingPrivateIndex;
+          close();
+          if (target !== null) goToSection(target);
+        } else {
+          input.value = '';
+          error.textContent = 'Contraseña incorrecta';
+          input.classList.add('is-wrong');
+        }
+      });
+    }
+    modal.classList.add('show');
+    const input = modal.querySelector('input');
+    input.value = '';
+    input.classList.remove('is-wrong');
+    modal.querySelector('.private-gate-error').textContent = '';
+    setTimeout(() => input.focus(), 50);
+  }
+
   function goToSection(index) {
     if (isTransitioning) return;
     if (index < 0 || index >= sections.length) return;
     if (index === currentIndex && sections[index].classList.contains('active')) return;
+    if (PROTECTED_SECTION_IDS.includes(SECTION_IDS[index]) && !privateAccessGranted) {
+      openPrivateGate(index);
+      return;
+    }
 
     isTransitioning = true;
     playPageTurn();
