@@ -768,6 +768,9 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
   gap: 8px;
 }
 .prop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: linear-gradient(135deg, #1a1a24, #101018);
   border: 1px solid var(--border-glow);
   border-radius: 12px;
@@ -775,10 +778,38 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
 }
 .prop-text {
   display: block;
+  flex: 1;
   color: var(--text);
   font-size: 0.95rem;
   line-height: 1.45;
   word-break: break-word;
+}
+.prop-item.is-completed .prop-text {
+  color: var(--text-sec);
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+.prop-complete {
+  flex: none;
+  border: 1px solid var(--border-glow);
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: transparent;
+  color: var(--text-sec);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.prop-complete:hover,
+.prop-complete[aria-pressed="true"] {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+.prop-row .prop-complete {
+  width: 30px;
+  height: 32px;
+  padding: 0;
 }
 .prop-input {
   flex: 1;

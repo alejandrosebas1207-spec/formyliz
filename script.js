@@ -1516,7 +1516,9 @@ function initApp() {
           return parsed.map((col, i) => ({
             titulo: col.titulo || PROPOSITOS_DEFAULT[i].titulo,
             items: Array.isArray(col.items)
-              ? col.items.filter(item => typeof item === 'string').map((texto, orden) => ({ id: null, texto, orden }))
+              ? col.items.map((item, orden) => typeof item === 'string'
+                ? { id: null, texto: item, orden, completado: false }
+                : { id: null, texto: item.texto || '', orden, completado: !!item.completado })
               : []
           }));
         }
@@ -1524,7 +1526,7 @@ function initApp() {
     } catch (e) {}
     return PROPOSITOS_DEFAULT.map(col => ({
       titulo: col.titulo,
-      items: col.items.filter(Boolean).map((texto, orden) => ({ id: null, texto, orden }))
+        items: col.items.filter(Boolean).map((texto, orden) => ({ id: null, texto, orden, completado: false }))
     }));
   }
 
@@ -1532,7 +1534,7 @@ function initApp() {
     try {
       localStorage.setItem(PROPOSITOS_KEY, JSON.stringify(propositosData.map(col => ({
         titulo: col.titulo,
-        items: col.items.map(item => item.texto)
+        items: col.items.map(item => ({ texto: item.texto, completado: !!item.completado }))
       }))));
     } catch (e) {}
   }
@@ -1556,7 +1558,7 @@ function initApp() {
       if (!rows.length) {
         const seed = propositosData.flatMap(col => col.items
           .filter(item => item.texto.trim())
-          .map((item, orden) => ({ categoria: col.titulo, texto: item.texto.trim(), orden })));
+          .map((item, orden) => ({ categoria: col.titulo, texto: item.texto.trim(), orden, completado: !!item.completado })));
         if (seed.length) {
           const seedRes = await fetch(SUPABASE_URL + '/rest/v1/propositos', {
             method: 'POST',
@@ -1572,7 +1574,7 @@ function initApp() {
         titulo: col.titulo,
         items: rows.filter(row => row.categoria === col.titulo)
           .sort((a, b) => a.orden - b.orden)
-          .map(row => ({ id: row.id, texto: row.texto, orden: row.orden }))
+          .map(row => ({ id: row.id, texto: row.texto, orden: row.orden, completado: !!row.completado }))
       }));
       propositosData = byCategory;
       savePropositos();
@@ -1609,7 +1611,7 @@ function initApp() {
         const ii = Number(e.target.dataset.ii);
         const item = propositosData[ci] && propositosData[ci].items[ii];
         if (!item || !item.texto.trim()) return;
-        const payload = { categoria: propositosData[ci].titulo, texto: item.texto.trim(), orden: ii };
+        const payload = { categoria: propositosData[ci].titulo, texto: item.texto.trim(), orden: ii, completado: !!item.completado };
         try {
           const url = item.id
             ? SUPABASE_URL + '/rest/v1/propositos?id=eq.' + item.id
@@ -1631,6 +1633,24 @@ function initApp() {
       });
 
       grid.addEventListener('click', (e) => {
+        const complete = e.target.closest('.prop-complete');
+        if (complete) {
+          const ci = Number(complete.dataset.ci);
+          const ii = Number(complete.dataset.ii);
+          const item = propositosData[ci] && propositosData[ci].items[ii];
+          if (!item) return;
+          item.completado = !item.completado;
+          savePropositos();
+          if (item.id) {
+            fetch(SUPABASE_URL + '/rest/v1/propositos?id=eq.' + item.id, {
+              method: 'PATCH',
+              headers: { ...propositosHeaders(), Prefer: 'return=minimal' },
+              body: JSON.stringify({ completado: item.completado })
+            });
+          }
+          renderPropositos();
+          return;
+        }
         const del = e.target.closest('.prop-del');
         if (del) {
         const ci = Number(del.dataset.ci);
@@ -1691,6 +1711,7 @@ function initApp() {
   function buildPropItem(ci, ii, editing) {
     const row = document.createElement('div');
     row.className = editing ? 'prop-row' : 'prop-item';
+    if (propositosData[ci].items[ii].completado) row.classList.add('is-completed');
     row.setAttribute('aria-label', `Propósito de ${propositosData[ci].titulo}`);
     const item = propositosData[ci].items[ii];
 
@@ -1704,6 +1725,15 @@ function initApp() {
       input.dataset.ii = ii;
       row.appendChild(input);
 
+      const complete = document.createElement('button');
+      complete.className = 'prop-complete';
+      complete.textContent = item.completado ? '✓' : '○';
+      complete.dataset.ci = ci;
+      complete.dataset.ii = ii;
+      complete.setAttribute('aria-label', item.completado ? 'Marcar como pendiente' : 'Marcar como cumplido');
+      complete.setAttribute('aria-pressed', String(item.completado));
+      row.appendChild(complete);
+
       const del = document.createElement('button');
       del.className = 'prop-del';
       del.innerHTML = '✕';
@@ -1716,6 +1746,14 @@ function initApp() {
       span.className = 'prop-text';
       span.textContent = item.texto;
       row.appendChild(span);
+
+      const complete = document.createElement('button');
+      complete.className = 'prop-complete';
+      complete.textContent = item.completado ? 'Cumplido ✓' : 'Marcar cumplido';
+      complete.dataset.ci = ci;
+      complete.dataset.ii = ii;
+      complete.setAttribute('aria-pressed', String(item.completado));
+      row.appendChild(complete);
     }
 
     return row;
@@ -1869,20 +1907,6 @@ function initApp() {
     }
   }
 
-  async function deleteMuro(id) {
-    try {
-      const res = await fetch(SUPABASE_URL + '/rest/v1/entradas?id=eq.' + id, {
-        method: 'DELETE',
-        headers: muroAuthHeaders()
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      setMuroStatus('Eliminado ✓', false);
-      loadMuro();
-    } catch (e) {
-      setMuroStatus('No se pudo eliminar. Intenta de nuevo.', true);
-    }
-  }
-
   async function loadMuro() {
     try {
       const res = await fetch(SUPABASE_URL + '/rest/v1/entradas?select=*&order=created_at.asc', {
@@ -2008,18 +2032,12 @@ function initApp() {
         '<div class="muro-card-head">' +
           '<span class="muro-icon">' + icono + '</span>' +
           '<span class="muro-autor ' + autorCls + '">' + escapeHtml(e.autor) + '</span>' +
-          '<button class="muro-del" data-id="' + e.id + '" aria-label="Eliminar entrada">✕</button>' +
         '</div>' +
         body +
         '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>' +
-        (e.tipo === 'foto' || e.tipo === 'cancion' ? '<div class="muro-comments"></div>' : '');
+        '<div class="muro-comments"></div>';
 
-      const delBtn = card.querySelector('.muro-del');
-      delBtn.addEventListener('click', () => deleteMuro(e.id));
-
-      if (e.tipo === 'foto' || e.tipo === 'cancion') {
-        loadComentarios(e.id, card.querySelector('.muro-comments'));
-      }
+      loadComentarios(e.id, card.querySelector('.muro-comments'));
 
       (columns[e.tipo] || columns.nota).appendChild(card);
     });
