@@ -20,7 +20,7 @@ function initApp() {
   ];
   const PROTECTED_SECTION_IDS = ['carta', 'promesas', 'propositos', 'muro', 'cartas-programadas'];
   const PRIVATE_PASSWORD = 'desfogue';
-  let privateAccessGranted = localStorage.getItem('formyliz_private_access') === 'true';
+  let privateGateBypassIndex = null;
   let pendingPrivateIndex = null;
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -353,9 +353,8 @@ function initApp() {
         const input = modal.querySelector('input');
         const error = modal.querySelector('.private-gate-error');
         if (input.value === PRIVATE_PASSWORD) {
-          privateAccessGranted = true;
-          localStorage.setItem('formyliz_private_access', 'true');
           const target = pendingPrivateIndex;
+          privateGateBypassIndex = target;
           close();
           if (target !== null) goToSection(target);
         } else {
@@ -377,9 +376,12 @@ function initApp() {
     if (isTransitioning) return;
     if (index < 0 || index >= sections.length) return;
     if (index === currentIndex && sections[index].classList.contains('active')) return;
-    if (PROTECTED_SECTION_IDS.includes(SECTION_IDS[index]) && !privateAccessGranted) {
-      openPrivateGate(index);
-      return;
+    if (PROTECTED_SECTION_IDS.includes(SECTION_IDS[index])) {
+      if (privateGateBypassIndex !== index) {
+        openPrivateGate(index);
+        return;
+      }
+      privateGateBypassIndex = null;
     }
 
     isTransitioning = true;
