@@ -1171,6 +1171,92 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
   cursor: pointer;
   padding: 0;
 }
+/* ===== CARTAS PROGRAMADAS ===== */
+.scheduled-letters {
+  max-width: 650px;
+  margin: 30px auto;
+  display: grid;
+  gap: 22px;
+}
+.scheduled-letter {
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(24,35,56,0.95), rgba(16,24,39,0.95));
+  box-shadow: 0 14px 35px rgba(0,0,0,0.2);
+}
+.scheduled-letter.is-locked {
+  border-color: rgba(217,164,65,0.35);
+}
+.scheduled-envelope {
+  font-size: 3rem;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 5px 10px rgba(217,164,65,0.2));
+}
+.scheduled-letter h3 {
+  color: var(--purple);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  margin: 8px 0 12px;
+}
+.scheduled-letter-date,
+.scheduled-letter-meta,
+.scheduled-hint {
+  color: var(--text-sec);
+  font-size: 0.85rem;
+}
+.scheduled-unlock-form {
+  display: flex;
+  max-width: 360px;
+  margin: 18px auto 8px;
+  gap: 8px;
+}
+.scheduled-unlock-form input {
+  min-width: 0;
+  flex: 1;
+  background: rgba(16,24,39,0.8);
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font: inherit;
+}
+.scheduled-unlock-form input:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+.scheduled-unlock-form input.is-wrong {
+  border-color: var(--red);
+}
+.scheduled-unlock-form button {
+  border: 1px solid var(--purple);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--purple);
+  font: inherit;
+  cursor: pointer;
+}
+.scheduled-letter-paper {
+  margin-top: 20px;
+  padding: 26px;
+  text-align: left;
+  border-radius: 5px;
+  background: #faf6ed;
+  color: #3a352c;
+  font-family: 'Caveat', 'Segoe Print', cursive;
+  font-size: 1.35rem;
+  line-height: 1.65;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.18);
+}
+.scheduled-letter-paper p {
+  margin: 0 0 18px;
+}
+.scheduled-letter-paper span {
+  display: block;
+  text-align: right;
+}
 @media (max-width: 768px) {
   .muro-grid {
     grid-template-columns: 1fr;

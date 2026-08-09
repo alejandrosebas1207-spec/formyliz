@@ -10,13 +10,13 @@ function initApp() {
   const SECTION_IDS = [
     'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
     'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
-    'propositos', 'muro', 'capitulo-futuro', 'sorpresa', 'final'
+    'propositos', 'muro', 'cartas-programadas', 'capitulo-futuro', 'sorpresa', 'final'
   ];
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
     'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
-    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'El próximo capítulo', 'Sorpresa', 'Final'
+    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'Cartas para abrir', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -1763,7 +1763,81 @@ function initApp() {
   syncPropositos();
 
   // =========================================
-  // 22. NUESTRO MURO (notas, canciones y fotos)
+  // 22. CARTAS PROGRAMADAS
+  // =========================================
+  const CARTAS_PROGRAMADAS = [
+    {
+      id: 'ejemplo',
+      titulo: 'Ejemplo de carta',
+      fecha: '2026-12-31T00:00:00',
+      password: 'ejemplo',
+      texto: 'Esta es una carta de prueba. Aquí podremos dejar un mensaje para abrirlo en una fecha especial.'
+    }
+  ];
+
+  function cartasDesbloqueadas() {
+    try { return JSON.parse(localStorage.getItem('cartas_desbloqueadas_v1') || '{}'); } catch (e) { return {}; }
+  }
+
+  function saveCartaDesbloqueada(id) {
+    const unlocked = cartasDesbloqueadas();
+    unlocked[id] = true;
+    localStorage.setItem('cartas_desbloqueadas_v1', JSON.stringify(unlocked));
+  }
+
+  function formatCartaDate(date) {
+    return new Date(date).toLocaleDateString('es-ES', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+  }
+
+  function renderCartasProgramadas() {
+    const container = document.getElementById('scheduledLetters');
+    if (!container) return;
+    const unlocked = cartasDesbloqueadas();
+    container.innerHTML = '';
+
+    CARTAS_PROGRAMADAS.forEach((carta) => {
+      const isUnlocked = unlocked[carta.id] || new Date() >= new Date(carta.fecha);
+      const card = document.createElement('article');
+      card.className = 'scheduled-letter ' + (isUnlocked ? 'is-unlocked' : 'is-locked');
+
+      if (isUnlocked) {
+        card.innerHTML =
+          '<div class="scheduled-letter-meta">Carta abierta · ' + formatCartaDate(carta.fecha) + '</div>' +
+          '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
+          '<div class="scheduled-letter-paper"><p>' + escapeHtml(carta.texto) + '</p><span>Con cariño,<br>Alejandro.</span></div>';
+      } else {
+        card.innerHTML =
+          '<div class="scheduled-envelope">✉️</div>' +
+          '<p class="scheduled-letter-date">Se abre el ' + formatCartaDate(carta.fecha) + '</p>' +
+          '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
+          '<form class="scheduled-unlock-form">' +
+            '<input type="password" placeholder="Contraseña" aria-label="Contraseña de la carta" />' +
+            '<button type="submit">Desbloquear</button>' +
+          '</form>' +
+          '<small class="scheduled-hint">Prueba: ejemplo</small>';
+        card.querySelector('form').addEventListener('submit', (event) => {
+          event.preventDefault();
+          const input = event.currentTarget.querySelector('input');
+          if (input.value === carta.password) {
+            saveCartaDesbloqueada(carta.id);
+            renderCartasProgramadas();
+          } else {
+            input.value = '';
+            input.placeholder = 'Contraseña incorrecta';
+            input.classList.add('is-wrong');
+          }
+        });
+      }
+      container.appendChild(card);
+    });
+  }
+
+  renderCartasProgramadas();
+
+  // =========================================
+  // 23. NUESTRO MURO (notas, canciones y fotos)
   // =========================================
   let muroAutor = 'Alejandro';
   let muroTipo = 'nota';

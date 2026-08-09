@@ -23,7 +23,7 @@
   <!-- Leaflet (mapa de nuestros lugares) -->
   <link rel="stylesheet" href="vendor/leaflet.min.css" />
 
-  <link rel="stylesheet" href="style.css?v=shared-5" />
+  <link rel="stylesheet" href="style.css?v=shared-6" />
 
   <!-- Audio ambiental: caja de música (se activa tras interacción) -->
   <style>
@@ -437,13 +437,26 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
       </div>
       <p id="muroVacio" class="muro-vacio">Todavía no hay nada aquí… deja la primera nota 🕊️</p>
 
+      <button class="next-btn" data-next="cartas-programadas">Siguiente →</button>
+    </div>
+  </div>
+  </section>
+
+  <!-- ===== CARTAS PARA ABRIR ===== -->
+  <section class="section" id="cartas-programadas" data-index="14">
+    <div class="section-scroll"><div class="container">
+      <h2>✉️ Cartas para abrir</h2>
+      <p class="section-sub">Algunas cosas pueden esperar el momento correcto.</p>
+      <div class="scheduled-letters" id="scheduledLetters">
+        <!-- Las cartas se generan con JS -->
+      </div>
       <button class="next-btn" data-next="capitulo-futuro">Siguiente →</button>
     </div>
   </div>
   </section>
 
   <!-- ===== CAPÍTULO SIN TERMINAR ===== -->
-  <section class="section" id="capitulo-futuro" data-index="14" aria-label="El próximo capítulo">
+  <section class="section" id="capitulo-futuro" data-index="15" aria-label="El próximo capítulo">
     <div class="section-scroll"><div class="container">
       <div class="chapter-header">
         <span class="chapter-number">El próximo capítulo</span>
@@ -486,7 +499,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
 
   <!-- ===== LAS ESTRELLAS (SORPRESA) ===== -->
-  <section class="section" id="sorpresa" data-index="15">
+  <section class="section" id="sorpresa" data-index="16">
     <div class="section-scroll"><div class="container">
       <h2>✨ Todavía no termina...</h2>
       <p class="section-sub">Toca las estrellas, mi amor</p>
@@ -504,7 +517,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </section>
 
   <!-- ===== FINAL ===== -->
-  <section class="section" id="final" data-index="16">
+  <section class="section" id="final" data-index="17">
     <div class="section-scroll"><div class="container">
       <h2>Si no eres tú, no quiero nada</h2>
       <p class="section-sub">
@@ -576,6 +589,6 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   <script src="vendor/gsap.min.js" onerror="this.onerror=null; var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js'; s.onload=function(){ document.dispatchEvent(new Event('gsap-ready')); }; document.head.appendChild(s);"></script>
   <!-- Leaflet (mapa de nuestros lugares), local para máxima fiabilidad -->
   <script src="vendor/leaflet.min.js"></script>
-  <script src="script.js?v=shared-5"></script>
+  <script src="script.js?v=shared-6"></script>
 </body>
 </html>
