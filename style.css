@@ -471,6 +471,12 @@ a, button, input, select, textarea, [role="button"], .next-btn, .prop-card, .pol
   min-height: 2em;
   opacity: 1;
 }
+body.site-paused {
+  background: var(--bg) !important;
+}
+body.site-paused > * {
+  display: none !important;
+}
 
 /* Efecto cursor de máquina de escribir */
 .typewriter-cursor {
