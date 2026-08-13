@@ -1804,11 +1804,11 @@ function initApp() {
   // =========================================
   const CARTAS_PROGRAMADAS = [
     {
-      id: 'ejemplo',
-      titulo: 'Ejemplo de carta',
-      fecha: '2026-12-31T00:00:00',
-      password: 'ejemplo',
-      texto: 'Esta es una carta de prueba. Aquí podremos dejar un mensaje para abrirlo en una fecha especial.'
+      id: 'carta-24-abril',
+      titulo: 'Carta del 24 de abril',
+      fecha: '2027-04-24T12:00:00-05:00',
+      password: 'desfogue',
+      texto: 'Aquí quedará la carta del 24 de abril.'
     }
   ];
 
@@ -1853,7 +1853,7 @@ function initApp() {
             '<input type="password" placeholder="Contraseña" aria-label="Contraseña de la carta" />' +
             '<button type="submit">Desbloquear</button>' +
           '</form>' +
-          '<small class="scheduled-hint">Prueba: ejemplo</small>';
+          '<small class="scheduled-hint">Se abrirá el 24 de abril a las 12:00 p. m.</small>';
         card.querySelector('form').addEventListener('submit', (event) => {
           event.preventDefault();
           const input = event.currentTarget.querySelector('input');
