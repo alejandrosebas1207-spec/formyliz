@@ -1812,6 +1812,7 @@ function initApp() {
     }
   ];
   let cartasCountdownTimer = null;
+  const cartasAbiertas = {};
 
   function cartasDesbloqueadas() {
     try { return JSON.parse(localStorage.getItem('cartas_desbloqueadas_v1') || '{}'); } catch (e) { return {}; }
@@ -1858,11 +1859,18 @@ function initApp() {
       const card = document.createElement('article');
       card.className = 'scheduled-letter ' + (isUnlocked ? 'is-unlocked' : 'is-locked');
 
-      if (isUnlocked) {
+      if (isUnlocked && cartasAbiertas[carta.id] === false) {
+        card.innerHTML =
+          '<div class="scheduled-envelope">✉️</div>' +
+          '<p class="scheduled-letter-meta">Carta desbloqueada</p>' +
+          '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
+          '<button type="button" class="scheduled-letter-action scheduled-open">Abrir carta</button>';
+      } else if (isUnlocked) {
         card.innerHTML =
           '<div class="scheduled-letter-meta">Carta abierta · ' + formatCartaDate(carta.fecha) + '</div>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
-          '<div class="scheduled-letter-paper"><p>' + escapeHtml(carta.texto) + '</p><span>Con cariño,<br>Alejandro.</span></div>';
+          '<div class="scheduled-letter-paper"><p>' + escapeHtml(carta.texto) + '</p><span>Con cariño,<br>Alejandro.</span></div>' +
+          '<button type="button" class="scheduled-letter-action scheduled-close">Cerrar carta</button>';
       } else {
         card.innerHTML =
           '<div class="scheduled-envelope">✉️</div>' +
@@ -1885,6 +1893,20 @@ function initApp() {
             input.placeholder = 'Contraseña incorrecta';
             input.classList.add('is-wrong');
           }
+        });
+      }
+      const openButton = card.querySelector('.scheduled-open');
+      if (openButton) {
+        openButton.addEventListener('click', () => {
+          cartasAbiertas[carta.id] = true;
+          renderCartasProgramadas();
+        });
+      }
+      const closeButton = card.querySelector('.scheduled-close');
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          cartasAbiertas[carta.id] = false;
+          renderCartasProgramadas();
         });
       }
       container.appendChild(card);

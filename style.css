@@ -1282,6 +1282,19 @@ body.site-paused > * {
   font: inherit;
   cursor: pointer;
 }
+.scheduled-letter-action {
+  margin-top: 18px;
+  border: 1px solid var(--purple);
+  border-radius: 10px;
+  padding: 10px 18px;
+  background: transparent;
+  color: var(--purple);
+  font: inherit;
+  cursor: pointer;
+}
+.scheduled-letter-action:hover {
+  background: rgba(217, 164, 65, 0.12);
+}
 .scheduled-letter-paper {
   margin-top: 20px;
   padding: 26px;
