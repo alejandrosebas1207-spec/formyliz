@@ -1805,12 +1805,13 @@ function initApp() {
   const CARTAS_PROGRAMADAS = [
     {
       id: 'carta-24-abril',
-      titulo: 'Carta del 24 de abril',
-      fecha: '2027-04-24T12:00:00-05:00',
+      titulo: 'Carta del 24 de agosto',
+      fecha: '2026-08-24T12:00:00-05:00',
       password: 'desfogue',
-      texto: 'Aquí quedará la carta del 24 de abril.'
+      texto: 'Aquí quedará la carta del 24 de agosto.'
     }
   ];
+  let cartasCountdownTimer = null;
 
   function cartasDesbloqueadas() {
     try { return JSON.parse(localStorage.getItem('cartas_desbloqueadas_v1') || '{}'); } catch (e) { return {}; }
@@ -1826,6 +1827,24 @@ function initApp() {
     return new Date(date).toLocaleDateString('es-ES', {
       day: 'numeric', month: 'long', year: 'numeric'
     });
+  }
+
+  function updateCartasCountdown() {
+    let expired = false;
+    document.querySelectorAll('.scheduled-countdown').forEach((counter) => {
+      const remaining = new Date(counter.dataset.release).getTime() - Date.now();
+      if (remaining <= 0) {
+        expired = true;
+        return;
+      }
+      const seconds = Math.floor(remaining / 1000);
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      counter.textContent = `${days} días · ${String(hours).padStart(2, '0')} h · ${String(minutes).padStart(2, '0')} m · ${String(secs).padStart(2, '0')} s`;
+    });
+    if (expired) renderCartasProgramadas();
   }
 
   function renderCartasProgramadas() {
@@ -1849,11 +1868,12 @@ function initApp() {
           '<div class="scheduled-envelope">✉️</div>' +
           '<p class="scheduled-letter-date">Se abre el ' + formatCartaDate(carta.fecha) + '</p>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
+          '<div class="scheduled-countdown" data-release="' + carta.fecha + '"></div>' +
           '<form class="scheduled-unlock-form">' +
             '<input type="password" placeholder="Contraseña" aria-label="Contraseña de la carta" />' +
             '<button type="submit">Desbloquear</button>' +
           '</form>' +
-          '<small class="scheduled-hint">Se abrirá el 24 de abril a las 12:00 p. m.</small>';
+          '<small class="scheduled-hint">También puedes probarla con la contraseña.</small>';
         card.querySelector('form').addEventListener('submit', (event) => {
           event.preventDefault();
           const input = event.currentTarget.querySelector('input');
@@ -1869,6 +1889,9 @@ function initApp() {
       }
       container.appendChild(card);
     });
+    clearInterval(cartasCountdownTimer);
+    cartasCountdownTimer = setInterval(updateCartasCountdown, 1000);
+    updateCartasCountdown();
   }
 
   renderCartasProgramadas();
