@@ -825,7 +825,7 @@ function initApp() {
       {
         name: 'Constelación de Elizabeth & Alejandro',
         desc: 'Las estrellas que se alinearon el 24 de abril de 2026.',
-        quote: '«No fue casualidad encontrarnos en aquella práctica de Topografía; fue destino.»',
+        quote: '«No fue casualidad coincidir entre tanta gente aquel día; fue destino.»',
         color: '#E06C75',
         stars: [
           { x: 670, y: 110, name: 'Punto de Encuentro', r: 3.0, main: true },
@@ -2117,20 +2117,9 @@ function initApp() {
   // =========================================
   // 21b. EL FRASCO DE NUESTRAS CITAS
   // =========================================
-  const DEFAULT_CITAS = [
-    { id: 'c1', titulo: 'Café y charla infinita en Río Intag', desc: 'Pedir nuestro café favorito y quedarnos hablando de la vida sin mirar el reloj.', cat: 'tranqui', catLabel: 'Tranqui ☕', completada: false },
-    { id: 'c2', titulo: 'Paseo en moto hasta El Cielito al atardecer', desc: 'Subir juntos al Itchimbía en la moto con casco y ver cómo se prenden las luces de Quito.', cat: 'aventura', catLabel: 'Aventura 🛵', completada: false },
-    { id: 'c3', titulo: 'Revancha sobre hielo en BLIZZ', desc: 'Ir a patinar juntos y ver quién se cae menos esta vez.', cat: 'aventura', catLabel: 'Aventura 🛵', completada: false },
-    { id: 'c4', titulo: 'Tarde de pintar nuevos cuadritos', desc: 'Comprar lienzos pequeños, pinturas y pintar algo para colgar en la casita mientras escuchamos música.', cat: 'tranqui', catLabel: 'Tranqui ☕', completada: false },
-    { id: 'c5', titulo: 'Maratón de películas en la casita', desc: 'Hacer comida rica, comprar snacks, cobijita y ver una saga completa juntos.', cat: 'casita', catLabel: 'En casita 🍿', completada: false },
-    { id: 'c6', titulo: 'Caminata y helados en el Centro Histórico', desc: 'Perdernos por las calles de Quito de la mano comiendo helados tradicionales.', cat: 'tranqui', catLabel: 'Tranqui ☕', completada: false },
-    { id: 'c7', titulo: 'Desayuno sorpresa en Tierra Verde', desc: 'Empezar el día temprano con un desayuno rico como en los viejos tiempos de la facultad.', cat: 'especial', catLabel: 'Especial ✨', completada: false },
-    { id: 'c8', titulo: 'Subir a El Panecillo de noche', desc: 'Mirar toda la ciudad iluminada y recordar nuestra primera cita.', cat: 'especial', catLabel: 'Especial ✨', completada: false },
-    { id: 'c9', titulo: 'Cocinar una receta totalmente nueva', desc: 'Elegir un plato que ninguno haya hecho nunca y prepararlo paso a paso entre los dos.', cat: 'casita', catLabel: 'En casita 🍿', completada: false },
-    { id: 'c10', titulo: 'Noche de mirar estrellas con música', desc: 'Subir a una terraza o mirador, llevar café caliente y escuchar nuestras canciones.', cat: 'especial', catLabel: 'Especial ✨', completada: false }
-  ];
+  const DEFAULT_CITAS = [];
 
-  const CITAS_KEY = 'frasco_citas_v1';
+  const CITAS_KEY = 'frasco_citas_v2';
   let citasData = getLocalCitas();
   let currentDrawnDate = null;
   let jarInitialized = false;
@@ -2140,7 +2129,7 @@ function initApp() {
       const raw = localStorage.getItem(CITAS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {}
     return DEFAULT_CITAS;
@@ -2158,7 +2147,11 @@ function initApp() {
     const compEl = document.getElementById('jarCompletedCount');
     const pending = citasData.filter(c => !c.completada).length;
     const completed = citasData.filter(c => c.completada).length;
-    if (remEl) remEl.textContent = `${pending} ${pending === 1 ? 'cita pendiente' : 'citas en el frasco'}`;
+    if (remEl) {
+      remEl.textContent = pending === 0
+        ? (citasData.length === 0 ? 'Frasco vacío · ¡Agreguen su primera cita abajo! ✍️' : '¡Todas las citas realizadas! 🎉')
+        : `${pending} ${pending === 1 ? 'cita pendiente' : 'citas en el frasco'}`;
+    }
     if (compEl) compEl.textContent = `${completed} realizadas ❤️`;
     renderJarPaperChips();
   }
@@ -2168,6 +2161,13 @@ function initApp() {
     if (!jarPapers) return;
     jarPapers.innerHTML = '';
     const pending = citasData.filter(c => !c.completada);
+    if (pending.length === 0) {
+      const emptyHint = document.createElement('span');
+      emptyHint.style.cssText = 'font-size: 0.75rem; color: var(--text-sec); opacity: 0.6; text-align: center; margin-top: 50px;';
+      emptyHint.textContent = 'Vacío';
+      jarPapers.appendChild(emptyHint);
+      return;
+    }
     const colors = ['#D9A441', '#D77A61', '#7AA2F7', '#B39DDB', '#9ECE6A'];
 
     const count = Math.min(pending.length, 24);
@@ -2200,7 +2200,15 @@ function initApp() {
       drawBtn.addEventListener('click', () => {
         const available = citasData.filter(c => !c.completada);
         const pool = available.length > 0 ? available : citasData;
-        if (pool.length === 0) return;
+        if (pool.length === 0) {
+          if (addBox) {
+            addBox.style.display = 'block';
+            const input = document.getElementById('newDateTitle');
+            if (input) input.focus();
+          }
+          alert('¡El frasco está esperando sus primeras citas! Escribe una abajo para comenzar ✨');
+          return;
+        }
 
         const picked = pool[Math.floor(Math.random() * pool.length)];
         currentDrawnDate = picked;
