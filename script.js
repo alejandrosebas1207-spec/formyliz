@@ -9,14 +9,14 @@ function initApp() {
   // =========================================
   const SECTION_IDS = [
     'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
-    'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
-    'propositos', 'muro', 'cartas-programadas', 'capitulo-futuro', 'sorpresa', 'final'
+    'cielo-24-abril', 'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
+    'propositos', 'frasco-citas', 'muro', 'cartas-programadas', 'capsula-tiempo', 'capitulo-futuro', 'sorpresa', 'final'
   ];
   const SECTION_LABELS = [
     'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
     'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
-    'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
-    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'Nuestro muro', 'Cartas para abrir', 'El próximo capítulo', 'Sorpresa', 'Final'
+    'El cielo de nuestra noche', 'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
+    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'El frasco de citas', 'Nuestro muro', 'Cartas para abrir', 'Cápsula del tiempo', 'El próximo capítulo', 'Sorpresa', 'Final'
   ];
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -367,7 +367,10 @@ function initApp() {
             isTransitioning = false;
 
             // Ejecutar funciones especiales
+            if (nextSection.id === 'cielo-24-abril') initSkyObservatory();
             if (nextSection.id === 'mapa') initLoveMap();
+            if (nextSection.id === 'frasco-citas') initJarOfDates();
+            if (nextSection.id === 'capsula-tiempo') initCapsuleVault();
             if (nextSection.id === 'sorpresa') initStarfield();
             if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
@@ -748,6 +751,318 @@ function initApp() {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.5);
     } catch (e) { /* silencio */ }
+  }
+
+  // =========================================
+  // 12b. EL CIELO DE NUESTRA NOCHE (24 DE ABRIL DE 2026)
+  // =========================================
+  let skyObservatoryInitialized = false;
+  let skyAnimId = null;
+
+  function initSkyObservatory() {
+    const canvas = document.getElementById('skyCanvas');
+    if (!canvas) return;
+    if (skyObservatoryInitialized) return;
+    skyObservatoryInitialized = true;
+
+    const ctx = canvas.getContext('2d');
+    const W = 800;
+    const H = 500;
+    canvas.width = W;
+    canvas.height = H;
+
+    // Generar fondo de estrellas
+    const backgroundStars = [];
+    for (let i = 0; i < 150; i++) {
+      backgroundStars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.5,
+        baseAlpha: 0.2 + Math.random() * 0.7,
+        alpha: 0.5,
+        twinkleSpeed: 0.02 + Math.random() * 0.04,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // Constelaciones sobre Quito (24 de abril)
+    const constellations = [
+      {
+        name: 'Cruz del Sur',
+        desc: 'Visible brillante en el cielo de Quito. Simboliza nuestra guía.',
+        quote: '«Incluso en las noches más oscuras, siempre supiste ser mi norte.»',
+        color: '#D9A441',
+        stars: [
+          { x: 560, y: 280, name: 'Acrux', r: 3.5, main: true },
+          { x: 530, y: 220, name: 'Mimosa', r: 3.2, main: true },
+          { x: 560, y: 160, name: 'Gacrux', r: 3.4, main: true },
+          { x: 590, y: 210, name: 'Imai', r: 2.8, main: true }
+        ],
+        lines: [
+          [0, 2], // Acrux - Gacrux
+          [1, 3]  // Mimosa - Imai
+        ]
+      },
+      {
+        name: 'Orión',
+        desc: 'El gigante del firmamento andino. Simboliza la fuerza de nuestro amor.',
+        quote: '«Fuerte, constante y presente en cada uno de nuestros pasos.»',
+        color: '#7AA2F7',
+        stars: [
+          { x: 260, y: 180, name: 'Betelgeuse', r: 3.8, color: '#FF7B72', main: true },
+          { x: 380, y: 190, name: 'Bellatrix', r: 3.0, main: true },
+          { x: 280, y: 340, name: 'Saiph', r: 2.8, main: true },
+          { x: 400, y: 330, name: 'Rigel', r: 3.8, color: '#79C0FF', main: true },
+          // Cinturón
+          { x: 320, y: 260, name: 'Alnitak', r: 2.5, main: true },
+          { x: 335, y: 255, name: 'Alnilam', r: 2.6, main: true },
+          { x: 350, y: 250, name: 'Mintaka', r: 2.5, main: true }
+        ],
+        lines: [
+          [0, 1], [0, 4], [1, 6], [4, 5], [5, 6], [2, 4], [3, 6], [2, 3]
+        ]
+      },
+      {
+        name: 'Constelación de Elizabeth & Alejandro',
+        desc: 'Las estrellas que se alinearon el 24 de abril de 2026.',
+        quote: '«No fue casualidad encontrarnos en aquella práctica de Topografía; fue destino.»',
+        color: '#E06C75',
+        stars: [
+          { x: 670, y: 110, name: 'Punto de Encuentro', r: 3.0, main: true },
+          { x: 710, y: 90, name: 'El Cielito', r: 3.2, main: true },
+          { x: 750, y: 120, name: 'Río Intag', r: 3.0, main: true },
+          { x: 710, y: 170, name: '24 de Abril', r: 4.2, color: '#D9A441', main: true }
+        ],
+        lines: [
+          [0, 1], [1, 2], [2, 3], [3, 0]
+        ]
+      }
+    ];
+
+    // Estrellas fugaces
+    let shootingStar = null;
+    function spawnShootingStar() {
+      if (Math.random() < 0.015 && !shootingStar) {
+        shootingStar = {
+          x: Math.random() * W * 0.8,
+          y: Math.random() * (H * 0.4),
+          len: 80 + Math.random() * 60,
+          speed: 12 + Math.random() * 8,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+          opacity: 1
+        };
+      }
+    }
+
+    // Dibujar luna en cuarto creciente / gibosa (61% iluminada)
+    function drawMoon(ctx, x, y, r) {
+      ctx.save();
+      // Glow exterior
+      const glow = ctx.createRadialGradient(x, y, r * 0.8, x, y, r * 2.8);
+      glow.addColorStop(0, 'rgba(217, 164, 65, 0.35)');
+      glow.addColorStop(0.5, 'rgba(217, 164, 65, 0.08)');
+      glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(x, y, r * 2.8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Disco base oscuro
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Zona iluminada (Cuarto creciente brillante)
+      ctx.fillStyle = '#FDF6E2';
+      ctx.beginPath();
+      ctx.arc(x, y, r, -Math.PI / 2, Math.PI / 2, false);
+      ctx.bezierCurveTo(x + r * 0.3, y + r, x + r * 0.3, y - r, x, y - r);
+      ctx.fill();
+
+      // Cráteres suaves
+      ctx.fillStyle = 'rgba(180, 160, 120, 0.2)';
+      ctx.beginPath();
+      ctx.arc(x + r * 0.4, y - r * 0.2, r * 0.18, 0, Math.PI * 2);
+      ctx.arc(x + r * 0.25, y + r * 0.3, r * 0.12, 0, Math.PI * 2);
+      ctx.arc(x + r * 0.55, y + r * 0.1, r * 0.14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Borde suave
+      ctx.strokeStyle = 'rgba(253, 246, 226, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    let activeConstellation = null;
+    let hoveredStar = null;
+
+    function renderSky() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Fondo de gradiente profundo
+      const bgGrad = ctx.createRadialGradient(W / 2, H, 50, W / 2, H / 2, W * 0.7);
+      bgGrad.addColorStop(0, '#101c30');
+      bgGrad.addColorStop(0.6, '#090e1a');
+      bgGrad.addColorStop(1, '#04060c');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Dibujar luna
+      drawMoon(ctx, 110, 100, 32);
+
+      // Silueta sutil de las montañas de Quito en el horizonte
+      ctx.fillStyle = 'rgba(8, 12, 22, 0.85)';
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      ctx.lineTo(0, H - 40);
+      ctx.bezierCurveTo(W * 0.2, H - 75, W * 0.35, H - 35, W * 0.5, H - 65);
+      ctx.bezierCurveTo(W * 0.65, H - 95, W * 0.85, H - 45, W, H - 55);
+      ctx.lineTo(W, H);
+      ctx.closePath();
+      ctx.fill();
+
+      // Dibujar estrellas de fondo
+      backgroundStars.forEach((star) => {
+        star.phase += star.twinkleSpeed;
+        star.alpha = star.baseAlpha + Math.sin(star.phase) * 0.25;
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, star.alpha)})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Dibujar constelaciones y líneas
+      constellations.forEach((c) => {
+        const isHovered = activeConstellation === c;
+
+        // Líneas de conexión
+        ctx.strokeStyle = isHovered ? c.color : 'rgba(180, 200, 240, 0.2)';
+        ctx.lineWidth = isHovered ? 2 : 1;
+        ctx.setLineDash(isHovered ? [] : [3, 4]);
+
+        c.lines.forEach(([i1, i2]) => {
+          const s1 = c.stars[i1];
+          const s2 = c.stars[i2];
+          ctx.beginPath();
+          ctx.moveTo(s1.x, s1.y);
+          ctx.lineTo(s2.x, s2.y);
+          ctx.stroke();
+        });
+        ctx.setLineDash([]);
+
+        // Estrellas de la constelación
+        c.stars.forEach((s) => {
+          const starColor = s.color || c.color;
+          const isStarHovered = hoveredStar === s;
+
+          // Glow de estrella principal
+          if (isHovered || isStarHovered) {
+            ctx.fillStyle = starColor;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r * 2.8, 0, Math.PI * 2);
+            ctx.globalAlpha = 0.25;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+          }
+
+          ctx.fillStyle = isHovered || isStarHovered ? '#FFFFFF' : starColor;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r * (isStarHovered ? 1.4 : 1), 0, Math.PI * 2);
+          ctx.fill();
+
+          // Nombre de la estrella si está activa
+          if (isHovered || isStarHovered) {
+            ctx.font = '11px "JetBrains Mono", monospace';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.fillText(s.name, s.x + 8, s.y - 6);
+          }
+        });
+
+        // Etiqueta de la constelación
+        if (isHovered && c.stars.length) {
+          const centerStar = c.stars[0];
+          ctx.font = 'italic 15px "Cormorant Garamond", Georgia, serif';
+          ctx.fillStyle = c.color;
+          ctx.fillText(`✦ ${c.name}`, centerStar.x - 20, centerStar.y + 24);
+        }
+      });
+
+      // Dibujar estrella fugaz
+      spawnShootingStar();
+      if (shootingStar) {
+        ctx.save();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${shootingStar.opacity})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(shootingStar.x, shootingStar.y);
+        ctx.lineTo(
+          shootingStar.x - Math.cos(shootingStar.angle) * shootingStar.len,
+          shootingStar.y - Math.sin(shootingStar.angle) * shootingStar.len
+        );
+        ctx.stroke();
+        ctx.restore();
+
+        shootingStar.x += Math.cos(shootingStar.angle) * shootingStar.speed;
+        shootingStar.y += Math.sin(shootingStar.angle) * shootingStar.speed;
+        shootingStar.opacity -= 0.025;
+        if (shootingStar.opacity <= 0 || shootingStar.x > W || shootingStar.y > H) {
+          shootingStar = null;
+        }
+      }
+
+      skyAnimId = requestAnimationFrame(renderSky);
+    }
+
+    renderSky();
+
+    // Detección de interacción (mouse/touch)
+    function handlePointer(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = W / rect.width;
+      const scaleY = H / rect.height;
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
+
+      let foundConstellation = null;
+      let foundStar = null;
+
+      for (const c of constellations) {
+        for (const s of c.stars) {
+          const dist = Math.hypot(s.x - x, s.y - y);
+          if (dist < 26) {
+            foundConstellation = c;
+            foundStar = s;
+            break;
+          }
+        }
+        if (foundConstellation) break;
+      }
+
+      if (foundConstellation !== activeConstellation) {
+        activeConstellation = foundConstellation;
+        hoveredStar = foundStar;
+        if (foundConstellation) {
+          playChimeGlobal();
+          const legend = document.getElementById('skyLegend');
+          const quoteCard = document.getElementById('skyCardInfo');
+          if (legend) legend.innerHTML = `<strong>✨ ${foundConstellation.name}:</strong> ${foundConstellation.desc}`;
+          if (quoteCard) {
+            quoteCard.innerHTML = `<div class="sky-card-quote">${foundConstellation.quote}</div>`;
+          }
+        }
+      }
+    }
+
+    canvas.addEventListener('mousemove', (e) => handlePointer(e.clientX, e.clientY));
+    canvas.addEventListener('click', (e) => handlePointer(e.clientX, e.clientY));
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length) handlePointer(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
   }
 
   // =========================================
@@ -1800,6 +2115,213 @@ function initApp() {
   syncPropositos();
 
   // =========================================
+  // 21b. EL FRASCO DE NUESTRAS CITAS
+  // =========================================
+  const DEFAULT_CITAS = [
+    { id: 'c1', titulo: 'Café y charla infinita en Río Intag', desc: 'Pedir nuestro café favorito y quedarnos hablando de la vida sin mirar el reloj.', cat: 'tranqui', catLabel: 'Tranqui ☕', completada: false },
+    { id: 'c2', titulo: 'Paseo en moto hasta El Cielito al atardecer', desc: 'Subir juntos al Itchimbía en la moto con casco y ver cómo se prenden las luces de Quito.', cat: 'aventura', catLabel: 'Aventura 🛵', completada: false },
+    { id: 'c3', titulo: 'Revancha sobre hielo en BLIZZ', desc: 'Ir a patinar juntos y ver quién se cae menos esta vez.', cat: 'aventura', catLabel: 'Aventura 🛵', completada: false },
+    { id: 'c4', titulo: 'Tarde de pintar nuevos cuadritos', desc: 'Comprar lienzos pequeños, pinturas y pintar algo para colgar en la casita mientras escuchamos música.', cat: 'tranqui', catLabel: 'Tranqui ☕', completada: false },
+    { id: 'c5', titulo: 'Maratón de películas en la casita', desc: 'Hacer comida rica, comprar snacks, cobijita y ver una saga completa juntos.', cat: 'casita', catLabel: 'En casita 🍿', completada: false },
+    { id: 'c6', titulo: 'Caminata y helados en el Centro Histórico', desc: 'Perdernos por las calles de Quito de la mano comiendo helados tradicionales.', cat: 'tranqui', catLabel: 'Tranqui ☕', completada: false },
+    { id: 'c7', titulo: 'Desayuno sorpresa en Tierra Verde', desc: 'Empezar el día temprano con un desayuno rico como en los viejos tiempos de la facultad.', cat: 'especial', catLabel: 'Especial ✨', completada: false },
+    { id: 'c8', titulo: 'Subir a El Panecillo de noche', desc: 'Mirar toda la ciudad iluminada y recordar nuestra primera cita.', cat: 'especial', catLabel: 'Especial ✨', completada: false },
+    { id: 'c9', titulo: 'Cocinar una receta totalmente nueva', desc: 'Elegir un plato que ninguno haya hecho nunca y prepararlo paso a paso entre los dos.', cat: 'casita', catLabel: 'En casita 🍿', completada: false },
+    { id: 'c10', titulo: 'Noche de mirar estrellas con música', desc: 'Subir a una terraza o mirador, llevar café caliente y escuchar nuestras canciones.', cat: 'especial', catLabel: 'Especial ✨', completada: false }
+  ];
+
+  const CITAS_KEY = 'frasco_citas_v1';
+  let citasData = getLocalCitas();
+  let currentDrawnDate = null;
+  let jarInitialized = false;
+
+  function getLocalCitas() {
+    try {
+      const raw = localStorage.getItem(CITAS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_CITAS;
+  }
+
+  function saveCitas() {
+    try {
+      localStorage.setItem(CITAS_KEY, JSON.stringify(citasData));
+    } catch (e) {}
+    updateJarStats();
+  }
+
+  function updateJarStats() {
+    const remEl = document.getElementById('jarRemainingCount');
+    const compEl = document.getElementById('jarCompletedCount');
+    const pending = citasData.filter(c => !c.completada).length;
+    const completed = citasData.filter(c => c.completada).length;
+    if (remEl) remEl.textContent = `${pending} ${pending === 1 ? 'cita pendiente' : 'citas en el frasco'}`;
+    if (compEl) compEl.textContent = `${completed} realizadas ❤️`;
+    renderJarPaperChips();
+  }
+
+  function renderJarPaperChips() {
+    const jarPapers = document.getElementById('jarPapers');
+    if (!jarPapers) return;
+    jarPapers.innerHTML = '';
+    const pending = citasData.filter(c => !c.completada);
+    const colors = ['#D9A441', '#D77A61', '#7AA2F7', '#B39DDB', '#9ECE6A'];
+
+    const count = Math.min(pending.length, 24);
+    for (let i = 0; i < count; i++) {
+      const chip = document.createElement('div');
+      chip.className = 'jar-paper-chip';
+      const rot = (Math.sin(i * 1.5) * 35).toFixed(1);
+      const color = colors[i % colors.length];
+      chip.style.backgroundColor = color;
+      chip.style.transform = `rotate(${rot}deg) translateY(${Math.sin(i) * 4}px)`;
+      chip.style.opacity = '0.85';
+      jarPapers.appendChild(chip);
+    }
+  }
+
+  function initJarOfDates() {
+    if (jarInitialized) return;
+    jarInitialized = true;
+
+    updateJarStats();
+
+    const drawBtn = document.getElementById('drawDateBtn');
+    const toggleAddBtn = document.getElementById('addDateToggleBtn');
+    const addBox = document.getElementById('jarAddBox');
+    const ticketModal = document.getElementById('jarTicketModal');
+    const closeTicketBtn = document.getElementById('closeTicketBtn');
+    const completeDateBtn = document.getElementById('completeDateBtn');
+
+    if (drawBtn) {
+      drawBtn.addEventListener('click', () => {
+        const available = citasData.filter(c => !c.completada);
+        const pool = available.length > 0 ? available : citasData;
+        if (pool.length === 0) return;
+
+        const picked = pool[Math.floor(Math.random() * pool.length)];
+        currentDrawnDate = picked;
+
+        // Animación de sonido y confeti
+        playPageTurn();
+        playChimeGlobal();
+
+        // Animar frasco
+        const jar = document.getElementById('jarGlass');
+        if (jar) {
+          gsap.fromTo(jar, { scale: 0.95, rotate: -3 }, { scale: 1, rotate: 0, duration: 0.4, ease: 'back.out(2)' });
+        }
+
+        // Mostrar ticket
+        const catEl = document.getElementById('ticketCategory');
+        const titleEl = document.getElementById('ticketTitle');
+        const descEl = document.getElementById('ticketDesc');
+
+        if (catEl) catEl.textContent = picked.catLabel || 'Cita Especial ✨';
+        if (titleEl) titleEl.textContent = picked.titulo;
+        if (descEl) descEl.textContent = picked.desc || 'Una hermosa oportunidad para disfrutar juntos.';
+
+        if (ticketModal) {
+          ticketModal.style.display = 'block';
+          if (addBox) addBox.style.display = 'none';
+          const rect = drawBtn.getBoundingClientRect();
+          launchConfetti(rect.left + rect.width / 2, rect.top);
+        }
+      });
+    }
+
+    if (closeTicketBtn && ticketModal) {
+      closeTicketBtn.addEventListener('click', () => {
+        ticketModal.style.display = 'none';
+      });
+    }
+
+    if (completeDateBtn && ticketModal) {
+      completeDateBtn.addEventListener('click', () => {
+        if (currentDrawnDate) {
+          currentDrawnDate.completada = true;
+          saveCitas();
+          playChimeGlobal();
+          const rect = completeDateBtn.getBoundingClientRect();
+          launchConfetti(rect.left + rect.width / 2, rect.top);
+          completeDateBtn.textContent = '¡Celebrado! 🎉';
+          setTimeout(() => {
+            ticketModal.style.display = 'none';
+            completeDateBtn.textContent = '¡Ya la hicimos! ❤️';
+          }, 1000);
+        }
+      });
+    }
+
+    // Toggle de agregar cita
+    if (toggleAddBtn && addBox) {
+      toggleAddBtn.addEventListener('click', () => {
+        const isHidden = addBox.style.display === 'none';
+        addBox.style.display = isHidden ? 'block' : 'none';
+        if (ticketModal) ticketModal.style.display = 'none';
+      });
+    }
+
+    const cancelAddBtn = document.getElementById('cancelNewDateBtn');
+    if (cancelAddBtn && addBox) {
+      cancelAddBtn.addEventListener('click', () => {
+        addBox.style.display = 'none';
+      });
+    }
+
+    // Categorías del selector
+    let selectedCat = 'tranqui';
+    let selectedCatLabel = 'Tranqui ☕';
+    const catSelector = document.getElementById('jarCatSelector');
+    if (catSelector) {
+      catSelector.addEventListener('click', (e) => {
+        const btn = e.target.closest('.jar-cat-btn');
+        if (!btn) return;
+        catSelector.querySelectorAll('.jar-cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCat = btn.dataset.cat;
+        selectedCatLabel = btn.textContent;
+      });
+    }
+
+    // Guardar nueva cita
+    const saveNewDateBtn = document.getElementById('saveNewDateBtn');
+    if (saveNewDateBtn) {
+      saveNewDateBtn.addEventListener('click', () => {
+        const titleInput = document.getElementById('newDateTitle');
+        const descInput = document.getElementById('newDateDesc');
+        const title = titleInput ? titleInput.value.trim() : '';
+        const desc = descInput ? descInput.value.trim() : '';
+
+        if (!title) return;
+
+        const newDate = {
+          id: 'cita_' + Date.now(),
+          titulo: title,
+          desc: desc,
+          cat: selectedCat,
+          catLabel: selectedCatLabel,
+          completada: false
+        };
+
+        citasData.unshift(newDate);
+        saveCitas();
+
+        if (titleInput) titleInput.value = '';
+        if (descInput) descInput.value = '';
+        if (addBox) addBox.style.display = 'none';
+
+        playChimeGlobal();
+        const rect = saveNewDateBtn.getBoundingClientRect();
+        launchConfetti(rect.left + rect.width / 2, rect.top);
+      });
+    }
+  }
+
+  // =========================================
   // 22. CARTAS PROGRAMADAS
   // =========================================
   const CARTAS_PROGRAMADAS = [
@@ -1919,12 +2441,207 @@ function initApp() {
   renderCartasProgramadas();
 
   // =========================================
-  // 23. NUESTRO MURO (notas, canciones y fotos)
+  // 22b. CÁPSULA DEL TIEMPO (PRIMER ANIVERSARIO)
+  // =========================================
+  const CAPSULE_TARGET = new Date('2027-04-24T00:00:00-05:00');
+  const CAPSULE_STORAGE_KEY = 'capsula_tiempo_mensajes_v1';
+  let capsuleCountdownTimer = null;
+  let capsuleAuthor = 'Alejandro';
+
+  const DEFAULT_CAPSULE_MESSAGES = [
+    {
+      id: 'cap1',
+      autor: 'Alejandro',
+      texto: 'Si estamos leyendo esto, significa que ya cumplimos nuestro primer año juntos. Gracias por elegirme cada día, por tu paciencia y por enseñarme a amar tan bonito. ¡Por todos los años que vienen!',
+      fecha: '2026-04-24T22:00:00-05:00'
+    }
+  ];
+
+  function getLocalCapsuleMessages() {
+    try {
+      const raw = localStorage.getItem(CAPSULE_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_CAPSULE_MESSAGES;
+  }
+
+  function saveCapsuleMessages(list) {
+    try {
+      localStorage.setItem(CAPSULE_STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {}
+    updateCapsuleStats();
+  }
+
+  function updateCapsuleCountdown() {
+    const now = new Date();
+    const diff = CAPSULE_TARGET - now;
+
+    const daysEl = document.getElementById('vDays');
+    const hoursEl = document.getElementById('vHours');
+    const minEl = document.getElementById('vMinutes');
+    const secEl = document.getElementById('vSeconds');
+
+    if (diff <= 0) {
+      if (daysEl) daysEl.textContent = '000';
+      if (hoursEl) hoursEl.textContent = '00';
+      if (minEl) minEl.textContent = '00';
+      if (secEl) secEl.textContent = '00';
+      unlockCapsuleVault();
+      return;
+    }
+
+    const totalSecs = Math.floor(diff / 1000);
+    const days = Math.floor(totalSecs / 86400);
+    const hours = Math.floor((totalSecs % 86400) / 3600);
+    const minutes = Math.floor((totalSecs % 3600) / 60);
+    const seconds = totalSecs % 60;
+
+    if (daysEl) daysEl.textContent = String(days).padStart(3, '0');
+    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+    if (minEl) minEl.textContent = String(minutes).padStart(2, '0');
+    if (secEl) secEl.textContent = String(seconds).padStart(2, '0');
+  }
+
+  function updateCapsuleStats() {
+    const list = getLocalCapsuleMessages();
+    const badge = document.getElementById('vaultItemsBadge');
+    if (badge) {
+      badge.textContent = `💌 ${list.length} ${list.length === 1 ? 'recuerdo sellado adentro' : 'recuerdos sellados adentro'}`;
+    }
+  }
+
+  function unlockCapsuleVault() {
+    const lockIcon = document.getElementById('vaultLockIcon');
+    const title = document.getElementById('vaultStatusTitle');
+    const listContainer = document.getElementById('vaultUnlockedMessages');
+
+    if (lockIcon) lockIcon.textContent = '🔓';
+    if (title) title.textContent = '¡Cápsula Desbloqueada! 🎉';
+
+    if (listContainer) {
+      listContainer.style.display = 'flex';
+      const messages = getLocalCapsuleMessages();
+      listContainer.innerHTML = '';
+      messages.forEach(msg => {
+        const card = document.createElement('div');
+        card.className = 'vault-message-card';
+        card.innerHTML = `
+          <div class="vault-message-header">
+            <span class="vault-message-author">${escapeHtml(msg.autor)}</span>
+            <span class="vault-message-date">${formatMuroDate(msg.fecha)}</span>
+          </div>
+          <p style="color: var(--text); line-height: 1.6;">${escapeHtml(msg.texto)}</p>
+        `;
+        listContainer.appendChild(card);
+      });
+    }
+  }
+
+  function initCapsuleVault() {
+    updateCapsuleStats();
+    clearInterval(capsuleCountdownTimer);
+    capsuleCountdownTimer = setInterval(updateCapsuleCountdown, 1000);
+    updateCapsuleCountdown();
+
+    const depositBtn = document.getElementById('openDepositBtn');
+    const depositModal = document.getElementById('vaultDepositModal');
+    const closeDepositBtn = document.getElementById('closeDepositBtn');
+    const sealBtn = document.getElementById('sealMessageBtn');
+    const emergencyBtn = document.getElementById('vaultEmergencyBtn');
+    const authorSeg = document.getElementById('capsuleAuthorSeg');
+
+    if (authorSeg) {
+      authorSeg.addEventListener('click', (e) => {
+        const btn = e.target.closest('.muro-seg-btn');
+        if (!btn) return;
+        authorSeg.querySelectorAll('.muro-seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        capsuleAuthor = btn.dataset.autor;
+      });
+    }
+
+    if (depositBtn && depositModal) {
+      depositBtn.addEventListener('click', () => {
+        depositModal.style.display = 'flex';
+      });
+    }
+
+    if (closeDepositBtn && depositModal) {
+      closeDepositBtn.addEventListener('click', () => {
+        depositModal.style.display = 'none';
+      });
+    }
+
+    if (sealBtn && depositModal) {
+      sealBtn.addEventListener('click', () => {
+        const textEl = document.getElementById('capsuleMessageText');
+        const text = textEl ? textEl.value.trim() : '';
+        if (!text) return;
+
+        const messages = getLocalCapsuleMessages();
+        messages.push({
+          id: 'cap_' + Date.now(),
+          autor: capsuleAuthor,
+          texto: text,
+          fecha: new Date().toISOString()
+        });
+
+        saveCapsuleMessages(messages);
+        if (textEl) textEl.value = '';
+
+        playChimeGlobal();
+        const statusEl = document.getElementById('capsuleStatus');
+        if (statusEl) statusEl.textContent = 'Mensaje sellado con éxito 🔒💜';
+
+        setTimeout(() => {
+          if (statusEl) statusEl.textContent = '';
+          depositModal.style.display = 'none';
+        }, 1200);
+      });
+    }
+
+    if (emergencyBtn) {
+      emergencyBtn.addEventListener('click', () => {
+        const pass = prompt('Introduce la clave para abrir la cápsula:');
+        if (pass === 'desfogue' || pass === 'aniversario2027' || pass === '24deabril') {
+          unlockCapsuleVault();
+          playChimeGlobal();
+        } else if (pass !== null) {
+          alert('Clave incorrecta. La cápsula sigue sellada hasta el 24 de abril de 2027 🔒');
+        }
+      });
+    }
+  }
+
+  // =========================================
+  // 23. NUESTRO MURO (CON FILTROS Y REACCIONES)
   // =========================================
   let muroAutor = 'Alejandro';
   let muroTipo = 'nota';
   let muroFotoData = null;
   let muroLoaded = false;
+  let muroFilter = 'todos';
+  let rawMuroEntries = [];
+
+  const REACTION_EMOJIS = ['❤️', '🥺', '✨', '🔥', '🛵'];
+  const MURO_REACTIONS_KEY = 'muro_reacciones_v1';
+
+  function getLocalReactions() {
+    try {
+      return JSON.parse(localStorage.getItem(MURO_REACTIONS_KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveLocalReactions(map) {
+    try {
+      localStorage.setItem(MURO_REACTIONS_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
 
   function escapeHtml(str) {
     return String(str)
@@ -1958,7 +2675,8 @@ function initApp() {
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      renderMuro(Array.isArray(data) ? data : []);
+      rawMuroEntries = Array.isArray(data) ? data : [];
+      renderMuro(rawMuroEntries);
       muroLoaded = true;
     } catch (e) {
       setMuroStatus('No se pudo conectar. Revisa la conexión.', true);
@@ -2027,8 +2745,14 @@ function initApp() {
     const vacio = document.getElementById('muroVacio');
     if (!grid) return;
 
-    if (vacio) vacio.style.display = entradas.length ? 'none' : 'block';
+    const filtered = muroFilter === 'todos'
+      ? entradas
+      : entradas.filter(e => e.tipo === muroFilter);
+
+    if (vacio) vacio.style.display = filtered.length ? 'none' : 'block';
     grid.innerHTML = '';
+
+    const reactionsMap = getLocalReactions();
 
     const columns = {};
     [
@@ -2044,7 +2768,7 @@ function initApp() {
       columns[tipo] = column.querySelector('.muro-column-list');
     });
 
-    entradas.forEach((e) => {
+    filtered.forEach((e) => {
       const card = document.createElement('article');
       card.className = 'muro-card muro-card--' + (e.tipo || 'nota');
       card.setAttribute('data-id', e.id);
@@ -2072,14 +2796,45 @@ function initApp() {
         }
       }
 
+      // Reacciones con emojis
+      const entryReactions = reactionsMap[e.id] || {};
+      const reactionsHtml = REACTION_EMOJIS.map(emoji => {
+        const count = entryReactions[emoji] || 0;
+        const userReacted = entryReactions['_user_' + emoji] ? 'user-reacted' : '';
+        return `<button type="button" class="muro-reaction-btn ${userReacted}" data-emoji="${emoji}" data-id="${e.id}"><span>${emoji}</span> <span class="muro-reaction-count">${count > 0 ? count : ''}</span></button>`;
+      }).join('');
+
       card.innerHTML =
         '<div class="muro-card-head">' +
           '<span class="muro-icon">' + icono + '</span>' +
           '<span class="muro-autor ' + autorCls + '">' + escapeHtml(e.autor) + '</span>' +
         '</div>' +
         body +
+        '<div class="muro-reactions-bar">' + reactionsHtml + '</div>' +
         '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>' +
         '<div class="muro-comments"></div>';
+
+      // Event listener para reacciones
+      card.querySelectorAll('.muro-reaction-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const emoji = btn.dataset.emoji;
+          const entryId = btn.dataset.id;
+          const map = getLocalReactions();
+          if (!map[entryId]) map[entryId] = {};
+
+          const userKey = '_user_' + emoji;
+          if (map[entryId][userKey]) {
+            map[entryId][userKey] = false;
+            map[entryId][emoji] = Math.max(0, (map[entryId][emoji] || 1) - 1);
+          } else {
+            map[entryId][userKey] = true;
+            map[entryId][emoji] = (map[entryId][emoji] || 0) + 1;
+            playChimeGlobal();
+          }
+          saveLocalReactions(map);
+          renderMuro(rawMuroEntries);
+        });
+      });
 
       loadComentarios(e.id, card.querySelector('.muro-comments'));
 
@@ -2133,6 +2888,18 @@ function initApp() {
     const tipoSeg = document.getElementById('muroTipo');
     const archivo = document.getElementById('muroArchivo');
     const enviar = document.getElementById('muroEnviar');
+    const filterContainer = document.getElementById('muroFilters');
+
+    if (filterContainer) {
+      filterContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.muro-filter-btn');
+        if (!btn) return;
+        filterContainer.querySelectorAll('.muro-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        muroFilter = btn.dataset.filter || 'todos';
+        renderMuro(rawMuroEntries);
+      });
+    }
 
     if (autorSeg) {
       autorSeg.addEventListener('click', (e) => {
