@@ -2142,6 +2142,21 @@ function initApp() {
     updateJarStats();
   }
 
+  async function syncCitasFromCloud() {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/citas?select=*&order=created_at.desc', {
+        headers: muroAuthHeaders()
+      });
+      if (res.ok) {
+        const cloudCitas = await res.json();
+        if (Array.isArray(cloudCitas) && cloudCitas.length > 0) {
+          citasData = cloudCitas;
+          saveCitas();
+        }
+      }
+    } catch (e) {}
+  }
+
   function updateJarStats() {
     const remEl = document.getElementById('jarRemainingCount');
     const compEl = document.getElementById('jarCompletedCount');
@@ -2188,6 +2203,7 @@ function initApp() {
     jarInitialized = true;
 
     updateJarStats();
+    syncCitasFromCloud();
 
     const drawBtn = document.getElementById('drawDateBtn');
     const toggleAddBtn = document.getElementById('addDateToggleBtn');
@@ -2248,10 +2264,19 @@ function initApp() {
     }
 
     if (completeDateBtn && ticketModal) {
-      completeDateBtn.addEventListener('click', () => {
+      completeDateBtn.addEventListener('click', async () => {
         if (currentDrawnDate) {
           currentDrawnDate.completada = true;
           saveCitas();
+          try {
+            if (currentDrawnDate.id) {
+              fetch(SUPABASE_URL + '/rest/v1/citas?id=eq.' + currentDrawnDate.id, {
+                method: 'PATCH',
+                headers: { ...muroAuthHeaders(), Prefer: 'return=minimal' },
+                body: JSON.stringify({ completada: true })
+              });
+            }
+          } catch (e) {}
           playChimeGlobal();
           const rect = completeDateBtn.getBoundingClientRect();
           launchConfetti(rect.left + rect.width / 2, rect.top);
@@ -2298,7 +2323,7 @@ function initApp() {
     // Guardar nueva cita
     const saveNewDateBtn = document.getElementById('saveNewDateBtn');
     if (saveNewDateBtn) {
-      saveNewDateBtn.addEventListener('click', () => {
+      saveNewDateBtn.addEventListener('click', async () => {
         const titleInput = document.getElementById('newDateTitle');
         const descInput = document.getElementById('newDateDesc');
         const title = titleInput ? titleInput.value.trim() : '';
@@ -2307,13 +2332,26 @@ function initApp() {
         if (!title) return;
 
         const newDate = {
-          id: 'cita_' + Date.now(),
           titulo: title,
           desc: desc,
           cat: selectedCat,
           catLabel: selectedCatLabel,
           completada: false
         };
+
+        try {
+          const res = await fetch(SUPABASE_URL + '/rest/v1/citas', {
+            method: 'POST',
+            headers: { ...muroAuthHeaders(), Prefer: 'return=representation' },
+            body: JSON.stringify(newDate)
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            if (saved && saved[0]) newDate.id = saved[0].id;
+          }
+        } catch (e) {
+          if (!newDate.id) newDate.id = 'cita_' + Date.now();
+        }
 
         citasData.unshift(newDate);
         saveCitas();
@@ -2483,6 +2521,20 @@ function initApp() {
     updateCapsuleStats();
   }
 
+  async function syncCapsuleFromCloud() {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/capsula_tiempo?select=*&order=created_at.asc', {
+        headers: muroAuthHeaders()
+      });
+      if (res.ok) {
+        const cloudMessages = await res.json();
+        if (Array.isArray(cloudMessages) && cloudMessages.length > 0) {
+          saveCapsuleMessages(cloudMessages);
+        }
+      }
+    } catch (e) {}
+  }
+
   function updateCapsuleCountdown() {
     const now = new Date();
     const diff = CAPSULE_TARGET - now;
@@ -2539,7 +2591,7 @@ function initApp() {
         card.innerHTML = `
           <div class="vault-message-header">
             <span class="vault-message-author">${escapeHtml(msg.autor)}</span>
-            <span class="vault-message-date">${formatMuroDate(msg.fecha)}</span>
+            <span class="vault-message-date">${formatMuroDate(msg.created_at || msg.fecha)}</span>
           </div>
           <p style="color: var(--text); line-height: 1.6;">${escapeHtml(msg.texto)}</p>
         `;
@@ -2550,6 +2602,7 @@ function initApp() {
 
   function initCapsuleVault() {
     updateCapsuleStats();
+    syncCapsuleFromCloud();
     clearInterval(capsuleCountdownTimer);
     capsuleCountdownTimer = setInterval(updateCapsuleCountdown, 1000);
     updateCapsuleCountdown();
@@ -2584,20 +2637,35 @@ function initApp() {
     }
 
     if (sealBtn && depositModal) {
-      sealBtn.addEventListener('click', () => {
+      sealBtn.addEventListener('click', async () => {
         const textEl = document.getElementById('capsuleMessageText');
         const text = textEl ? textEl.value.trim() : '';
         if (!text) return;
 
-        const messages = getLocalCapsuleMessages();
-        messages.push({
-          id: 'cap_' + Date.now(),
+        const payload = {
           autor: capsuleAuthor,
           texto: text,
-          fecha: new Date().toISOString()
-        });
+          created_at: new Date().toISOString()
+        };
 
+        try {
+          const res = await fetch(SUPABASE_URL + '/rest/v1/capsula_tiempo', {
+            method: 'POST',
+            headers: { ...muroAuthHeaders(), Prefer: 'return=representation' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            if (saved && saved[0]) payload.id = saved[0].id;
+          }
+        } catch (e) {
+          if (!payload.id) payload.id = 'cap_' + Date.now();
+        }
+
+        const messages = getLocalCapsuleMessages();
+        messages.push(payload);
         saveCapsuleMessages(messages);
+
         if (textEl) textEl.value = '';
 
         playChimeGlobal();
