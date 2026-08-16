@@ -2244,9 +2244,9 @@ function initApp() {
         const titleEl = document.getElementById('ticketTitle');
         const descEl = document.getElementById('ticketDesc');
 
-        if (catEl) catEl.textContent = picked.catLabel || 'Cita Especial ✨';
+        if (catEl) catEl.textContent = picked.cat_label || picked.catLabel || 'Cita Especial ✨';
         if (titleEl) titleEl.textContent = picked.titulo;
-        if (descEl) descEl.textContent = picked.desc || 'Una hermosa oportunidad para disfrutar juntos.';
+        if (descEl) descEl.textContent = picked.descripcion || picked.desc || 'Una hermosa oportunidad para disfrutar juntos.';
 
         if (ticketModal) {
           ticketModal.style.display = 'block';
@@ -2333,8 +2333,10 @@ function initApp() {
 
         const newDate = {
           titulo: title,
+          descripcion: desc,
           desc: desc,
           cat: selectedCat,
+          cat_label: selectedCatLabel,
           catLabel: selectedCatLabel,
           completada: false
         };
@@ -2343,7 +2345,13 @@ function initApp() {
           const res = await fetch(SUPABASE_URL + '/rest/v1/citas', {
             method: 'POST',
             headers: { ...muroAuthHeaders(), Prefer: 'return=representation' },
-            body: JSON.stringify(newDate)
+            body: JSON.stringify({
+              titulo: title,
+              descripcion: desc,
+              cat: selectedCat,
+              cat_label: selectedCatLabel,
+              completada: false
+            })
           });
           if (res.ok) {
             const saved = await res.json();
