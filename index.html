@@ -567,9 +567,56 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
     <div class="section-scroll"><div class="container">
       <h2>✉️ Cartas para abrir</h2>
       <p class="section-sub">Algunas cosas pueden esperar el momento correcto.</p>
+
+      <div class="prop-actions-bar" style="margin-bottom: 24px;">
+        <button id="openNewLetterModalBtn" class="prop-toggle" type="button">＋ Escribir nueva carta programada</button>
+      </div>
+
       <div class="scheduled-letters" id="scheduledLetters">
         <!-- Las cartas se generan con JS -->
       </div>
+
+      <!-- Modal para programar nueva carta -->
+      <div class="vault-deposit-modal" id="newScheduledLetterModal" style="display:none;">
+        <div class="vault-deposit-card" style="max-width: 520px;">
+          <h3>✉️ Programar una carta</h3>
+          <p class="vault-deposit-sub">Escribe una carta para abrir en una fecha especial o con clave secreta.</p>
+          
+          <div class="muro-seg" id="letterAuthorSeg" style="margin: 12px auto;">
+            <button type="button" class="muro-seg-btn active" data-autor="Alejandro">Alejandro</button>
+            <button type="button" class="muro-seg-btn" data-autor="Elizabeth">Elizabeth</button>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap: 10px; text-align: left;">
+            <div>
+              <label class="muro-label">Título de la carta</label>
+              <input type="text" id="newLetterTitle" class="muro-input" placeholder="Ej: Para cuando cumplamos 6 meses, Para tu cumpleaños…" maxlength="80" />
+            </div>
+
+            <div>
+              <label class="muro-label">¿Cuándo se podrá abrir?</label>
+              <input type="datetime-local" id="newLetterDate" class="muro-input" />
+            </div>
+
+            <div>
+              <label class="muro-label">Contraseña secreta para abrir antes (opcional)</label>
+              <input type="text" id="newLetterPassword" class="muro-input" placeholder="Ej: una palabra secreta nuestra…" maxlength="40" />
+            </div>
+
+            <div>
+              <label class="muro-label">Contenido de la carta</label>
+              <textarea id="newLetterText" class="muro-input" placeholder="Escribe tu carta aquí con todo tu cariño…" rows="5"></textarea>
+            </div>
+          </div>
+          
+          <div class="vault-deposit-actions" style="margin-top: 18px;">
+            <button id="saveScheduledLetterBtn" class="next-btn" style="margin:0; padding:12px 28px;">✉️ Guardar y programar</button>
+            <button id="closeScheduledLetterModalBtn" class="jar-sub-btn" type="button">Cancelar</button>
+          </div>
+          <p id="scheduledLetterStatus" class="muro-status"></p>
+        </div>
+      </div>
+
       <button class="next-btn" data-next="capsula-tiempo">Siguiente →</button>
     </div>
   </div>

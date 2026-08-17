@@ -2376,19 +2376,57 @@ function initApp() {
   }
 
   // =========================================
-  // 22. CARTAS PROGRAMADAS
+  // 22. CARTAS PROGRAMADAS (DINÁMICAS)
   // =========================================
-  const CARTAS_PROGRAMADAS = [
+  const DEFAULT_CARTAS = [
     {
       id: 'carta-24-abril',
+      autor: 'Alejandro',
       titulo: 'Carta del 24 de agosto',
       fecha: '2026-08-24T12:00:00-05:00',
       password: 'desfogue',
       texto: 'Aquí quedará la carta del 24 de agosto.'
     }
   ];
+
+  const CARTAS_STORAGE_KEY = 'cartas_programadas_list_v2';
+  let cartasProgramadasData = getLocalCartasProgramadas();
   let cartasCountdownTimer = null;
   const cartasAbiertas = {};
+  let scheduledLetterAuthor = 'Alejandro';
+
+  function getLocalCartasProgramadas() {
+    try {
+      const raw = localStorage.getItem(CARTAS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_CARTAS;
+  }
+
+  function saveLocalCartasProgramadas(list) {
+    try {
+      localStorage.setItem(CARTAS_STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  async function syncCartasProgramadasFromCloud() {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/cartas_programadas?select=*&order=fecha.asc', {
+        headers: muroAuthHeaders()
+      });
+      if (res.ok) {
+        const cloudCartas = await res.json();
+        if (Array.isArray(cloudCartas) && cloudCartas.length > 0) {
+          cartasProgramadasData = cloudCartas;
+          saveLocalCartasProgramadas(cartasProgramadasData);
+          renderCartasProgramadas();
+        }
+      }
+    } catch (e) {}
+  }
 
   function cartasDesbloqueadas() {
     try { return JSON.parse(localStorage.getItem('cartas_desbloqueadas_v1') || '{}'); } catch (e) { return {}; }
@@ -2402,7 +2440,7 @@ function initApp() {
 
   function formatCartaDate(date) {
     return new Date(date).toLocaleDateString('es-ES', {
-      day: 'numeric', month: 'long', year: 'numeric'
+      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
   }
 
@@ -2430,46 +2468,53 @@ function initApp() {
     const unlocked = cartasDesbloqueadas();
     container.innerHTML = '';
 
-    CARTAS_PROGRAMADAS.forEach((carta) => {
+    cartasProgramadasData.forEach((carta) => {
       const isUnlocked = unlocked[carta.id] || new Date() >= new Date(carta.fecha);
       const card = document.createElement('article');
       card.className = 'scheduled-letter ' + (isUnlocked ? 'is-unlocked' : 'is-locked');
+      const authorLabel = carta.autor ? ` · De ${escapeHtml(carta.autor)}` : '';
 
       if (isUnlocked && cartasAbiertas[carta.id] === false) {
         card.innerHTML =
           '<div class="scheduled-envelope">✉️</div>' +
-          '<p class="scheduled-letter-meta">Carta desbloqueada</p>' +
+          '<p class="scheduled-letter-meta">Carta desbloqueada' + authorLabel + '</p>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
           '<button type="button" class="scheduled-letter-action scheduled-open">Abrir carta</button>';
       } else if (isUnlocked) {
         card.innerHTML =
-          '<div class="scheduled-letter-meta">Carta abierta · ' + formatCartaDate(carta.fecha) + '</div>' +
+          '<div class="scheduled-letter-meta">Carta abierta' + authorLabel + ' · ' + formatCartaDate(carta.fecha) + '</div>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
-          '<div class="scheduled-letter-paper"><p>' + escapeHtml(carta.texto) + '</p><span>Con cariño,<br>Alejandro.</span></div>' +
+          '<div class="scheduled-letter-paper"><p>' + escapeHtml(carta.texto) + '</p><span>Con cariño,<br>' + escapeHtml(carta.autor || 'Alejandro') + '.</span></div>' +
           '<button type="button" class="scheduled-letter-action scheduled-close">Cerrar carta</button>';
       } else {
         card.innerHTML =
           '<div class="scheduled-envelope">✉️</div>' +
-          '<p class="scheduled-letter-date">Se abre el ' + formatCartaDate(carta.fecha) + '</p>' +
+          '<p class="scheduled-letter-date">Se abre el ' + formatCartaDate(carta.fecha) + authorLabel + '</p>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
           '<div class="scheduled-countdown" data-release="' + carta.fecha + '"></div>' +
-          '<form class="scheduled-unlock-form">' +
-            '<input type="password" placeholder="Contraseña" aria-label="Contraseña de la carta" />' +
-            '<button type="submit">Desbloquear</button>' +
-          '</form>' +
-          '<small class="scheduled-hint">También puedes probarla con la contraseña.</small>';
-        card.querySelector('form').addEventListener('submit', (event) => {
-          event.preventDefault();
-          const input = event.currentTarget.querySelector('input');
-          if (input.value === carta.password) {
-            saveCartaDesbloqueada(carta.id);
-            renderCartasProgramadas();
-          } else {
-            input.value = '';
-            input.placeholder = 'Contraseña incorrecta';
-            input.classList.add('is-wrong');
-          }
-        });
+          (carta.password ? (
+            '<form class="scheduled-unlock-form">' +
+              '<input type="password" placeholder="Contraseña" aria-label="Contraseña de la carta" />' +
+              '<button type="submit">Desbloquear</button>' +
+            '</form>' +
+            '<small class="scheduled-hint">También puedes probarla con la contraseña.</small>'
+          ) : '<small class="scheduled-hint" style="margin-top:10px;">Esperando la fecha fijada ⏳</small>');
+
+        const form = card.querySelector('form');
+        if (form) {
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const input = form.querySelector('input');
+            if (input && input.value === carta.password) {
+              saveCartaDesbloqueada(carta.id);
+              renderCartasProgramadas();
+            } else if (input) {
+              input.value = '';
+              input.placeholder = 'Contraseña incorrecta';
+              input.classList.add('is-wrong');
+            }
+          });
+        }
       }
       const openButton = card.querySelector('.scheduled-open');
       if (openButton) {
@@ -2492,7 +2537,105 @@ function initApp() {
     updateCartasCountdown();
   }
 
+  function initScheduledLetterModal() {
+    const openBtn = document.getElementById('openNewLetterModalBtn');
+    const modal = document.getElementById('newScheduledLetterModal');
+    const closeBtn = document.getElementById('closeScheduledLetterModalBtn');
+    const saveBtn = document.getElementById('saveScheduledLetterBtn');
+    const authorSeg = document.getElementById('letterAuthorSeg');
+
+    if (authorSeg) {
+      authorSeg.addEventListener('click', (e) => {
+        const btn = e.target.closest('.muro-seg-btn');
+        if (!btn) return;
+        authorSeg.querySelectorAll('.muro-seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        scheduledLetterAuthor = btn.dataset.autor;
+      });
+    }
+
+    if (openBtn && modal) {
+      openBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+      });
+    }
+
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+    }
+
+    if (saveBtn && modal) {
+      saveBtn.addEventListener('click', async () => {
+        const titleEl = document.getElementById('newLetterTitle');
+        const dateEl = document.getElementById('newLetterDate');
+        const passEl = document.getElementById('newLetterPassword');
+        const textEl = document.getElementById('newLetterText');
+        const statusEl = document.getElementById('scheduledLetterStatus');
+
+        const title = titleEl ? titleEl.value.trim() : '';
+        const dateVal = dateEl ? dateEl.value : '';
+        const password = passEl ? passEl.value.trim() : '';
+        const texto = textEl ? textEl.value.trim() : '';
+
+        if (!title || !dateVal || !texto) {
+          if (statusEl) {
+            statusEl.textContent = 'Por favor completa el título, la fecha y el texto de la carta ✍️';
+            statusEl.classList.add('error');
+          }
+          return;
+        }
+
+        const payload = {
+          autor: scheduledLetterAuthor,
+          titulo: title,
+          fecha: new Date(dateVal).toISOString(),
+          password: password || null,
+          texto: texto,
+          created_at: new Date().toISOString()
+        };
+
+        try {
+          const res = await fetch(SUPABASE_URL + '/rest/v1/cartas_programadas', {
+            method: 'POST',
+            headers: { ...muroAuthHeaders(), Prefer: 'return=representation' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            if (saved && saved[0]) payload.id = saved[0].id;
+          }
+        } catch (e) {
+          if (!payload.id) payload.id = 'carta_' + Date.now();
+        }
+
+        cartasProgramadasData.push(payload);
+        saveLocalCartasProgramadas(cartasProgramadasData);
+        renderCartasProgramadas();
+
+        if (titleEl) titleEl.value = '';
+        if (dateEl) dateEl.value = '';
+        if (passEl) passEl.value = '';
+        if (textEl) textEl.value = '';
+
+        playChimeGlobal();
+        if (statusEl) {
+          statusEl.textContent = '¡Carta programada con éxito! ✉️💜';
+          statusEl.classList.remove('error');
+        }
+
+        setTimeout(() => {
+          if (statusEl) statusEl.textContent = '';
+          modal.style.display = 'none';
+        }, 1200);
+      });
+    }
+  }
+
   renderCartasProgramadas();
+  initScheduledLetterModal();
+  syncCartasProgramadasFromCloud();
 
   // =========================================
   // 22b. CÁPSULA DEL TIEMPO (PRIMER ANIVERSARIO)
@@ -3073,6 +3216,7 @@ function initApp() {
     syncPropositos();
     syncCitasFromCloud();
     syncCapsuleFromCloud();
+    syncCartasProgramadasFromCloud();
   }
 
   // Polling automático cada 5 segundos
