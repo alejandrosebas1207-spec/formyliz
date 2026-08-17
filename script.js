@@ -2955,14 +2955,13 @@ function initApp() {
       autor: muroAutor,
       titulo: null,
       texto: texto || null,
-      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null),
-      reacciones: {}
+      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null)
     };
 
     try {
-      const res = await fetch(SUPABASE_URL + '/rest/v1/entradas', {
+      let res = await fetch(SUPABASE_URL + '/rest/v1/entradas', {
         method: 'POST',
-        headers: muroAuthHeaders(),
+        headers: { ...muroAuthHeaders(), Prefer: 'return=representation' },
         body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
