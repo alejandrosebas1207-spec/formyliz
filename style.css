@@ -2786,20 +2786,70 @@ body.site-paused > * {
   color: var(--text-sec);
 }
 
-/* ===== SCROLLBAR PERSONALIZADA ===== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* ===== ESTILOS DE HISTORIA COMPACTADA ===== */
+.story-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px auto 24px;
+  max-width: 680px;
 }
-::-webkit-scrollbar-track {
-  background: var(--bg);
+.story-tab {
+  background: rgba(16, 24, 39, 0.7);
+  border: 1px solid var(--border-glow);
+  color: var(--text-sec);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(229, 181, 88, 0.25);
-  border-radius: 4px;
+.story-tab:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: rgba(229, 181, 88, 0.08);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--purple);
+.story-tab.active {
+  background: linear-gradient(135deg, rgba(229, 181, 88, 0.22), rgba(226, 138, 122, 0.18));
+  border-color: var(--purple);
+  color: var(--purple);
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(229, 181, 88, 0.15);
+}
+.story-panel {
+  display: none;
+  animation: storyFade 0.35s ease-out;
+}
+.story-panel.active {
+  display: block;
+}
+@keyframes storyFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.story-nav-arrows {
+  display: flex;
+  justify-content: space-between;
+  max-width: 640px;
+  margin: 22px auto 0;
+  gap: 12px;
+}
+.story-arrow-btn {
+  background: rgba(16, 24, 39, 0.6);
+  border: 1px solid var(--border-glow);
+  color: var(--text-sec);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.story-arrow-btn:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: rgba(229, 181, 88, 0.08);
 }
 
 /* ===== OPTIMIZACIONES RESPONSIVE (MÓVIL Y TABLET) ===== */

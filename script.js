@@ -8,15 +8,36 @@ function initApp() {
   // CONSTANTES Y CONFIGURACIÓN
   // =========================================
   const SECTION_IDS = [
-    'intro', 'capitulo1', 'capitulo2', 'capitulo3', 'capitulo4', 'capitulo5',
-    'cielo-24-abril', 'mapa', 'galeria', 'lo-que-amo', 'playlist', 'carta', 'promesas',
-    'propositos', 'frasco-citas', 'muro', 'cartas-programadas', 'capsula-tiempo', 'capitulo-futuro', 'sorpresa', 'final'
+    'intro',
+    'historia',
+    'cielo-24-abril',
+    'mapa',
+    'galeria',
+    'playlist',
+    'carta',
+    'propositos',
+    'frasco-citas',
+    'muro',
+    'cartas-programadas',
+    'capsula-tiempo',
+    'sorpresa',
+    'final'
   ];
   const SECTION_LABELS = [
-    'Inicio', 'Capítulo I · El encuentro', 'Capítulo II · La universidad',
-    'Capítulo III · Patinar', 'Capítulo IV · Las vacaciones', 'Capítulo V · 24 de abril',
-    'El cielo de nuestra noche', 'Nuestros lugares', 'Galería de fotos', 'Lo que amo de ti', 'Canciones que me recordaban a ti',
-    'Una carta para ti', 'Lo que prometo', 'Propósitos del semestre', 'El frasco de citas', 'Nuestro muro', 'Cartas para abrir', 'Cápsula del tiempo', 'El próximo capítulo', 'Sorpresa', 'Final'
+    'Inicio · Portada',
+    'Historia · Capítulos',
+    'Cielo · 24 de Abril',
+    'Mapa · Nuestros lugares',
+    'Galería · Lo que amo de ti',
+    'Playlist · Canciones',
+    'Carta · Lo que prometo',
+    'Metas · Este semestre',
+    'Citas · Frasco de citas',
+    'Muro · Recuerdos',
+    'Cartas · Para abrir',
+    'Cápsula · 2027',
+    'Sorpresa · Estrellas',
+    'Final · Despedida'
   ];
   const THOUGHTS = [
     "Contigo hasta los días grises se ven bonitos.",
@@ -541,6 +562,66 @@ function initApp() {
       hero.classList.add('hero-animated');
     }, 100);
   }
+
+  // =========================================
+  // 6b. SELECTOR DE CAPÍTULOS DE HISTORIA
+  // =========================================
+  function initStoryTabs() {
+    const tabsContainer = document.getElementById('storyTabs');
+    const panels = document.querySelectorAll('.story-panel');
+    const heading = document.getElementById('storySectionHeading');
+    const prevBtn = document.getElementById('prevStoryChapBtn');
+    const nextBtn = document.getElementById('nextStoryChapBtn');
+
+    if (!tabsContainer) return;
+
+    const chapterTitles = {
+      '1': 'Cómo empezó todo',
+      '2': 'La universidad y la práctica',
+      '3': 'Nuestra primera cita patinando',
+      '4': 'Las vacaciones y el reencuentro',
+      '5': 'El 24 de abril, nuestro día',
+      '6': 'Esta página sigue en blanco'
+    };
+
+    let currentChap = 1;
+
+    function showChapter(chapNum) {
+      currentChap = Number(chapNum);
+      tabsContainer.querySelectorAll('.story-tab').forEach(tab => {
+        tab.classList.toggle('active', Number(tab.dataset.chap) === currentChap);
+      });
+      panels.forEach(p => {
+        p.classList.toggle('active', Number(p.dataset.chapPanel) === currentChap);
+      });
+      if (heading && chapterTitles[currentChap]) {
+        heading.textContent = chapterTitles[currentChap];
+      }
+      playPageTurn();
+    }
+
+    tabsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.story-tab');
+      if (!btn) return;
+      showChapter(btn.dataset.chap);
+    });
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const target = currentChap > 1 ? currentChap - 1 : 6;
+        showChapter(target);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const target = currentChap < 6 ? currentChap + 1 : 1;
+        showChapter(target);
+      });
+    }
+  }
+
+  initStoryTabs();
 
   // =========================================
   // 7. TECLADO

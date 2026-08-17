@@ -79,144 +79,157 @@
   </div>
   </section>
 
-  <!-- ===== CAPÍTULO I ===== -->
-  <section class="section" id="capitulo1" data-index="1" data-chapter="1">
+  <!-- ===== SECCIÓN 2: NUESTRA HISTORIA (COMPACTADA) ===== -->
+  <section class="section" id="historia" data-index="1">
     <div class="section-scroll"><div class="container">
       <div class="chapter-header">
-        <span class="chapter-number">Capítulo I</span>
-        <h2>Hay encuentros que parecen casualidad...</h2>
+        <span class="chapter-number">Nuestra Historia</span>
+        <h2 id="storySectionHeading">Cómo empezó todo</h2>
       </div>
-      <div class="chapter-content">
-        <div class="polaroid" style="--rot: -2deg;">
-          <img src="assets/images/capitulo1.jpg" alt="El inicio de nuestra historia" loading="lazy" />
-          <div class="polaroid-caption">✨ El inicio</div>
-          <span class="polaroid-icon">✨</span>
+      <p class="section-sub">Pasa por cada etapa de nuestro camino juntos</p>
+
+      <!-- Selector interactivo de capítulos -->
+      <div class="story-tabs" id="storyTabs">
+        <button type="button" class="story-tab active" data-chap="1">I · El Inicio</button>
+        <button type="button" class="story-tab" data-chap="2">II · Universidad</button>
+        <button type="button" class="story-tab" data-chap="3">III · Patinar</button>
+        <button type="button" class="story-tab" data-chap="4">IV · Vacaciones</button>
+        <button type="button" class="story-tab" data-chap="5">V · 24 de Abril</button>
+        <button type="button" class="story-tab" data-chap="6">✨ El Futuro</button>
+      </div>
+
+      <!-- Paneles de cada capítulo -->
+      <div class="story-panels" id="storyPanels">
+        <!-- Cap 1 -->
+        <div class="story-panel active" data-chap-panel="1">
+          <div class="chapter-content">
+            <div class="polaroid" style="--rot: -2deg;">
+              <img src="assets/images/capitulo1.jpg" alt="El inicio de nuestra historia" loading="lazy" />
+              <div class="polaroid-caption">✨ El inicio</div>
+              <span class="polaroid-icon">✨</span>
+            </div>
+            <div class="chapter-text-full">
+              <p>
+                Siempre me ha parecido curioso cómo cambian las cosas. Hay días que parecen importantes y terminan siendo uno más. Y hay otros que empiezan como cualquier martes de universidad y, sin darte cuenta, terminan cambiándote la vida.
+                <br><br>
+                Así empezó todo. Ese día no tenía idea de que la niña con la que iba a cruzarme terminaría convirtiéndose en la persona en la que más iba a pensar, la primera a la que quería contarle las cosas y mi lugar favorito después de un día pesado. En ese momento era solo una casualidad. Hoy es una de las mejores que me han pasado.
+              </p>
+              <p class="chapter-quote">Y así, sin saberlo, comenzó nuestra historia.</p>
+            </div>
+          </div>
         </div>
-        <div class="chapter-text-full">
-          <p>
-           Siempre me ha parecido curioso cómo cambian las cosas. Hay días que parecen importantes y terminan siendo uno más. Y hay otros que empiezan como cualquier martes de universidad y, sin darte cuenta, terminan cambiándote la vida.
-Así empezó todo.
-Ese día no tenía idea de que la niña con la que iba a cruzarme terminaría convirtiéndose en la persona en la que más iba a pensar, la primera a la que quería contarle las cosas y mi lugar favorito después de un día pesado. En ese momento era solo una casualidad. Hoy es una de las mejores que me han pasado.
-          </p>
-          <p class="chapter-quote">Y así, sin saberlo, comenzó nuestra historia.</p>
+
+        <!-- Cap 2 -->
+        <div class="story-panel" data-chap-panel="2">
+          <div class="chapter-content">
+            <div class="polaroid" style="--rot: 1deg;">
+              <img src="assets/images/capitulo2.jpg" alt="Práctica de drones en Topografía" loading="lazy" />
+              <div class="polaroid-caption">🛸 Práctica de drones</div>
+              <span class="polaroid-icon">🛸</span>
+            </div>
+            <div class="chapter-text-full">
+              <p>
+                Te conocí en una práctica de Topografía. Si te soy sincero, ese día no imaginaba todo lo que iba a venir después. Lo que sí recuerdo es haberte visto haciendo la práctica con una concentración que me llamó muchísimo la atención. Mientras todos estábamos pendientes de terminar, tú estabas completamente enfocada en lo que hacías. No sé por qué ese detalle se me quedó tan grabado, pero desde ese día empecé a fijarme más en ti. Y, sin darme cuenta, cada vez que coincidíamos en la universidad terminaba buscándote entre tanta gente.
+              </p>
+              <p class="chapter-quote">Empecé fijándome en ti sin darme cuenta. Cuando quise entender qué estaba pasando, ya te habías vuelto parte de mis días.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cap 3 -->
+        <div class="story-panel" data-chap-panel="3">
+          <div class="chapter-content">
+            <div class="polaroid" style="--rot: -1.5deg;">
+              <img src="assets/images/capitulo3.jpg" alt="Nuestra primera cita patinando" loading="lazy" />
+              <div class="polaroid-caption">⛸️ Primera cita</div>
+              <span class="polaroid-icon">⛸️</span>
+            </div>
+            <div class="chapter-text-full">
+              <p>
+                Empecé a sentir una curiosidad que no podía explicar. Quería conocerte un poco más, saber cómo eras fuera de la universidad y descubrir si esa forma de ser que veía en clases era realmente tú. Así que un día me animé a escribirte. Y, sin darme cuenta, cada conversación hacía que quisiera seguir conociéndote un poquito más.
+                <br><br>
+                Después llegó nuestra primera cita: patinar. No recuerdo exactamente la fecha, pero sí recuerdo que ese día confirmé que quería seguir compartiendo tiempo contigo.
+              </p>
+              <p class="chapter-quote">Ese día dejé de pensar solo en el presente. Empecé a imaginarte en mi futuro.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cap 4 -->
+        <div class="story-panel" data-chap-panel="4">
+          <div class="chapter-content">
+            <div class="polaroid" style="--rot: 2deg;">
+              <img src="assets/images/capitulo4.jpg" alt="Las vacaciones y el reencuentro" loading="lazy" />
+              <div class="polaroid-caption">🌴 Vacaciones</div>
+              <span class="polaroid-icon">🌴</span>
+            </div>
+            <div class="chapter-text-full">
+              <p>
+                Luego vinieron los desayunos, uno en Tierra Verde, otro en la universidad, las conversaciones que parecían durar cinco minutos aunque hubieran pasado horas y aquella tarde pintando cuadritos mientras esperábamos las notas de Topografía. Creo que fue ahí cuando entendí que ya no solo me gustaba pasar tiempo contigo. Empecé a querer hacer las cosas bien, porque quería que todo esto siguiera creciendo contigo.
+                <br><br>
+                Llegaron las vacaciones y con ellas la distancia. Extrañarte me hizo darme cuenta de cuánto me había acostumbrado a ti. Pensé que el tiempo podía cambiar las cosas, pero solo hizo que tuviera más ganas de volver a verte. Y cuando regresamos, todo siguió sintiéndose igual... o incluso mejor.
+              </p>
+              <p class="chapter-quote">La distancia no cambió nada, solo confirmó lo que ya empezaba a sentir.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cap 5 -->
+        <div class="story-panel" data-chap-panel="5">
+          <div class="chapter-content">
+            <div class="polaroid" style="--rot: -0.5deg;">
+              <img src="assets/images/capitulo5.jpg" alt="El 24 de abril, nuestro día" loading="lazy" />
+              <div class="polaroid-caption">📅 24 de abril</div>
+              <span class="polaroid-icon">📅</span>
+            </div>
+            <div class="chapter-text-full">
+              <p>
+                Y llegó el 24 de abril.
+                <br><br>
+                Ese día no salió exactamente como lo habíamos imaginado. Hubo un tropiezo que, visto ahora, hasta termina siendo parte de la historia. Pero también fue el día en el que dejamos de conocernos para empezar a construir algo juntos.
+                <br><br>
+                Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, reconciliaciones y muchísimas horas compartidas entre la universidad y todo lo que vino después. No hemos sido una pareja perfecta, y creo que eso es justamente lo que más me gusta de nosotros. Porque, a pesar de todo, aquí seguimos. Siguiéndonos eligiendo.
+              </p>
+              <p class="chapter-quote">“Lo más bonito es que esta historia todavía se sigue escribiendo”</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cap 6 (Futuro) -->
+        <div class="story-panel" data-chap-panel="6">
+          <div class="chapter-content">
+            <div class="polaroid polaroid-empty" id="futurePolaroid" style="--rot: -1deg; cursor: pointer;" role="button" tabindex="0" aria-label="Toca para ver un mensaje sobre nuestro futuro">
+              <div class="polaroid-placeholder" id="futurePlaceholder">＋</div>
+              <div class="polaroid-caption" id="futureCaption">Aquí falta una foto</div>
+              <div class="future-glow" id="futureGlow"></div>
+            </div>
+            <div class="chapter-text-full">
+              <p>
+                Todavía no sé qué va a pasar aquí. No tengo la foto, ni la fecha exacta, 
+                ni las palabras precisas, porque este capítulo no lo he vivido todavía. 
+                Puede ser un viaje, una graduación, una tarde cualquiera de un martes sin nada especial. 
+                Lo único que sé con certeza es que quiero escribirlo contigo, a tu lado, sin apuro, 
+                página por página.
+              </p>
+              <p class="chapter-quote" id="futureQuote">El resto de la historia lo escribimos juntos.</p>
+            </div>
+          </div>
         </div>
       </div>
-      <button class="next-btn" data-next="capitulo2" aria-label="Ir al capítulo 2">Siguiente →</button>
+
+      <!-- Flechas de navegación entre capítulos -->
+      <div class="story-nav-arrows">
+        <button type="button" id="prevStoryChapBtn" class="story-arrow-btn">← Capítulo anterior</button>
+        <button type="button" id="nextStoryChapBtn" class="story-arrow-btn">Siguiente capítulo →</button>
+      </div>
+
+      <button class="next-btn" data-next="cielo-24-abril" style="margin-top: 26px;">Continuar el viaje →</button>
     </div>
   </div>
   </section>
 
-  <!-- ===== CAPÍTULO II ===== -->
-  <section class="section" id="capitulo2" data-index="2" data-chapter="2">
-    <div class="section-scroll"><div class="container">
-      <div class="chapter-header">
-        <span class="chapter-number">Capítulo II</span>
-        <h2>La universidad</h2>
-      </div>
-      <div class="chapter-content">
-        <div class="polaroid" style="--rot: 1deg;">
-          <img src="assets/images/capitulo2.jpg" alt="Práctica de drones en Topografía" loading="lazy" />
-          <div class="polaroid-caption">🛸 Práctica de drones</div>
-          <span class="polaroid-icon">🛸</span>
-        </div>
-        <div class="chapter-text-full">
-          <p>
-            Te conocí en una práctica de Topografía. Si te soy sincero, ese día no imaginaba todo lo que iba a venir después. Lo que sí recuerdo es haberte visto haciendo la práctica con una concentración que me llamó muchísimo la atención. Mientras todos estábamos pendientes de terminar, tú estabas completamente enfocada en lo que hacías. No sé por qué ese detalle se me quedó tan grabado, pero desde ese día empecé a fijarme más en ti. Y, sin darme cuenta, cada vez que coincidíamos en la universidad terminaba buscándote entre tanta gente.
-          </p>
-          <p class="chapter-quote">Empecé fijándome en ti sin darme cuenta. Cuando quise entender qué estaba pasando, ya te habías vuelto parte de mis días.</p>
-        </div>
-      </div>
-      <button class="next-btn" data-next="capitulo3">Siguiente →</button>
-    </div>
-  </div>
-  </section>
-
-  <!-- ===== CAPÍTULO III ===== -->
-  <section class="section" id="capitulo3" data-index="3" data-chapter="3">
-    <div class="section-scroll"><div class="container">
-      <div class="chapter-header">
-        <span class="chapter-number">Capítulo III</span>
-        <h2>Patinar</h2>
-      </div>
-      <div class="chapter-content">
-        <div class="polaroid" style="--rot: -1.5deg;">
-          <img src="assets/images/capitulo3.jpg" alt="Nuestra primera cita patinando" loading="lazy" />
-          <div class="polaroid-caption">⛸️ Primera cita</div>
-          <span class="polaroid-icon">⛸️</span>
-        </div>
-        <div class="chapter-text-full">
-          <p>
-           Empecé a sentir una curiosidad que no podía explicar. Quería conocerte un poco más, saber cómo eras fuera de la universidad y descubrir si esa forma de ser que veía en clases era realmente tú. Así que un día me animé a escribirte. Y, sin darme cuenta, cada conversación hacía que quisiera seguir conociéndote un poquito más.
-
-Después llegó nuestra primera cita: patinar. No recuerdo exactamente la fecha, pero sí recuerdo que ese día confirmé que quería seguir compartiendo tiempo contigo.
-          </p>
-          <p class="chapter-quote">Ese día dejé de pensar solo en el presente. Empecé a imaginarte en mi futuro.</p>
-        </div>
-      </div>
-      <button class="next-btn" data-next="capitulo4">Siguiente →</button>
-    </div>
-  </div>
-  </section>
-
-  <!-- ===== CAPÍTULO IV ===== -->
-  <section class="section" id="capitulo4" data-index="4" data-chapter="4">
-    <div class="section-scroll"><div class="container">
-      <div class="chapter-header">
-        <span class="chapter-number">Capítulo IV</span>
-        <h2>Las vacaciones</h2>
-      </div>
-      <div class="chapter-content">
-        <div class="polaroid" style="--rot: 2deg;">
-          <img src="assets/images/capitulo4.jpg" alt="Las vacaciones y el reencuentro" loading="lazy" />
-          <div class="polaroid-caption">🌴 Vacaciones</div>
-          <span class="polaroid-icon">🌴</span>
-        </div>
-        <div class="chapter-text-full">
-          <p>
-            Luego vinieron los desayunos, uno en Tierra Verde, otro en la universidad, las conversaciones que parecían durar cinco minutos aunque hubieran pasado horas y aquella tarde pintando cuadritos mientras esperábamos las notas de Topografía. Creo que fue ahí cuando entendí que ya no solo me gustaba pasar tiempo contigo. Empecé a querer hacer las cosas bien, porque quería que todo esto siguiera creciendo contigo.
-          </p>
-          <p>
-            Llegaron las vacaciones y con ellas la distancia. Extrañarte me hizo darme cuenta de cuánto me había acostumbrado a ti. Pensé que el tiempo podía cambiar las cosas, pero solo hizo que tuviera más ganas de volver a verte. Y cuando regresamos, todo siguió sintiéndose igual... o incluso mejor. Empezamos a salir más seguido y, sin darme cuenta, cada vez tenía menos dudas de que quería seguir construyendo esto contigo.
-          </p>
-          <p class="chapter-quote">La distancia no cambió nada, solo confirmó lo que ya empezaba a sentir.</p>
-        </div>
-      </div>
-      <button class="next-btn" data-next="capitulo5">Siguiente →</button>
-    </div>
-  </div>
-  </section>
-
-  <!-- ===== CAPÍTULO V ===== -->
-  <section class="section" id="capitulo5" data-index="5" data-chapter="5">
-    <div class="section-scroll"><div class="container">
-      <div class="chapter-header">
-        <span class="chapter-number">Capítulo V</span>
-        <h2>24 de abril</h2>
-      </div>
-      <div class="chapter-content">
-        <div class="polaroid" style="--rot: -0.5deg;">
-          <img src="assets/images/capitulo5.jpg" alt="El 24 de abril, nuestro día" loading="lazy" />
-          <div class="polaroid-caption">📅 24 de abril</div>
-          <span class="polaroid-icon">📅</span>
-        </div>
-        <div class="chapter-text-full">
-          <p>
-            Y llegó el 24 de abril.
-
-Ese día no salió exactamente como lo habíamos imaginado. Hubo un tropiezo que, visto ahora, hasta termina siendo parte de la historia. Pero también fue el día en el que dejamos de conocernos para empezar a construir algo juntos.
-
-Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, reconciliaciones y muchísimas horas compartidas entre la universidad y todo lo que vino después. No hemos sido una pareja perfecta, y creo que eso es justamente lo que más me gusta de nosotros. Porque, a pesar de todo, aquí seguimos. Siguiéndonos eligiendo.
-          </p>
-          <p class="chapter-quote">“Lo más bonito es que esta historia todavía se sigue escribiendo”</p>
-        </div>
-      </div>
-      <button class="next-btn" data-next="cielo-24-abril">Siguiente →</button>
-    </div>
-  </div>
-  </section>
-
-  <!-- ===== EL CIELO DE NUESTRA NOCHE ===== -->
-  <section class="section" id="cielo-24-abril" data-index="6">
+  <!-- ===== SECCIÓN 3: EL CIELO DE NUESTRA NOCHE ===== -->
+  <section class="section" id="cielo-24-abril" data-index="2">
     <div class="section-scroll"><div class="container">
       <div class="chapter-header">
         <span class="chapter-number">24 de abril de 2026 · 21:00</span>
@@ -252,8 +265,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== MAPA DE NUESTROS LUGARES ===== -->
-  <section class="section" id="mapa" data-index="7">
+  <!-- ===== SECCIÓN 4: MAPA DE NUESTROS LUGARES ===== -->
+  <section class="section" id="mapa" data-index="3">
     <div class="section-scroll"><div class="container">
       <h2>📍 Nuestros lugares</h2>
       <p class="section-sub">Toca cada punto para ver por qué importa</p>
@@ -263,11 +276,11 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== GALERÍA ===== -->
-  <section class="section" id="galeria" data-index="8">
+  <!-- ===== SECCIÓN 5: GALERÍA & LO QUE AMO DE TI ===== -->
+  <section class="section" id="galeria" data-index="4">
     <div class="section-scroll"><div class="container">
-      <h2>📸 Nuestros momentos</h2>
-      <p class="section-sub">Mis fotos favoritas</p>
+      <h2>📸 Momentos & Lo que amo de ti</h2>
+      <p class="section-sub">Nuestras fotos favoritas y las razones por las que te elijo cada día</p>
       <div class="gallery-grid">
         <div class="polaroid gallery-polaroid" style="--rot: 1deg;">
           <img src="assets/images/galeria1.jpg" alt="Práctica de drones" loading="lazy" />
@@ -286,31 +299,27 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
           <div class="polaroid-caption">Nuestro 24 de abril</div>
         </div>
       </div>
-      <button class="next-btn" data-next="lo-que-amo">Siguiente →</button>
-    </div>
-  </div>
-  </section>
 
-  <!-- ===== LO QUE AMO DE TI ===== -->
-  <section class="section" id="lo-que-amo" data-index="9">
-    <div class="section-scroll"><div class="container">
-      <h2>❤️ Las cosas que amo de ti</h2>
-      <ul class="love-list">
-        <li>Tu carácter y tu forma de expresarte</li>
-        <li>Cómo te interesas por lo que hago</li>
-        <li>La forma en que me ayudas en lo académico</li>
-        <li>La pasión que sientes por el estudio</li>
-        <li>Los lunares de tu boca</li>
-        <li>Tu mirada juzgadora</li>
-        <li>Tu cabello ondulado</li>
-      </ul>
+      <div style="margin-top: 36px;">
+        <h3 style="color: var(--purple); font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; margin-bottom: 14px;">❤️ Lo que amo de ti</h3>
+        <ul class="love-list">
+          <li>Tu carácter y tu forma de expresarte</li>
+          <li>Cómo te interesas por lo que hago</li>
+          <li>La forma en que me ayudas en lo académico</li>
+          <li>La pasión que sientes por el estudio</li>
+          <li>Los lunares de tu boca</li>
+          <li>Tu mirada juzgadora</li>
+          <li>Tu cabello ondulado</li>
+        </ul>
+      </div>
+
       <button class="next-btn" data-next="playlist">Siguiente →</button>
     </div>
   </div>
   </section>
 
-  <!-- ===== NUESTRA PLAYLIST ===== -->
-  <section class="section" id="playlist" data-index="10">
+  <!-- ===== SECCIÓN 6: NUESTRA PLAYLIST ===== -->
+  <section class="section" id="playlist" data-index="5">
     <div class="section-scroll"><div class="container">
       <h2>🎵 Canciones que me recordaban a ti</h2>
       <p class="section-sub">Te encontraba en cada verso</p>
@@ -348,8 +357,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== CARTA ===== -->
-  <section class="section" id="carta" data-index="11">
+  <!-- ===== SECCIÓN 7: CARTA & LO QUE PROMETO ===== -->
+  <section class="section" id="carta" data-index="6">
     <div class="section-scroll"><div class="container">
       <h2>✉️ Una carta para ti</h2>
       <div class="letter-wrapper">
@@ -381,37 +390,33 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
           </p>
         </div>
       </div>
-      <button class="next-btn" data-next="promesas">Siguiente →</button>
-    </div>
-  </div>
-  </section>
 
-  <!-- ===== PROMESAS (CAPÍTULO BONUS) ===== -->
-  <section class="section" id="promesas" data-index="12">
-    <div class="section-scroll"><div class="container">
-      <div class="chapter-header">
-        <span class="chapter-number">Capítulo bonus</span>
-        <h2>Lo que prometo</h2>
+      <div style="margin-top: 40px;">
+        <div class="chapter-header">
+          <span class="chapter-number">Capítulo bonus</span>
+          <h2>Lo que prometo</h2>
+        </div>
+        <p class="section-sub">No solo quiero recordar lo que fuimos, sino construir lo que seremos</p>
+        <ul class="love-list promise-list">
+          <li>Escribir contigo un capítulo nuevo cada vez que la vida nos dé uno</li>
+          <li>Hacer las cosas bien, para ser siempre merecedor de tu amor y tu calidez</li>
+          <li>Entender tus días de estrés y ser un apoyo en ellos, no una carga más</li>
+          <li>Buscar más tardes de patinar, de pintar, de no hacer nada y que sea suficiente</li>
+          <li>Llevarte en la moto a donde se te antoje, siempre con casco puesto</li>
+          <li>Celebrar cada 24 de abril como si fuera el primero</li>
+          <li>Escucharte en tus días completos, no solo en las partes buenas</li>
+          <li>Estar en tus logros tanto como en tus dudas</li>
+          <li>Elegirte de nuevo, incluso en los días difíciles</li>
+        </ul>
       </div>
-      <p class="section-sub">No solo quiero recordar lo que fuimos, sino construir lo que seremos</p>
-      <ul class="love-list promise-list">
-        <li>Escribir contigo un capítulo nuevo cada vez que la vida nos dé uno</li>
-        <li>Hacer las cosas bien, para ser siempre merecedor de tu amor y tu calidez</li>
-        <li>Entender tus días de estrés y ser un apoyo en ellos, no una carga más</li>
-        <li>Buscar más tardes de patinar, de pintar, de no hacer nada y que sea suficiente</li>
-        <li>Llevarte en la moto a donde se te antoje, siempre con casco puesto</li>
-        <li>Celebrar cada 24 de abril como si fuera el primero</li>
-        <li>Escucharte en tus días completos, no solo en las partes buenas</li>
-        <li>Estar en tus logros tanto como en tus dudas</li>
-        <li>Elegirte de nuevo, incluso en los días difíciles</li>
-      </ul>
+
       <button class="next-btn" data-next="propositos">Siguiente →</button>
     </div>
   </div>
   </section>
 
-  <!-- ===== PROPÓSITOS DEL PRÓXIMO SEMESTRE ===== -->
-  <section class="section" id="propositos" data-index="13">
+  <!-- ===== SECCIÓN 8: PROPÓSITOS DEL PRÓXIMO SEMESTRE ===== -->
+  <section class="section" id="propositos" data-index="7">
     <div class="section-scroll"><div class="container">
       <h2>🎯 El próximo semestre</h2>
       <p class="section-sub">Porque amar también es planificar y crecer juntos. Pulsa «Editar» para cambiarlos, «Guardar» para fijarlos.</p>
@@ -429,8 +434,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== EL FRASCO DE CITAS ===== -->
-  <section class="section" id="frasco-citas" data-index="14">
+  <!-- ===== SECCIÓN 9: EL FRASCO DE CITAS ===== -->
+  <section class="section" id="frasco-citas" data-index="8">
     <div class="section-scroll"><div class="container">
       <div class="chapter-header">
         <span class="chapter-number">Aventuras juntos</span>
@@ -515,8 +520,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== NUESTRO MURO ===== -->
-  <section class="section" id="muro" data-index="15">
+  <!-- ===== SECCIÓN 10: NUESTRO MURO ===== -->
+  <section class="section" id="muro" data-index="9">
     <div class="section-scroll"><div class="container">
       <h2>💌 Nuestro muro</h2>
       <p class="section-sub">Notas, canciones y fotos que nos vamos dejando. Este muro es de los dos.</p>
@@ -573,8 +578,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== CARTAS PARA ABRIR ===== -->
-  <section class="section" id="cartas-programadas" data-index="16">
+  <!-- ===== SECCIÓN 11: CARTAS PARA ABRIR ===== -->
+  <section class="section" id="cartas-programadas" data-index="10">
     <div class="section-scroll"><div class="container">
       <h2>✉️ Cartas para abrir</h2>
       <p class="section-sub">Algunas cosas pueden esperar el momento correcto.</p>
@@ -633,8 +638,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== CÁPSULA DEL TIEMPO ===== -->
-  <section class="section" id="capsula-tiempo" data-index="17">
+  <!-- ===== SECCIÓN 12: CÁPSULA DEL TIEMPO ===== -->
+  <section class="section" id="capsula-tiempo" data-index="11">
     <div class="section-scroll"><div class="container">
       <div class="chapter-header">
         <span class="chapter-number">Primer Aniversario · 24 de Abril de 2027</span>
@@ -694,36 +699,7 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
         </div>
       </div>
 
-      <button class="next-btn" data-next="capitulo-futuro">Siguiente →</button>
-    </div>
-  </div>
-  </section>
-
-  <!-- ===== CAPÍTULO SIN TERMINAR ===== -->
-  <section class="section" id="capitulo-futuro" data-index="18" aria-label="El próximo capítulo">
-    <div class="section-scroll"><div class="container">
-      <div class="chapter-header">
-        <span class="chapter-number">El próximo capítulo</span>
-        <h2>Esta página sigue en blanco</h2>
-      </div>
-      <div class="chapter-content">
-        <div class="polaroid polaroid-empty" id="futurePolaroid" style="--rot: -1deg; cursor: pointer;" role="button" tabindex="0" aria-label="Toca para ver un mensaje sobre nuestro futuro">
-          <div class="polaroid-placeholder" id="futurePlaceholder">＋</div>
-          <div class="polaroid-caption" id="futureCaption">Aquí falta una foto</div>
-          <div class="future-glow" id="futureGlow"></div>
-        </div>
-        <div class="chapter-text-full">
-          <p>
-            Todavía no sé qué va a pasar aquí. No tengo la foto, ni la fecha exacta, 
-            ni las palabras precisas, porque este capítulo no lo he vivido todavía. 
-            Puede ser un viaje, una graduación, una tarde cualquiera de un martes sin nada especial. 
-            Lo único que sé con certeza es que quiero escribirlo contigo, a tu lado, sin apuro, 
-            página por página.
-          </p>
-          <p class="chapter-quote" id="futureQuote">El resto de la historia lo escribimos juntos.</p>
-        </div>
-      </div>
-      <button class="next-btn" data-next="sorpresa" aria-label="Ir a la sorpresa">Siguiente →</button>
+      <button class="next-btn" data-next="sorpresa">Siguiente →</button>
     </div>
   </div>
   </section>
@@ -742,8 +718,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
     </div>
   </div>
 
-  <!-- ===== LAS ESTRELLAS (SORPRESA) ===== -->
-  <section class="section" id="sorpresa" data-index="19">
+  <!-- ===== SECCIÓN 13: LAS ESTRELLAS (SORPRESA) ===== -->
+  <section class="section" id="sorpresa" data-index="12">
     <div class="section-scroll"><div class="container">
       <h2>✨ Todavía no termina...</h2>
       <p class="section-sub">Toca las estrellas, mi amor</p>
@@ -760,8 +736,8 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
   </div>
   </section>
 
-  <!-- ===== FINAL ===== -->
-  <section class="section" id="final" data-index="20">
+  <!-- ===== SECCIÓN 14: FINAL ===== -->
+  <section class="section" id="final" data-index="13">
     <div class="section-scroll"><div class="container">
       <h2>Si no eres tú, no quiero nada</h2>
       <p class="section-sub">
