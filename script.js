@@ -2474,26 +2474,18 @@ function initApp() {
       card.className = 'scheduled-letter ' + (isUnlocked ? 'is-unlocked' : 'is-locked');
       const authorLabel = carta.autor ? ` · De ${escapeHtml(carta.autor)}` : '';
 
-      const actionsHtml =
-        '<div class="scheduled-card-actions">' +
-          '<button type="button" class="scheduled-edit-btn" data-id="' + escapeHtml(carta.id) + '">✏️ Editar</button>' +
-          '<button type="button" class="scheduled-delete-btn" data-id="' + escapeHtml(carta.id) + '" title="Eliminar carta">🗑️</button>' +
-        '</div>';
-
       if (isUnlocked && cartasAbiertas[carta.id] === false) {
         card.innerHTML =
           '<div class="scheduled-envelope">✉️</div>' +
           '<p class="scheduled-letter-meta">Carta desbloqueada' + authorLabel + '</p>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
-          '<button type="button" class="scheduled-letter-action scheduled-open">Abrir carta</button>' +
-          actionsHtml;
+          '<button type="button" class="scheduled-letter-action scheduled-open">Abrir carta</button>';
       } else if (isUnlocked) {
         card.innerHTML =
           '<div class="scheduled-letter-meta">Carta abierta' + authorLabel + ' · ' + formatCartaDate(carta.fecha) + '</div>' +
           '<h3>' + escapeHtml(carta.titulo) + '</h3>' +
           '<div class="scheduled-letter-paper"><p>' + escapeHtml(carta.texto) + '</p><span>Con cariño,<br>' + escapeHtml(carta.autor || 'Alejandro') + '.</span></div>' +
-          '<button type="button" class="scheduled-letter-action scheduled-close">Cerrar carta</button>' +
-          actionsHtml;
+          '<button type="button" class="scheduled-letter-action scheduled-close">Cerrar carta</button>';
       } else {
         card.innerHTML =
           '<div class="scheduled-envelope">✉️</div>' +
@@ -2506,8 +2498,7 @@ function initApp() {
               '<button type="submit">Desbloquear</button>' +
             '</form>' +
             '<small class="scheduled-hint">También puedes probarla con la contraseña.</small>'
-          ) : '<small class="scheduled-hint" style="margin-top:10px;">Esperando la fecha fijada ⏳</small>') +
-          actionsHtml;
+          ) : '<small class="scheduled-hint" style="margin-top:10px;">Esperando la fecha fijada ⏳</small>');
 
         const form = card.querySelector('form');
         if (form) {
@@ -2541,155 +2532,11 @@ function initApp() {
         });
       }
 
-      const editBtn = card.querySelector('.scheduled-edit-btn');
-      if (editBtn) {
-        editBtn.addEventListener('click', () => {
-          openEditLetter(carta);
-        });
-      }
-
-      const deleteBtn = card.querySelector('.scheduled-delete-btn');
-      if (deleteBtn) {
-        deleteBtn.addEventListener('click', async () => {
-          if (confirm('¿Deseas eliminar la carta "' + carta.titulo + '"?')) {
-            try {
-              fetch(SUPABASE_URL + '/rest/v1/cartas_programadas?id=eq.' + carta.id, {
-                method: 'DELETE',
-                headers: muroAuthHeaders()
-              });
-            } catch (e) {}
-            cartasProgramadasData = cartasProgramadasData.filter(c => c.id !== carta.id);
-            saveLocalCartasProgramadas(cartasProgramadasData);
-            renderCartasProgramadas();
-          }
-        });
-      }
-
       container.appendChild(card);
     });
     clearInterval(cartasCountdownTimer);
     cartasCountdownTimer = setInterval(updateCartasCountdown, 1000);
     updateCartasCountdown();
-  }
-
-  let editScheduledLetterAuthor = 'Alejandro';
-
-  function openEditLetter(carta) {
-    const modal = document.getElementById('editScheduledLetterModal');
-    if (!modal) return;
-
-    const idEl = document.getElementById('editLetterId');
-    const titleEl = document.getElementById('editLetterTitle');
-    const dateEl = document.getElementById('editLetterDate');
-    const passEl = document.getElementById('editLetterPassword');
-    const textEl = document.getElementById('editLetterText');
-    const authorSeg = document.getElementById('editLetterAuthorSeg');
-
-    if (idEl) idEl.value = carta.id;
-    if (titleEl) titleEl.value = carta.titulo || '';
-    if (passEl) passEl.value = carta.password || '';
-    if (textEl) textEl.value = carta.texto || '';
-
-    if (dateEl && carta.fecha) {
-      try {
-        const d = new Date(carta.fecha);
-        const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-        dateEl.value = localIso;
-      } catch (e) {
-        dateEl.value = '';
-      }
-    }
-
-    editScheduledLetterAuthor = carta.autor || 'Alejandro';
-    if (authorSeg) {
-      authorSeg.querySelectorAll('.muro-seg-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.autor === editScheduledLetterAuthor);
-      });
-    }
-
-    modal.style.display = 'flex';
-  }
-
-  function initEditScheduledLetterModal() {
-    const modal = document.getElementById('editScheduledLetterModal');
-    const closeBtn = document.getElementById('closeEditLetterModalBtn');
-    const updateBtn = document.getElementById('updateScheduledLetterBtn');
-    const authorSeg = document.getElementById('editLetterAuthorSeg');
-
-    if (authorSeg) {
-      authorSeg.addEventListener('click', (e) => {
-        const btn = e.target.closest('.muro-seg-btn');
-        if (!btn) return;
-        authorSeg.querySelectorAll('.muro-seg-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        editScheduledLetterAuthor = btn.dataset.autor;
-      });
-    }
-
-    if (closeBtn && modal) {
-      closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-      });
-    }
-
-    if (updateBtn && modal) {
-      updateBtn.addEventListener('click', async () => {
-        const idEl = document.getElementById('editLetterId');
-        const titleEl = document.getElementById('editLetterTitle');
-        const dateEl = document.getElementById('editLetterDate');
-        const passEl = document.getElementById('editLetterPassword');
-        const textEl = document.getElementById('editLetterText');
-        const statusEl = document.getElementById('editLetterStatus');
-
-        const id = idEl ? idEl.value : '';
-        const title = titleEl ? titleEl.value.trim() : '';
-        const dateVal = dateEl ? dateEl.value : '';
-        const password = passEl ? passEl.value.trim() : '';
-        const texto = textEl ? textEl.value.trim() : '';
-
-        if (!id || !title || !dateVal || !texto) {
-          if (statusEl) {
-            statusEl.textContent = 'Por favor completa el título, la fecha y el texto ✍️';
-            statusEl.classList.add('error');
-          }
-          return;
-        }
-
-        const updatedFields = {
-          autor: editScheduledLetterAuthor,
-          titulo: title,
-          fecha: new Date(dateVal).toISOString(),
-          password: password || null,
-          texto: texto
-        };
-
-        try {
-          fetch(SUPABASE_URL + '/rest/v1/cartas_programadas?id=eq.' + id, {
-            method: 'PATCH',
-            headers: { ...muroAuthHeaders(), Prefer: 'return=minimal' },
-            body: JSON.stringify(updatedFields)
-          });
-        } catch (e) {}
-
-        const item = cartasProgramadasData.find(c => String(c.id) === String(id));
-        if (item) {
-          Object.assign(item, updatedFields);
-        }
-        saveLocalCartasProgramadas(cartasProgramadasData);
-        renderCartasProgramadas();
-
-        playChimeGlobal();
-        if (statusEl) {
-          statusEl.textContent = '¡Cambios guardados con éxito! 💾💜';
-          statusEl.classList.remove('error');
-        }
-
-        setTimeout(() => {
-          if (statusEl) statusEl.textContent = '';
-          modal.style.display = 'none';
-        }, 1000);
-      });
-    }
   }
 
   function initScheduledLetterModal() {
@@ -2790,7 +2637,6 @@ function initApp() {
 
   renderCartasProgramadas();
   initScheduledLetterModal();
-  initEditScheduledLetterModal();
   syncCartasProgramadasFromCloud();
 
   // =========================================
