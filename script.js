@@ -14,7 +14,6 @@ function initApp() {
     'mapa',
     'galeria',
     'playlist',
-    'carta',
     'propositos',
     'frasco-citas',
     'muro',
@@ -27,10 +26,9 @@ function initApp() {
     'Inicio · Portada',
     'Historia · Capítulos',
     'Cielo · 24 de Abril',
-    'Mapa · Nuestros lugares',
+    'Mapa · Lugares',
     'Galería · Lo que amo de ti',
     'Playlist · Canciones',
-    'Carta · Lo que prometo',
     'Metas · Este semestre',
     'Citas · Frasco de citas',
     'Muro · Recuerdos',
@@ -393,7 +391,6 @@ function initApp() {
             if (nextSection.id === 'frasco-citas') initJarOfDates();
             if (nextSection.id === 'capsula-tiempo') initCapsuleVault();
             if (nextSection.id === 'sorpresa') initStarfield();
-            if (nextSection.id === 'carta') unfoldLetter();
             if (nextSection.id === 'final') { initSlideshow(); initSignature(); }
           }
         });
@@ -581,7 +578,8 @@ function initApp() {
       '3': 'Nuestra primera cita patinando',
       '4': 'Las vacaciones y el reencuentro',
       '5': 'El 24 de abril, nuestro día',
-      '6': 'Esta página sigue en blanco'
+      '6': 'Lo que prometo construir contigo',
+      '7': 'Esta página sigue en blanco'
     };
 
     let currentChap = 1;
@@ -608,14 +606,14 @@ function initApp() {
 
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
-        const target = currentChap > 1 ? currentChap - 1 : 6;
+        const target = currentChap > 1 ? currentChap - 1 : 7;
         showChapter(target);
       });
     }
 
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        const target = currentChap < 6 ? currentChap + 1 : 1;
+        const target = currentChap < 7 ? currentChap + 1 : 1;
         showChapter(target);
       });
     }
