@@ -2876,10 +2876,11 @@ function initApp() {
       }
 
       // Reacciones con emojis
-      const entryReactions = reactionsMap[e.id] || {};
+      const cloudReactions = (e.reacciones && typeof e.reacciones === 'object') ? e.reacciones : {};
+      const localUserReactions = reactionsMap[e.id] || {};
       const reactionsHtml = REACTION_EMOJIS.map(emoji => {
-        const count = entryReactions[emoji] || 0;
-        const userReacted = entryReactions['_user_' + emoji] ? 'user-reacted' : '';
+        const count = cloudReactions[emoji] || localUserReactions[emoji] || 0;
+        const userReacted = localUserReactions['_user_' + emoji] ? 'user-reacted' : '';
         return `<button type="button" class="muro-reaction-btn ${userReacted}" data-emoji="${emoji}" data-id="${e.id}"><span>${emoji}</span> <span class="muro-reaction-count">${count > 0 ? count : ''}</span></button>`;
       }).join('');
 
@@ -2893,25 +2894,39 @@ function initApp() {
         '<div class="muro-card-foot">' + formatMuroDate(e.created_at) + '</div>' +
         '<div class="muro-comments"></div>';
 
-      // Event listener para reacciones
+      // Event listener para reacciones sincronizadas
       card.querySelectorAll('.muro-reaction-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           const emoji = btn.dataset.emoji;
           const entryId = btn.dataset.id;
           const map = getLocalReactions();
           if (!map[entryId]) map[entryId] = {};
 
+          const currentCloud = (e.reacciones && typeof e.reacciones === 'object') ? { ...e.reacciones } : {};
           const userKey = '_user_' + emoji;
+
           if (map[entryId][userKey]) {
             map[entryId][userKey] = false;
             map[entryId][emoji] = Math.max(0, (map[entryId][emoji] || 1) - 1);
+            currentCloud[emoji] = Math.max(0, (currentCloud[emoji] || 1) - 1);
           } else {
             map[entryId][userKey] = true;
             map[entryId][emoji] = (map[entryId][emoji] || 0) + 1;
+            currentCloud[emoji] = (currentCloud[emoji] || 0) + 1;
             playChimeGlobal();
           }
+
+          e.reacciones = currentCloud;
           saveLocalReactions(map);
           renderMuro(rawMuroEntries);
+
+          try {
+            fetch(SUPABASE_URL + '/rest/v1/entradas?id=eq.' + entryId, {
+              method: 'PATCH',
+              headers: { ...muroAuthHeaders(), Prefer: 'return=minimal' },
+              body: JSON.stringify({ reacciones: currentCloud })
+            });
+          } catch (err) {}
         });
       });
 
@@ -2940,7 +2955,8 @@ function initApp() {
       autor: muroAutor,
       titulo: null,
       texto: texto || null,
-      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null)
+      url: muroTipo === 'foto' ? muroFotoData : (muroTipo === 'cancion' && texto.match(/^https?:\/\//) ? texto : null),
+      reacciones: {}
     };
 
     try {
@@ -3048,6 +3064,26 @@ function initApp() {
   }
 
   initMuro();
+
+  // =========================================
+  // 24. MOTOR DE SINCRONIZACIÓN EN TIEMPO REAL
+  // =========================================
+  function syncAllRealTime() {
+    if (document.hidden) return;
+    loadMuro();
+    syncPropositos();
+    syncCitasFromCloud();
+    syncCapsuleFromCloud();
+  }
+
+  // Polling automático cada 5 segundos
+  setInterval(syncAllRealTime, 5000);
+
+  // Sincronizar inmediatamente al volver a la pestaña o desbloquear celular
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) syncAllRealTime();
+  });
+  window.addEventListener('focus', syncAllRealTime);
 
 }
 
