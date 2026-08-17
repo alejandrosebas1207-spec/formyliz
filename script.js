@@ -2205,26 +2205,57 @@ function initApp() {
     updateJarStats();
     syncCitasFromCloud();
 
+    let drawFilterCategory = 'todas';
+    const drawFilterSelector = document.getElementById('jarDrawFilter');
     const drawBtn = document.getElementById('drawDateBtn');
     const toggleAddBtn = document.getElementById('addDateToggleBtn');
     const addBox = document.getElementById('jarAddBox');
     const ticketModal = document.getElementById('jarTicketModal');
     const closeTicketBtn = document.getElementById('closeTicketBtn');
     const completeDateBtn = document.getElementById('completeDateBtn');
+    const catSelector = document.getElementById('jarCatSelector');
+
+    if (drawFilterSelector) {
+      drawFilterSelector.addEventListener('click', (e) => {
+        const btn = e.target.closest('.jar-cat-btn');
+        if (!btn) return;
+        drawFilterSelector.querySelectorAll('.jar-cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        drawFilterCategory = btn.dataset.cat;
+      });
+    }
 
     if (drawBtn) {
       drawBtn.addEventListener('click', () => {
-        const available = citasData.filter(c => !c.completada);
-        const pool = available.length > 0 ? available : citasData;
-        if (pool.length === 0) {
+        let eligible = citasData;
+        if (drawFilterCategory !== 'todas') {
+          eligible = citasData.filter(c => c.cat === drawFilterCategory);
+        }
+
+        if (eligible.length === 0) {
           if (addBox) {
             addBox.style.display = 'block';
+            if (catSelector && drawFilterCategory !== 'todas') {
+              catSelector.querySelectorAll('.jar-cat-btn').forEach(b => {
+                const isMatch = b.dataset.cat === drawFilterCategory;
+                b.classList.toggle('active', isMatch);
+                if (isMatch) {
+                  selectedCat = b.dataset.cat;
+                  selectedCatLabel = b.textContent;
+                }
+              });
+            }
             const input = document.getElementById('newDateTitle');
             if (input) input.focus();
           }
-          alert('¡El frasco está esperando sus primeras citas! Escribe una abajo para comenzar ✨');
+          alert(drawFilterCategory === 'todas'
+            ? '¡El frasco está esperando sus primeras citas! Escribe una abajo para comenzar ✨'
+            : '¡Aún no hay citas guardadas en esta categoría! Añadan una abajo para comenzar ✨');
           return;
         }
+
+        const available = eligible.filter(c => !c.completada);
+        const pool = available.length > 0 ? available : eligible;
 
         const picked = pool[Math.floor(Math.random() * pool.length)];
         currentDrawnDate = picked;
@@ -2305,10 +2336,9 @@ function initApp() {
       });
     }
 
-    // Categorías del selector
+    // Categorías del selector de creación
     let selectedCat = 'tranqui';
     let selectedCatLabel = 'Tranqui ☕';
-    const catSelector = document.getElementById('jarCatSelector');
     if (catSelector) {
       catSelector.addEventListener('click', (e) => {
         const btn = e.target.closest('.jar-cat-btn');
