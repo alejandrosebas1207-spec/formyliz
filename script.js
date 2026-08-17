@@ -2498,25 +2498,18 @@ function initApp() {
   // 22b. CÁPSULA DEL TIEMPO (PRIMER ANIVERSARIO)
   // =========================================
   const CAPSULE_TARGET = new Date('2027-04-24T00:00:00-05:00');
-  const CAPSULE_STORAGE_KEY = 'capsula_tiempo_mensajes_v1';
+  const CAPSULE_STORAGE_KEY = 'capsula_tiempo_mensajes_v2';
   let capsuleCountdownTimer = null;
   let capsuleAuthor = 'Alejandro';
 
-  const DEFAULT_CAPSULE_MESSAGES = [
-    {
-      id: 'cap1',
-      autor: 'Alejandro',
-      texto: 'Si estamos leyendo esto, significa que ya cumplimos nuestro primer año juntos. Gracias por elegirme cada día, por tu paciencia y por enseñarme a amar tan bonito. ¡Por todos los años que vienen!',
-      fecha: '2026-04-24T22:00:00-05:00'
-    }
-  ];
+  const DEFAULT_CAPSULE_MESSAGES = [];
 
   function getLocalCapsuleMessages() {
     try {
       const raw = localStorage.getItem(CAPSULE_STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {}
     return DEFAULT_CAPSULE_MESSAGES;
@@ -2577,7 +2570,9 @@ function initApp() {
     const list = getLocalCapsuleMessages();
     const badge = document.getElementById('vaultItemsBadge');
     if (badge) {
-      badge.textContent = `💌 ${list.length} ${list.length === 1 ? 'recuerdo sellado adentro' : 'recuerdos sellados adentro'}`;
+      badge.textContent = list.length === 0
+        ? '💌 Cápsula vacía · ¡Sellen su primer recuerdo!'
+        : `💌 ${list.length} ${list.length === 1 ? 'recuerdo sellado adentro' : 'recuerdos sellados adentro'}`;
     }
   }
 
