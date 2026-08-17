@@ -617,6 +617,49 @@ Desde entonces han pasado muchas cosas. Exámenes, desayunos, salidas, peleas, r
         </div>
       </div>
 
+      <!-- Modal para editar carta programada existente -->
+      <div class="vault-deposit-modal" id="editScheduledLetterModal" style="display:none;">
+        <div class="vault-deposit-card" style="max-width: 520px;">
+          <h3>✏️ Editar carta programada</h3>
+          <p class="vault-deposit-sub">Modifica la fecha, título, clave secreta o el mensaje.</p>
+          
+          <input type="hidden" id="editLetterId" />
+
+          <div class="muro-seg" id="editLetterAuthorSeg" style="margin: 12px auto;">
+            <button type="button" class="muro-seg-btn active" data-autor="Alejandro">Alejandro</button>
+            <button type="button" class="muro-seg-btn" data-autor="Elizabeth">Elizabeth</button>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap: 10px; text-align: left;">
+            <div>
+              <label class="muro-label">Título de la carta</label>
+              <input type="text" id="editLetterTitle" class="muro-input" placeholder="Título de la carta…" maxlength="80" />
+            </div>
+
+            <div>
+              <label class="muro-label">¿Cuándo se podrá abrir?</label>
+              <input type="datetime-local" id="editLetterDate" class="muro-input" />
+            </div>
+
+            <div>
+              <label class="muro-label">Contraseña secreta para abrir antes (opcional)</label>
+              <input type="text" id="editLetterPassword" class="muro-input" placeholder="Clave secreta…" maxlength="40" />
+            </div>
+
+            <div>
+              <label class="muro-label">Contenido de la carta</label>
+              <textarea id="editLetterText" class="muro-input" rows="5"></textarea>
+            </div>
+          </div>
+          
+          <div class="vault-deposit-actions" style="margin-top: 18px;">
+            <button id="updateScheduledLetterBtn" class="next-btn" style="margin:0; padding:12px 28px;">💾 Guardar cambios</button>
+            <button id="closeEditLetterModalBtn" class="jar-sub-btn" type="button">Cancelar</button>
+          </div>
+          <p id="editLetterStatus" class="muro-status"></p>
+        </div>
+      </div>
+
       <button class="next-btn" data-next="capsula-tiempo">Siguiente →</button>
     </div>
   </div>
